@@ -1,7 +1,13 @@
 @echo off
 title 文献阅读 Agent
 cd /d "%~dp0"
-if not defined PYTHON_EXE set "PYTHON_EXE=python"
+if not defined PYTHON_EXE (
+    if exist "D:\program\anaconda3\envs\pocket-souls\python.exe" (
+        set "PYTHON_EXE=D:\program\anaconda3\envs\pocket-souls\python.exe"
+    ) else (
+        set "PYTHON_EXE=python"
+    )
+)
 
 echo ==============================
 echo  文献阅读 Agent
