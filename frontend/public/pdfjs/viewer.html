@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>PDF Viewer</title>
+<link rel="stylesheet" href="pdf_viewer.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: #404040; font-family: system-ui, sans-serif; overflow: hidden; }
+
+/* ── Toolbar ── */
+#toolbar {
+  position: fixed; top: 0; left: 0; right: 0; height: 40px;
+  background: #3a3a3a; border-bottom: 1px solid #222;
+  display: flex; align-items: center; gap: 4px;
+  padding: 0 8px; z-index: 100; color: #eee; font-size: 13px;
+  user-select: none;
+}
+#toolbar button {
+  background: none; border: 1px solid transparent; color: #eee;
+  padding: 3px 7px; border-radius: 3px; cursor: pointer; font-size: 13px;
+  line-height: 1;
+}
+#toolbar button:hover:not(:disabled) { background: #555; border-color: #777; }
+#toolbar button:disabled { opacity: 0.3; cursor: default; }
+#toolbar input[type=number] {
+  width: 44px; text-align: center; background: #2a2a2a; color: #eee;
+  border: 1px solid #666; border-radius: 3px; padding: 2px 4px; font-size: 13px;
+}
+#toolbar select {
+  background: #2a2a2a; color: #eee; border: 1px solid #666;
+  border-radius: 3px; padding: 2px 4px; font-size: 12px; cursor: pointer;
+}
+.sep { width: 1px; height: 22px; background: #555; margin: 0 3px; flex-shrink: 0; }
+#pageInfo { font-size: 12px; color: #aaa; white-space: nowrap; }
+#toolbar .spacer { flex: 1; }
+
+/* ── Viewer container ── */
+#viewerContainer {
+  position: absolute; top: 40px; bottom: 0; left: 0; right: 0;
+  overflow: auto;
+}
+#viewer {
+  position: relative;
+}
+/* pdf_viewer.css page styles */
+.page {
+  margin: 10px auto;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+}
+
+#loadingMsg {
+  color: #aaa; text-align: center; margin-top: 80px; font-size: 14px;
+}
+</style>
+</head>
+<body>
+<div id="toolbar">
+  <button id="btnFirst" title="第一页">⏮</button>
+  <button id="btnPrev" title="上一页 (←)">‹</button>
+  <input id="pageNum" type="number" min="1" value="1">
+  <span id="pageInfo">/ —</span>
+  <button id="btnNext" title="下一页 (→)">›</button>
+  <button id="btnLast" title="最后一页">⏭</button>
+  <div class="sep"></div>
+  <button id="btnZoomOut" title="缩小">－</button>
+  <select id="zoomSelect">
+    <option value="0.5">50%</option>
+    <option value="0.75">75%</option>
+    <option value="1" selected>100%</option>
+    <option value="1.25">125%</option>
+    <option value="1.5">150%</option>
+    <option value="2">200%</option>
+    <option value="page-width">适合宽度</option>
+    <option value="page-fit">适合页面</option>
+  </select>
+  <button id="btnZoomIn" title="放大">＋</button>
+  <div class="sep"></div>
+  <button id="btnRotate" title="旋转">↻</button>
+  <div class="spacer"></div>
+  <button id="btnDownload" title="下载">⬇ 下载</button>
+</div>
+
+<div id="viewerContainer">
+  <div id="viewer" class="pdfViewer"></div>
+  <div id="loadingMsg">加载中...</div>
+</div>
+
+<script type="module">
+import * as pdfjsLib from './pdf.min.mjs';
+import { EventBus, PDFViewer, PDFLinkService, PDFHistory } from './pdf_viewer.mjs';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = './pdf.worker.min.mjs';
+
+// Configure cmap and standard fonts for proper CJK and embedded font support
+const CMAP_URL = './cmaps/';
+const STANDARD_FONT_DATA_URL = './standard_fonts/';
+
+const params = new URLSearchParams(location.search);
+const fileUrl = params.get('file');
+const startPage = parseInt(params.get('page') || '1', 10);
+
+if (!fileUrl) { document.getElementById('loadingMsg').textContent = '缺少 file 参数'; throw new Error(); }
+
+const container = document.getElementById('viewerContainer');
+const pageNumInput = document.getElementById('pageNum');
+const pageInfoEl = document.getElementById('pageInfo');
+
+// ── Setup PDFViewer ──
+const eventBus = new EventBus();
+const pdfLinkService = new PDFLinkService({ eventBus });
+const pdfViewer = new PDFViewer({
+  container,
+  viewer: document.getElementById('viewer'),
+  eventBus,
+  linkService: pdfLinkService,
+  textLayerMode: 2,       // ENABLE — allows text selection
+  annotationMode: 2,      // ENABLE — shows annotations
+});
+pdfLinkService.setViewer(pdfViewer);
+
+const ZOOM_STEPS = [0.5, 0.75, 1, 1.25, 1.5, 2];
+
+// ── Load PDF ──
+let pdfDoc = null;
+try {
+  pdfDoc = await pdfjsLib.getDocument({
+    url: fileUrl,
+    cMapUrl: CMAP_URL,
+    cMapPacked: true,
+    standardFontDataUrl: STANDARD_FONT_DATA_URL,
+  }).promise;
+} catch(e) {
+  document.getElementById('loadingMsg').textContent = '加载失败: ' + e.message;
+  throw e;
+}
+
+pdfViewer.setDocument(pdfDoc);
+pdfLinkService.setDocument(pdfDoc);
+document.getElementById('loadingMsg').remove();
+
+pageInfoEl.textContent = '/ ' + pdfDoc.numPages;
+pageNumInput.max = pdfDoc.numPages;
+
+// ── Jump to start page after first render ──
+eventBus.on('pagesinit', () => {
+  pdfViewer.currentScaleValue = 'page-width';
+  document.getElementById('zoomSelect').value = 'page-width';
+  pdfViewer.currentPageNumber = startPage;
+  pageNumInput.value = startPage;
+  updateButtons();
+});
+
+// ── Sync page input with viewer ──
+eventBus.on('pagechanging', ({ pageNumber }) => {
+  pageNumInput.value = pageNumber;
+  updateButtons();
+});
+
+function updateButtons() {
+  const p = pdfViewer.currentPageNumber;
+  const n = pdfDoc.numPages;
+  document.getElementById('btnPrev').disabled = p <= 1;
+  document.getElementById('btnFirst').disabled = p <= 1;
+  document.getElementById('btnNext').disabled = p >= n;
+  document.getElementById('btnLast').disabled = p >= n;
+}
+
+// ── Controls ──
+document.getElementById('btnFirst').onclick = () => { pdfViewer.currentPageNumber = 1; };
+document.getElementById('btnLast').onclick  = () => { pdfViewer.currentPageNumber = pdfDoc.numPages; };
+document.getElementById('btnPrev').onclick  = () => { pdfViewer.currentPageNumber -= 1; };
+document.getElementById('btnNext').onclick  = () => { pdfViewer.currentPageNumber += 1; };
+
+pageNumInput.onchange = () => {
+  const n = parseInt(pageNumInput.value);
+  if (n >= 1 && n <= pdfDoc.numPages) pdfViewer.currentPageNumber = n;
+};
+pageNumInput.onkeydown = e => { if (e.key === 'Enter') pageNumInput.onchange(); };
+
+document.getElementById('btnZoomOut').onclick = () => {
+  const cur = parseFloat(pdfViewer.currentScale);
+  const next = ZOOM_STEPS.filter(s => s < cur - 0.01).pop() ?? ZOOM_STEPS[0];
+  pdfViewer.currentScale = next;
+  document.getElementById('zoomSelect').value = next;
+};
+document.getElementById('btnZoomIn').onclick = () => {
+  const cur = parseFloat(pdfViewer.currentScale);
+  const next = ZOOM_STEPS.find(s => s > cur + 0.01) ?? ZOOM_STEPS.at(-1);
+  pdfViewer.currentScale = next;
+  document.getElementById('zoomSelect').value = next;
+};
+document.getElementById('zoomSelect').onchange = e => {
+  pdfViewer.currentScaleValue = e.target.value;
+};
+
+let rotation = 0;
+document.getElementById('btnRotate').onclick = () => {
+  rotation = (rotation + 90) % 360;
+  pdfViewer.pagesRotation = rotation;
+};
+
+document.getElementById('btnDownload').onclick = () => {
+  const a = document.createElement('a');
+  a.href = fileUrl; a.download = ''; a.click();
+};
+
+// ── Keyboard ──
+document.addEventListener('keydown', e => {
+  if (e.target === pageNumInput) return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') pdfViewer.currentPageNumber += 1;
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   pdfViewer.currentPageNumber -= 1;
+});
+</script>
+</body>
+</html>

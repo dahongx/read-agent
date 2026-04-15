@@ -1,0 +1,34 @@
+# Secrets and local configuration
+backend/.env
+.env
+*.local
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Frontend build/deps
+frontend/node_modules/
+frontend/dist/
+
+# Generated runtime data
+backend/uploads/
+projects/
+output/
+paper/
+paper_text.txt
+
+# Generated skill artifacts
+.claude/skills/ppt-master/projects/
+.claude/skills/ppt-master/scripts/__pycache__/
+.claude/skills/paper-glance-skill/.git/
+
+# Logs
+*.log
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
