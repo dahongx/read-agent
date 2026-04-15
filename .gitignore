@@ -32,3 +32,7 @@ paper_text.txt
 .vscode/
 .idea/
 .DS_Store
+# Local Claude workspace state
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+.claude/commands/
