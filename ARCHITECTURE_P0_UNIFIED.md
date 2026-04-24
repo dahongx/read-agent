@@ -1,1042 +1,538 @@
-# P0：统一架构方案
+# ARCHITECTURE P0 UNIFIED — 实际问题复盘与当前收口方向
 
-> **目标**：单篇和多篇走统一接口、统一会话模型、统一路径体系；真进度、实时日志、快速失败
-
-**完成时间估算**：4-5 天**解决的核心问题**：
-
-- ❌ 路径混乱（Claude 生成到 `projects/` 或 `output_dir`，代码要搜两个地方）
-- ❌ 假进度（`pct = min(pct + 3, 85)` 每 30 秒硬涨，用户蒙在鼓里）
-- ❌ 日志看不见（前端只看进度数字，失败时无法定位问题）
-- ❌ 细粒度不足（没有 svg_output、svg_final、pptx 等关键阶段，是最后一次性生成保存吗）
-- ❌ 错误信息片段（`stderr[-1000:]` 丢失完整链）
-- ❌ 单多篇割裂（同一套逻辑却走不同路径）
+> 更新时间：2026-04-24  
+> 当前结论：PPT 主链路已经阶段性跑通；现阶段不再继续扩展 PPT 范围，优先把经验沉淀清楚，并把问答链路重新对齐到“答案可回指论文原文”。
 
 ---
 
-## 一、问题诊断
+## 一、这份文档为什么要重写
 
-| 问题                   | 当前状态                                                            | 后果                                          |
-| ---------------------- | ------------------------------------------------------------------- | --------------------------------------------- |
-| **路径混乱**     | Claude CLI 生成到 `projects/` 或 `output_dir`，代码要搜两个地方 | 维护复杂，容易找不到产物                      |
-| **假进度**       | `pct = min(pct + 3, 85)` 每 30 秒硬涨                             | 用户蒙在鼓里，不知道真正进度                  |
-| **日志看不见**   | 日志全在后端 `logger.info()`，前端只看进度数字                    | 失败时无法定位问题，浪费额度                  |
-| **细粒度不足**   | 只有 "检查缓存" → "Claude 分析" → "完成"，没有中间状态            | 看不到 svg_output、svg_final、pptx 等关键阶段 |
-| **错误信息片段** | `stderr[-1000:]` 只取最后 1000 字                                 | 完整的错误链丢失                              |
-| **单多篇没区分** | 单篇和多篇用同一套逻辑，路径没有分类                                | 后续多篇改造会很混乱                          |
+旧版 `ARCHITECTURE_P0_UNIFIED.md` 更像一份早期“统一化大改造方案”，里面把很多事项写成待实现目标，但已经不能准确反映这轮真实发生的问题、已经完成的修复，以及下一步的工作重点。
 
----
+这轮真实推进下来，最重要的经验并不是“先做一套抽象上完美的新架构”，而是：
 
-## 二、统一架构方案
+1. **主链路必须先收敛**，否则排障时无法判断问题到底出在哪一层；
+2. **产物定位策略必须一致**，否则会出现“实际上做了一半甚至基本成功，但系统却报失败”的假阴性；
+3. **原始输入、缓存、正式产物必须职责分开**，否则 PPT 和 RAG 会互相干扰；
+4. **进度与错误必须可观测**，否则用户只能看到“卡住了”，不知道是慢、挂了、还是已经有部分产物；
+5. **平台差异必须前置约束**，尤其是 Windows 环境下不能默认沿用类 Unix 命令假设。
 
-### 2.1 统一的路径体系（干净、可理解、易扩展）
-
-```
-uploads/
-├─ sessions/                              # ← 新增：所有 session 的元数据和产物
-│  ├─ {session_id}/
-│  │  ├─ metadata.json                   # session 类型、文件列表、配置、时间戳
-│  │  ├─ input/                          # 输入文件
-│  │  │  ├─ paper_1.pdf
-│  │  │  └─ paper_2.pdf
-│  │  ├─ output/                         # 最终产物（符号链接指向缓存）
-│  │  │  ├─ slides.pptx
-│  │  │  ├─ slides.svg/                  # SVG 集合
-│  │  │  ├─ script.md
-│  │  │  └─ rag_index/
-│  │  └─ logs/                           # ← 新增：完整的生成日志
-│  │     ├─ ppt_generation.log
-│  │     └─ rag_building.log
-│  └─ ...
-│
-├─ cache/                                 # ← 改名：替代原来的 ppt_cache + rag_cache
-│  ├─ ppt/
-│  │  ├─ {cache_key_v2}/                 # 多篇通用缓存键
-│  │  │  ├─ metadata.json                # 包含哪些文件、什么配置
-│  │  │  ├─ svg_output/                  # Claude 中间产物
-│  │  │  ├─ svg_final/                   # 最终 SVG（产物）
-│  │  │  ├─ notes/                       # Markdown 讲稿
-│  │  │  └─ slides.pptx                  # 最终 PPTX（产物）
-│  │  └─ ...
-│  └─ rag/
-│     ├─ {hash_v3}/                      # 单个 PDF
-│     │  ├─ docstore.json
-│     │  ├─ index_store.json
-│     │  └─ vector_store.json
-│     └─ ...
-│
-└─ papers/                                 # ← 新增：去重的 PDF 库（按 hash 存储）
-   ├─ {pdf_hash}/
-   │  └─ original.pdf
-   └─ ...
-```
-
-**关键特点**：
-
-- 现有产物全集中在 `sessions/{session_id}` 结构下（统一模型，单多篇一样）
-- 缓存和输出明确分离：缓存在 `cache/`，输出是 symlink 指向它（避免重复存储）
-- 日志独立保存在 `sessions/{session_id}/logs/`，便于回溯和诊断
-- PPT 和 RAG 缓存互相独立，互不污染
-- PDF 库 `papers/` 按 hash 去重，多篇上传时可复用
+因此，这份文档改为记录：**这轮实际踩过的坑、根因、已完成修复、当前系统状态，以及下一步为什么应该转向 Q&A / RAG 原文定位。**
 
 ---
 
-### 2.2 真实进度模型（基于产物，不靠定时器）
+## 二、本轮实际目标与范围收敛
 
-**当前假进度**：每 30 秒涨 3%，到 85%
+### 2.1 最初目标
 
-**改成：基于产物的真实阶段**
+最初目标是把论文到 PPT 的主流程真正跑通，且严格只使用 `/ppt-master`：
 
-```python
-from enum import Enum
+- 只走 `/ppt-master`
+- 输出 10 页中文学术汇报
+- 优先 anthropic 模板，不可用则自由设计
+- 跑完整条链路直到 `svg_final` 和 `pptx`
+- 每个阶段都能回报当前产物路径
 
-class GenerationStage(Enum):
-    """定义真实的生成阶段"""
-    CACHE_CHECK = ("01_cache_check", 5, "检查缓存...")
-    MARKDOWN_EXTRACT = ("02_markdown", 15, "抽取 Markdown...")
-    NOTES_GENERATION = ("03_notes", 25, "生成讲稿...")
-    SVG_OUTPUT = ("04_svg_output", 50, "SVG 排版中...")
-    SVG_FINAL = ("05_svg_final", 75, "SVG 最终化...")
-    PPTX_EXPORT = ("06_pptx", 95, "导出 PPTX...")
-    COMPLETE = ("07_complete", 100, "完成")
-  
-    def __init__(self, stage_id: str, progress_pct: int, description: str):
-        self.stage_id = stage_id
-        self.progress_pct = progress_pct
-        self.description = description
-```
+### 2.2 中途为什么演变成系统修复
 
-**进度推进方式**（两种方案）：
+在真实运行中，问题并不只出在某个单点脚本，而是暴露出一整条链路的不一致：
 
-**方案 A：基于文件系统监控（推荐）**
+- PPT 主入口不够纯，历史逻辑还在干扰判断；
+- 正式产物目录、会话目录、缓存目录的职责边界不够清晰；
+- 前端只能看到粗粒度进度，无法区分“正常慢”和“已经失败”；
+- 后端错误语义不准确，掩盖了更早的真实失败原因；
+- Windows 环境下技能调用默认假设 `python3` 存在，直接导致执行失败。
 
-```python
-# 监听 cache/{cache_key}/ 下产物的出现时机
-# - canvas.md 创建 → 广播 stage=02_markdown, pct=15
-# - notes/ 创建并有内容 → 广播 stage=03_notes, pct=25  
-# - svg_output/ 创建 → 广播 stage=04_svg_output, pct=50
-# - svg_final/ 创建且有 SVG → 广播 stage=05_svg_final, pct=75
-# - *.pptx 创建 → 广播 stage=06_pptx, pct=95
-# - 任务完成 → 广播 stage=07_complete, pct=100
-```
+所以这轮工作实际上先完成了一个 **P0 级收口**：不是追求一次性做完所有统一架构，而是优先把 PPT 主链路修到“能跑、能看、能定位问题”。
 
-**方案 B：Claude skill 输出结构化日志（备选）**
+### 2.3 当前范围已经再次收缩
 
-```python
-# Claude skill 在关键阶段写入 marker 文件
-# 后端监听这些 marker → 推进阶段
-#
-# marker 文件例：
-# cache/{cache_key}/markers/
-#   ├─ 02_markdown.done    # ← canvas.md 已生成
-#   ├─ 03_notes.done      # ← notes/ 已完成
-#   ├─ 04_svg_output.done # ← svg_output/ 已完成
-#   └─ 05_svg_final.done  # ← svg_final/ 已完成
-```
+用户随后已明确要求：
+
+- **PPT 暂时不要继续动**；
+- 当前要做的是：
+  1. 把这轮问题和修复写清楚；
+  2. 把问答部分重新对齐到“答案可跳转到论文原文页”。
+
+因此，本文档后续不再把 PPT 扩面开发作为第一优先级，而是把它视作**阶段性已实现、可继续回归验证**的部分。
 
 ---
 
-### 2.3 实时日志流（前端可见）
+## 三、这轮真实遇到的主要问题、根因与修复
 
-**改进日志推送**：不再靠后端 `logger.info()`，改成结构化事件推送
+## 3.1 问题一：PPT 主链路入口不够收敛，导致定位困难
 
-```python
-from typing import Optional, Dict, Literal
-from datetime import datetime
+### 现象
 
-class LogEvent(BaseModel):
-    """日志事件模型"""
-    level: Literal["INFO", "WARNING", "ERROR"]
-    timestamp: datetime
-    stage: str  # "MARKDOWN_EXTRACT", "PPTX_EXPORT" 等
-    message: str
-    details: Optional[Dict] = None  # 包含 stdout/stderr 片段
-    duration_ms: Optional[int] = None  # 该阶段耗时
-```
+用户一开始明确要求只用 `/ppt-master`，但系统里仍残留旧链路语义，导致出现这些排障困难：
 
-**WebSocket 消息流**：
+- 不容易确认当前是否真的触发了 `/ppt-master`；
+- 日志里看到的是“处理中”，但无法判断是旧逻辑、兼容逻辑还是新逻辑在跑；
+- 一旦出错，很难界定问题是在主链路入口、Claude 批处理 prompt、还是产物发现阶段。
 
-```json
-{
-  "event": "log",
-  "level": "INFO",
-  "stage": "MARKDOWN_EXTRACT",
-  "message": "Successfully extracted 5 sections from page 1-10",
-  "timestamp": "2026-04-23T10:30:45Z",
-  "duration_ms": 1234
-}
+### 根因
 
-{
-  "event": "log",
-  "level": "INFO",
-  "stage": "SVG_OUTPUT",
-  "message": "SVG layout generation started",
-  "details": {
-    "total_slides": 12,
-    "canvas_format": "16:9"
-  }
-}
+根因不是某个函数单独写错，而是 **PPT 主流程的“单一事实来源”不够明确**。旧有思路、兼容路径和当前真实执行路径混在一起，导致排障时判断成本非常高。
 
-{
-  "event": "log",
-  "level": "ERROR",
-  "stage": "PPTX_EXPORT",
-  "message": "Template file not found",
-  "details": {
-    "expected_path": "/path/to/template",
-    "stderr": "FileNotFoundError: [Errno 2] No such file or directory..."
-  }
-}
-```
+### 已完成修复
 
-**前端显示**：滚动日志面板，用户能看到 Claude 的实时动作
+这轮已经把后端默认 PPT 执行思路收敛到 `/ppt-master` 主链路，并围绕它增强了 batch prompt、产物发现和会话路径回写。结果是：
 
-```
-[INFO] 10:30:44  检查缓存... ✓
-[INFO] 10:30:45  抽取 Markdown... 提取 5 个章节
-[INFO] 10:31:00  生成讲稿... 完成
-[INFO] 10:31:15  SVG 排版中... 12 页
-[INFO] 10:32:00  SVG 最终化... ✓
-[INFO] 10:32:30  导出 PPTX... ✓
-[INFO] 10:33:00  完成 (耗时 3 分 16 秒)
-```
+- 现在可以更明确地把问题归因到 `/ppt-master` 实际执行结果；
+- PPT 主链路已经阶段性跑通；
+- 后续 PPT 问题可以更多作为回归验证问题处理，而不再是“入口到底是谁”的架构问题。
+
+### 当前结论
+
+这一步的价值在于：**先把链路收窄，才能让后续所有错误变得可解释。**
 
 ---
 
-### 2.4 失败快速、明确、可见
+## 3.2 问题二：产物定位策略不一致，导致“明明做了很多，系统却报失败”
 
-**当前**：错误信息只有最后 1000 字，用户看不到全貌
+### 现象
 
-**改成**：完整的错误上下文和日志链
+一个典型报错是：
 
-```python
-class ExecutionError(Exception):
-    """增强的执行错误类"""
-    def __init__(
-        self,
-        stage: str,
-        message: str,
-        logs: str = "",
-        stdout: str = "",
-        stderr: str = "",
-        duration_sec: int = 0
-    ):
-        self.stage = stage
-        self.message = message
-        self.logs = logs[-50000:]  # 取更多内容（50KB vs 原来的 1KB）
-        self.stdout = stdout[-10000:]
-        self.stderr = stderr[-10000:]
-        self.duration_sec = duration_sec
-  
-    def to_dict(self):
-        return {
-            "error": self.message,
-            "stage": self.stage,
-            "duration_seconds": self.duration_sec,
-            "logs": self.logs,
-            "stdout_tail": self.stdout,
-            "stderr_tail": self.stderr,
-        }
-```
+- `Claude CLI completed but no project with svg_final/ found.`
 
-**WebSocket 推送错误事件**：
+用户感知上会自然理解为：
 
-```json
-{
-  "event": "error",
-  "stage": "PPTX_EXPORT",
-  "message": "Failed to export PPTX: Missing required template file",
-  "duration_seconds": 432,
-  "logs": "...(完整的 Claude CLI 输出最后 50KB)...",
-  "stdout_tail": "...",
-  "stderr_tail": "FileNotFoundError: [Errno 2]..."
-}
-```
+- 技能可能根本没触发；
+- 项目没创建；
+- 或者系统彻底失败。
 
-**前端显示**：
+但实际日志显示，很多时候 Claude 已经执行了相当一部分工作，甚至已经有部分项目目录和中间产物，只是**后端的 artifact discovery 认定条件过于僵硬**。
 
-```
-❌ 失败于：PPTX 导出
-原因：缺少模板文件
-耗时：7 分 12 秒
+### 根因
 
-[查看完整日志...] → 展开日志面板显示所有历史日志
-完整错误信息：
-  FileNotFoundError: [Errno 2] No such file or directory: '/path/to/template'
-  
-[重试]  [返回上传]
-```
+核心根因是：
+
+1. **项目存在** 与 **最终产物完整存在** 被混成了一个判断；
+2. 系统把“没找到 `svg_final`”直接解释成“没找到项目”；
+3. 项目目录、`notes/`、`svg_output/`、`svg_final/`、`pptx` 之间没有被清晰区分为不同完成度状态。
+
+### 已完成修复
+
+这轮已经对 `artifact_discovery` 语义和检测逻辑做了增强，重点包括：
+
+- 更早识别 `project_dir`；
+- 将“找到项目但产物不完整”和“完全没找到项目”区分开；
+- 更准确地回写 `project_dir / slides_dir / notes_dir / ppt_path`；
+- 避免把部分成功误报为完全失败。
+
+修复后，错误语义从：
+
+- “没有找到项目”
+
+改成更接近真实情况的：
+
+- “找到了项目，但只有 partial artifacts，缺少 `svg_final` 或 `PPTX` 导出”。
+
+### 当前结论
+
+这类问题说明：**产物发现不是简单的文件存在判断，而是运行状态建模问题。** 只要状态语义不清晰，系统就会出现大量“假失败”。
 
 ---
 
-### 2.5 统一的会话模型（单篇多篇一套）
+## 3.3 问题三：原始 PDF 的移动策略与 RAG / 会话输入职责冲突
 
-**当前**：SessionState 是单篇的，`pdf_path` 只能一个
+### 现象
 
-**改成**：统一模型，支持单个或多个文件
+`/ppt-master` 工作流强调把源文件归档进项目目录的 `sources/`，这对技能自身来说是合理的；但对当前产品系统来说，如果直接把后端会话上传目录里的原始 PDF 移走，就会带来两个问题：
 
-```python
-from datetime import datetime
-from typing import List, Optional, Dict, Literal
+- RAG 侧仍然需要使用原始 PDF 建索引或提供原文；
+- 会话级 `/api/sessions/{session_id}/pdf` 也需要稳定指向当前 session 的原始文档。
 
-class PaperFile(BaseModel):
-    """文件引用"""
-    file_id: str  # hash，用于去重和缓存
-    filename: str
-    size: int
-    upload_time: datetime
-    pdf_hash: str  # 用于 RAG 缓存键
+### 根因
 
-class ProgressState(BaseModel):
-    """进度状态"""
-    stage: str  # 当前阶段 ID，e.g. "05_svg_final"
-    stage_description: str
-    progress_pct: int  # 0-100
-    substeps: List[str] = []  # 子步骤列表，用于显示细节
+根因是两个系统边界混淆：
 
-class SessionState(BaseModel):
-    """统一会话模型"""
-    session_id: str
-    session_type: Literal["single", "survey", "comparison"]
-    paper_files: List[PaperFile]  # 可以是单个或多个
-  
-    status: SessionStatus  # pending, processing, ready, error
-    progress: ProgressState  # 统一进度模型
-    generation_logs: List[LogEvent] = []  # ← 新增：完整的生成日志序列
-  
-    ppt_config: PptConfig
-  
-    outputs: Dict[str, str] = {
-        # 最终产物（相对 sessions/{session_id}/output/ 的路径）
-        "slides_pptx": "slides.pptx",
-        "slides_svg_dir": "slides.svg",
-        "script_md": "script.md",
-        "rag_index_dir": "rag_index",
-    }
-  
-    cache_info: Dict[str, Any] = {
-        "ppt_cache_key": Optional[str],  # 如果命中缓存，记录 cache_key
-        "rag_cache_key": Optional[str],
-        "cache_hit": bool,  # 是否命中缓存
-    }
-  
-    timestamps: Dict[str, datetime] = {
-        "created_at": datetime,
-        "processing_started_at": Optional[datetime],
-        "completed_at": Optional[datetime],
-    }
-  
-    error: Optional[Dict] = None  # ExecutionError.to_dict()
+- **技能内部的项目归档需求**
+- **产品后端的长期可访问输入文件需求**
 
-class SessionStatus(str, Enum):
-    pending = "pending"        # 已创建，等待处理
-    processing = "processing"  # 处理中
-    ready = "ready"            # 完成，产物就绪
-    error = "error"            # 出错
-```
+如果直接把 session 输入目录当成技能项目输入目录来“move”，就会破坏后端系统自己的数据约束。
+
+### 已完成修复
+
+这轮已经围绕此问题做了收口：
+
+- 后端会话原始 PDF 不再被当作可以随意搬走的临时文件；
+- `uploads/sessions/.../input/` 继续承担会话原始输入职责；
+- PPT 正式产物与 RAG 缓存职责进一步分离；
+- PPT 成品更多通过 repo 级 `projects/` 及其派生路径来定位，而不是反过来侵占 session 原始输入。
+
+### 当前结论
+
+这一步解决的是典型的**输入不可变性**问题：
+
+> 原始上传文件应该被视为会话事实，不应被下游工作流随意搬迁并拿来兼任多个角色。
 
 ---
 
-## 三、三层改造清单
+## 3.4 问题四：前端进度显示过粗，导致用户误以为系统卡死或没触发 skill
 
-### 第一层：基础设施（1-2 天）
+### 现象
 
-**目标**：建立新的目录结构和数据模型
+用户多次反馈：
 
-#### 1.1 创建新文件
+- PPT 一直显示生成中；
+- RAG 一直在构建中；
+- 百分比长期停在 10% / 12%；
+- 看起来像没有触发 skill，或者后端已经挂住但没报错。
 
-**a) `backend/app/utils/path_utils.py`**
+### 根因
 
-```python
-"""统一的路径管理工具"""
-from pathlib import Path
-from app.core.config import settings
+根因不是“后端绝对没在干活”，而是：
 
-def get_session_dir(session_id: str) -> Path:
-    """获取 session 的根目录"""
-    return settings.upload_path / "sessions" / session_id
+1. **前端只看到了极粗粒度进度值**；
+2. 百分比变化和真实产物生成节奏并不一致；
+3. 用户看不到关键中间事实：
+   - 是否已创建项目目录；
+   - 是否已有 notes；
+   - 是否已有初版 SVG；
+   - 是否已有最终 SVG；
+   - 是否已有 PPTX；
+   - 最近 Claude / RAG 在输出什么日志。
 
-def get_session_input_dir(session_id: str) -> Path:
-    """获取 session 的输入文件目录"""
-    d = get_session_dir(session_id) / "input"
-    d.mkdir(parents=True, exist_ok=True)
-    return d
+### 已完成修复
 
-def get_session_output_dir(session_id: str) -> Path:
-    """获取 session 的输出文件目录"""
-    d = get_session_dir(session_id) / "output"
-    d.mkdir(parents=True, exist_ok=True)
-    return d
+这轮已经重点优化 `frontend/src/pages/ProgressPage.tsx`，新增或强化了：
 
-def get_session_logs_dir(session_id: str) -> Path:
-    """获取 session 的日志目录"""
-    d = get_session_dir(session_id) / "logs"
-    d.mkdir(parents=True, exist_ok=True)
-    return d
+- PPT / RAG 双任务分开展示；
+- 更细的人类可读阶段提示；
+- `project_dir` 展示；
+- 讲稿 / 最终 SVG / PPTX 产物状态展示；
+- 最近 PPT / RAG 日志；
+- 当前提醒；
+- WebSocket 不可用时回退到轮询并显示提示。
 
-def get_ppt_cache_dir(cache_key: str) -> Path:
-    """获取 PPT 缓存目录"""
-    d = settings.upload_path / "cache" / "ppt" / cache_key
-    d.mkdir(parents=True, exist_ok=True)
-    return d
+### 当前结论
 
-def get_rag_cache_dir(pdf_hash: str, version: str = "v3") -> Path:
-    """获取 RAG 缓存目录"""
-    d = settings.upload_path / "cache" / "rag" / f"{pdf_hash}-{version}"
-    d.mkdir(parents=True, exist_ok=True)
-    return d
+这个问题的关键不是“把进度条做得更花”，而是：
 
-def get_papers_dir() -> Path:
-    """获取 PDF 库目录"""
-    d = settings.upload_path / "papers"
-    d.mkdir(parents=True, exist_ok=True)
-    return d
-
-# 更多工具函数...
-```
-
-**b) `backend/app/utils/log_manager.py`**
-
-```python
-"""日志管理：写入文件 + WebSocket 推送"""
-import json
-from pathlib import Path
-from datetime import datetime
-from typing import Optional, Dict, Any
-from app.models import LogEvent
-from app.services.connection_manager import manager as ws_manager
-
-class LogManager:
-    def __init__(self, session_id: str, log_dir: Path):
-        self.session_id = session_id
-        self.log_dir = log_dir
-        self.log_file = log_dir / "generation.jsonl"  # JSONLines 格式
-        self.log_file.parent.mkdir(parents=True, exist_ok=True)
-  
-    def log(
-        self,
-        level: str,  # INFO, WARNING, ERROR
-        stage: str,
-        message: str,
-        details: Optional[Dict] = None,
-        duration_ms: Optional[int] = None,
-    ):
-        """记录日志事件并推送到前端"""
-        event = LogEvent(
-            level=level,
-            timestamp=datetime.utcnow(),
-            stage=stage,
-            message=message,
-            details=details,
-            duration_ms=duration_ms,
-        )
-      
-        # 写入文件
-        with open(self.log_file, "a", encoding="utf-8") as f:
-            f.write(event.model_dump_json() + "\n")
-      
-        # WebSocket 推送
-        import asyncio
-        try:
-            loop = asyncio.get_event_loop()
-            loop.create_task(ws_manager.broadcast(
-                self.session_id,
-                {"event": "log", **event.model_dump()}
-            ))
-        except RuntimeError:
-            # 可能不在 async 上下文中，忽略
-            pass
-  
-    def log_info(self, stage: str, message: str, **kwargs):
-        self.log("INFO", stage, message, **kwargs)
-  
-    def log_warning(self, stage: str, message: str, **kwargs):
-        self.log("WARNING", stage, message, **kwargs)
-  
-    def log_error(self, stage: str, message: str, **kwargs):
-        self.log("ERROR", stage, message, **kwargs)
-
-# 导出单例
-log_manager = None
-
-def get_log_manager(session_id: str, log_dir: Path) -> LogManager:
-    global log_manager
-    if log_manager is None:
-        log_manager = LogManager(session_id, log_dir)
-    return log_manager
-```
-
-#### 1.2 改造现有文件
-
-**c) `backend/app/models.py`** - 扩展数据模型
-
-```python
-# 新增导入
-from datetime import datetime
-from typing import Optional, Literal, Dict, Any, List
-
-# 新增 GenerationStage
-class GenerationStage(str, Enum):
-    CACHE_CHECK = "01_cache_check"
-    MARKDOWN_EXTRACT = "02_markdown"
-    NOTES_GENERATION = "03_notes"
-    SVG_OUTPUT = "04_svg_output"
-    SVG_FINAL = "05_svg_final"
-    PPTX_EXPORT = "06_pptx"
-    COMPLETE = "07_complete"
-  
-    STAGE_DESC = {
-        "01_cache_check": "检查缓存...",
-        "02_markdown": "抽取 Markdown...",
-        "03_notes": "生成讲稿...",
-        "04_svg_output": "SVG 排版中...",
-        "05_svg_final": "SVG 最终化...",
-        "06_pptx": "导出 PPTX...",
-        "07_complete": "完成",
-    }
-  
-    STAGE_PCT = {
-        "01_cache_check": 5,
-        "02_markdown": 15,
-        "03_notes": 25,
-        "04_svg_output": 50,
-        "05_svg_final": 75,
-        "06_pptx": 95,
-        "07_complete": 100,
-    }
-
-# 新增 LogEvent
-class LogEvent(BaseModel):
-    level: Literal["INFO", "WARNING", "ERROR"]
-    timestamp: datetime
-    stage: str
-    message: str
-    details: Optional[Dict[str, Any]] = None
-    duration_ms: Optional[int] = None
-
-# 新增 PaperFile
-class PaperFile(BaseModel):
-    file_id: str  # hash
-    filename: str
-    size: int
-    upload_time: datetime
-    pdf_hash: str
-
-# 改造 ProgressState
-class ProgressState(BaseModel):
-    stage: str = "01_cache_check"
-    stage_description: str = "等待中..."
-    progress_pct: int = 0
-    substeps: List[str] = []
-
-# 改造 SessionState
-class SessionState(BaseModel):
-    session_id: str
-    session_type: Literal["single", "survey", "comparison"] = "single"
-    paper_files: List[PaperFile] = []
-  
-    status: SessionStatus = SessionStatus.pending
-    progress: ProgressState = ProgressState()
-    generation_logs: List[LogEvent] = []
-  
-    ppt_config: Optional[PptConfig] = None
-  
-    outputs: Dict[str, str] = {
-        "slides_pptx": "slides.pptx",
-        "slides_svg_dir": "slides.svg",
-        "script_md": "script.md",
-        "rag_index_dir": "rag_index",
-    }
-  
-    cache_info: Dict[str, Any] = {
-        "ppt_cache_key": None,
-        "rag_cache_key": None,
-        "cache_hit": False,
-    }
-  
-    timestamps: Dict[str, Optional[datetime]] = {
-        "created_at": datetime.utcnow(),
-        "processing_started_at": None,
-        "completed_at": None,
-    }
-  
-    error: Optional[Dict[str, Any]] = None
-```
-
-**d) `backend/app/core/config.py`** - 改造配置
-
-```python
-# 改造现有配置
-class Settings(BaseSettings):
-    # 原有配置...
-  
-    # 改造后的路径配置
-    @property
-    def sessions_path(self) -> Path:
-        """session 根目录"""
-        p = self.upload_path / "sessions"
-        p.mkdir(parents=True, exist_ok=True)
-        return p
-  
-    @property
-    def cache_path(self) -> Path:
-        """统一的缓存根目录"""
-        p = self.upload_path / "cache"
-        p.mkdir(parents=True, exist_ok=True)
-        return p
-  
-    @property
-    def papers_path(self) -> Path:
-        """PDF 库目录"""
-        p = self.upload_path / "papers"
-        p.mkdir(parents=True, exist_ok=True)
-        return p
-  
-    # 兼容旧配置（后续逐步迁移）
-    @property
-    def ppt_cache_path(self) -> Path:
-        """PPT 缓存目录（兼容旧代码）"""
-        return self.cache_path / "ppt"
-  
-    @property
-    def rag_cache_path(self) -> Path:
-        """RAG 缓存目录（兼容旧代码）"""
-        return self.cache_path / "rag"
-```
-
-#### 1.3 初始化脚本
-
-**e) `backend/app/core/startup.py`** - 初始化新目录结构
-
-```python
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """启动时初始化目录结构"""
-    # 初始化新目录
-    settings.sessions_path
-    settings.cache_path
-    settings.papers_path
-    settings.ppt_cache_path
-    settings.rag_cache_path
-  
-    logger.info(
-        "Directory structure initialized:\n"
-        "  Sessions: %s\n"
-        "  Cache: %s\n"
-        "  Papers: %s",
-        settings.sessions_path,
-        settings.cache_path,
-        settings.papers_path,
-    )
-  
-    yield
-```
+> **用户必须能看到真实状态证据，而不是只看一个抽象百分比。**
 
 ---
 
-### 第二层：进度和日志系统（2-3 天）
+## 3.5 问题五：错误语义不准，上游真实失败被次生错误遮蔽
 
-**目标**：替换假进度为真进度，实现实时日志推送
+### 现象
 
-#### 2.1 新建进度监控服务
+在多次真实测试中，日志最后显示的是统一失败，但用户难以判断：
 
-**a) `backend/app/services/progress_tracker.py`**
+- 是 Claude 本体失败；
+- 是脚本执行失败；
+- 是 artifact discovery 失败；
+- 还是用户手动中断导致的结束。
 
-```python
-"""基于产物的真实进度监控"""
-import asyncio
-from pathlib import Path
-from datetime import datetime
-from app.models import GenerationStage, LogEvent
-from app.services.connection_manager import manager as ws_manager
+尤其在 `artifact_discovery` 报错阶段，表层错误容易掩盖更早的真实根因。
 
-class ProgressTracker:
-    """监听文件系统，推进真实进度"""
-  
-    def __init__(self, session_id: str, cache_dir: Path, log_manager):
-        self.session_id = session_id
-        self.cache_dir = cache_dir
-        self.log_manager = log_manager
-        self.current_stage = GenerationStage.CACHE_CHECK
-        self.start_time = datetime.now()
-  
-    async def wait_for_stage(self, target_stage: GenerationStage, timeout_sec: int = 3600):
-        """等待指定阶段完成，通过监听文件出现"""
-        deadline = time.time() + timeout_sec
-      
-        while time.time() < deadline:
-            if self._check_stage_complete(target_stage):
-                duration = (datetime.now() - self.start_time).total_seconds()
-                await self._broadcast_stage(target_stage, int(duration * 1000))
-                return True
-            await asyncio.sleep(2)  # 每 2 秒检查一次
-      
-        raise TimeoutError(f"Stage {target_stage.value} not completed within {timeout_sec}s")
-  
-    def _check_stage_complete(self, stage: GenerationStage) -> bool:
-        """检查指定阶段的产物是否已生成"""
-        if stage == GenerationStage.MARKDOWN_EXTRACT:
-            return (self.cache_dir / "canvas.md").exists()
-        elif stage == GenerationStage.NOTES_GENERATION:
-            notes_dir = self.cache_dir / "notes"
-            return notes_dir.exists() and len(list(notes_dir.glob("*.md"))) > 0
-        elif stage == GenerationStage.SVG_OUTPUT:
-            svg_output = self.cache_dir / "svg_output"
-            return svg_output.exists() and len(list(svg_output.glob("*.svg"))) > 0
-        elif stage == GenerationStage.SVG_FINAL:
-            svg_final = self.cache_dir / "svg_final"
-            return svg_final.exists() and len(list(svg_final.glob("*.svg"))) > 0
-        elif stage == GenerationStage.PPTX_EXPORT:
-            pptx_files = list(self.cache_dir.glob("*.pptx"))
-            return len([p for p in pptx_files if not p.name.endswith("_svg.pptx")]) > 0
-        return False
-  
-    async def _broadcast_stage(self, stage: GenerationStage, duration_ms: int):
-        """广播阶段完成事件"""
-        self.current_stage = stage
-        self.log_manager.log_info(
-            stage=stage.value,
-            message=f"{stage.STAGE_DESC.get(stage.value, 'Progress')} ✓",
-            duration_ms=duration_ms,
-        )
-      
-        await ws_manager.broadcast(self.session_id, {
-            "event": "progress",
-            "stage": stage.value,
-            "stage_description": stage.STAGE_DESC.get(stage.value),
-            "progress_pct": stage.STAGE_PCT.get(stage.value, 0),
-            "duration_ms": duration_ms,
-        })
-```
+### 根因
 
-#### 2.2 改造 PPT 任务
+根因是系统当时更偏向“最终结果导向报错”，而不是“按阶段保留清晰因果链”。
 
-**b) `backend/app/services/task_manager.py`** - 替换假进度
+也就是说，后面的失败节点把前面的失败语义覆盖掉了，导致用户只能看到最后一层表象。
 
-```python
-# 替换现有的 _ppt_task
+### 已完成修复
 
-async def _ppt_task(session_id: str, pdf_path: str, config: PptConfig) -> str:
-    from app.services.ppt_generator import compute_cache_key, run_paper_to_ppt
-    from app.utils.path_utils import get_ppt_cache_dir, get_session_logs_dir
-    from app.utils.log_manager import LogManager
-    from app.services.progress_tracker import ProgressTracker
+这轮做的关键增强包括：
 
-    # 初始化日志管理器
-    log_dir = get_session_logs_dir(session_id)
-    log_manager = LogManager(session_id, log_dir)
-  
-    # 初始化进度追踪器
-    cache_key = compute_cache_key(pdf_path, config)
-    cache_dir = get_ppt_cache_dir(cache_key)
-    progress_tracker = ProgressTracker(session_id, cache_dir, log_manager)
-  
-    log_manager.log_info("01_cache_check", "检查缓存...")
-  
-    # 缓存检查
-    existing = _find_project_dir(cache_dir)
-    if existing:
-        pptx_files = [p for p in existing.glob("*.pptx") if not p.name.endswith("_svg.pptx")]
-        if pptx_files:
-            log_manager.log_info(
-                "01_cache_check",
-                f"缓存命中 → {pptx_files[0].name}",
-                details={"cache_key": cache_key},
-            )
-            session_store._sessions[session_id].cache_info["cache_hit"] = True
-            session_store._sessions[session_id].cache_info["ppt_cache_key"] = cache_key
-            return str(pptx_files[0])
-  
-    log_manager.log_info(
-        "01_cache_check",
-        f"缓存未中，调用 Claude CLI",
-        details={"cache_key": cache_key},
-    )
-  
-    # 运行 Claude CLI（改造后的版本支持真进度）
-    try:
-        project_dir = await run_paper_to_ppt(
-            session_id, pdf_path, config, cache_dir, 
-            log_manager=log_manager,
-            progress_tracker=progress_tracker,
-        )
-    except Exception as e:
-        log_manager.log_error(
-            "06_pptx",
-            f"PPT 生成失败: {str(e)}",
-            details={"error": str(e)},
-        )
-        raise
-  
-    # 查找 PPTX 文件
-    pptx_files = [p for p in project_dir.glob("*.pptx") if not p.name.endswith("_svg.pptx")]
-    if not pptx_files:
-        pptx_files = list(project_dir.glob("*.pptx"))
-  
-    if not pptx_files:
-        raise RuntimeError("No PPTX file found after generation")
-  
-    log_manager.log_info(
-        "07_complete",
-        f"PPT 生成完成",
-        details={"pptx_file": pptx_files[0].name},
-        duration_ms=int((datetime.now() - progress_tracker.start_time).total_seconds() * 1000),
-    )
-  
-    return str(pptx_files[0])
-```
+- 增强阶段化日志与错误信息透出；
+- 在前端显示阶段名与 stdout/stderr tail；
+- 把更接近真实失败点的上下文保留下来；
+- 避免单一“处理失败”提示吞掉全部上下文。
 
-#### 2.3 改造 RAG 任务
+### 当前结论
 
-**c) 类似改造 `_rag_task`**（实现日志和进度追踪）
+这类问题说明：**错误处理不是收尾工作，而是系统可用性的核心组成部分。**
 
 ---
 
-### 第三层：缓存重写和统一接口（3-4 天）
+## 3.6 问题六：Windows 环境下默认使用 `python3`，直接导致技能脚本执行失败
 
-**目标**：支持多文件缓存，实现统一的上传接口
+### 现象
 
-#### 3.1 新建缓存管理服务
+在真实日志中，Claude 尝试执行类似命令：
 
-**a) `backend/app/services/cache_manager.py`**
+- `python3 "...ppt-master/scripts/pdf_to_md.py" "...pdf"`
 
-```python
-"""缓存键计算和管理"""
-import hashlib
-from typing import List
-from app.models import PptConfig
+随后任务失败，tool result 出现：
 
-def compute_cache_key_v2(
-    paper_paths: List[str],
-    session_type: str,  # "single" | "survey" | "comparison"
-    config: PptConfig,
-) -> str:
-    """
-    支持多文件的缓存键计算
-  
-    单篇：single_{pdf_hash}_{config_hash}
-    多篇：survey_{pdf_hash1+pdf_hash2...}_{config_hash}
-    """
-    # 计算每个 PDF 的 hash
-    paper_hashes = []
-    for path in sorted(paper_paths):
-        h = hashlib.sha256()
-        with open(path, "rb") as f:
-            for chunk in iter(lambda: f.read(65536), b""):
-                h.update(chunk)
-        paper_hashes.append(h.hexdigest()[:16])
-  
-    # 合并 PDF hash（已排序，确保顺序一致）
-    combined_pdf_hash = "".join(paper_hashes)
-  
-    # 计算配置 hash
-    config_hash = hashlib.sha256(config.model_dump_json().encode()).hexdigest()[:8]
-  
-    # 生成最终缓存键
-    cache_key = f"{session_type}_{combined_pdf_hash}_{config_hash}"
-    return cache_key
-```
+- `Exit code 49`
 
-#### 3.2 改造上传接口
+### 根因
 
-**b) `backend/app/api/upload.py`** - 支持多文件上传
+根因非常明确：
 
-```python
-# 改造现有的 upload_pdf 为支持多文件
+- 技能执行提示默认沿用了类 Unix 环境习惯；
+- 但当前后端运行环境是 Windows；
+- 在该环境中不能假定 `python3` 命令一定可用。
 
-@router.post("/api/upload", response_model=UploadResponse)
-async def upload_pdf(
-    files: List[UploadFile],  # ← 改成列表
-    ppt_config: str = Form(default="{}"),
-):
-    """
-    支持单个或多个 PDF 文件上传
-  
-    单篇：1 个文件 → session_type = "single"
-    多篇：2+ 个文件 → session_type = "multi"（前端后续选择 survey/comparison）
-    """
-    if not files:
-        raise HTTPException(status_code=400, detail="At least one file is required")
-  
-    # 验证所有文件都是 PDF
-    for file in files:
-        if not file.filename.lower().endswith(".pdf"):
-            raise HTTPException(status_code=400, detail=f"Only PDF files accepted: {file.filename}")
-  
-    # 解析配置
-    config_payload = (ppt_config or "").strip()
-    if not config_payload or config_payload == "{}":
-        config = PptConfig()
-    else:
-        try:
-            raw_config = json.loads(config_payload)
-            config = PptConfig(**raw_config)
-        except (json.JSONDecodeError, ValidationError) as e:
-            raise HTTPException(status_code=400, detail=str(e))
-  
-    # 创建 session
-    session = session_store.create_session(pdf_path="")  # 暂时留空，下面填充
-  
-    # 确定 session 类型
-    session_type = "single" if len(files) == 1 else "multi"
-    session.session_type = session_type
-  
-    # 保存所有文件
-    from app.utils.path_utils import get_session_input_dir
-    input_dir = get_session_input_dir(session.session_id)
-  
-    pdf_paths = []
-    paper_files = []
-  
-    for file in files:
-        dest = input_dir / file.filename
-        async with aiofiles.open(dest, "wb") as f:
-            while chunk := await file.read(1024 * 64):
-                await f.write(chunk)
-      
-        pdf_paths.append(str(dest))
-      
-        # 创建 PaperFile 记录
-        file_id = hashlib.sha256(dest.read_bytes()).hexdigest()[:16]
-        paper_file = PaperFile(
-            file_id=file_id,
-            filename=file.filename,
-            size=dest.stat().st_size,
-            upload_time=datetime.utcnow(),
-            pdf_hash=hashlib.sha256(dest.read_bytes()).hexdigest()[:16],
-        )
-        paper_files.append(paper_file)
-  
-    session.paper_files = paper_files
-    session.ppt_config = config
-  
-    logger.info(
-        "[UPLOAD] session=%s  type=%s  files=%d  config=%s",
-        session.session_id, session_type, len(files), config.model_dump(),
-    )
-  
-    # 启动后台任务
-    asyncio.create_task(task_manager.run_tasks(session.session_id, pdf_paths, config))
-  
-    return UploadResponse(session_id=session.session_id, status=SessionStatus.pending)
-```
+这不是 PPT 业务逻辑本身的问题，而是**运行环境约束没有在 prompt / 调用约定中前置表达清楚**。
 
-#### 3.3 改造 session 查询接口
+### 已完成修复
 
-**c) `backend/app/api/sessions.py`** - 新增会话查询接口
+这轮已经在 `backend/app/services/ppt_generator.py` 的 batch prompt 中加入明确约束：
 
-```python
-from fastapi import APIRouter, HTTPException
-from app.services import session_store
+- 当前是 Windows 后端任务；
+- 不要假设 `python3` 存在；
+- 如需运行 Python 脚本，优先使用当前解释器 `sys.executable`；
+- 技能内脚本应使用绝对路径调用。
 
-router = APIRouter()
+这一步是 PPT 最终能真正跑通的关键修复之一。
 
-@router.get("/api/sessions/{session_id}")
-async def get_session(session_id: str):
-    """获取 session 的完整状态"""
-    session = session_store.get_session(session_id)
-    if not session:
-        raise HTTPException(status_code=404, detail="Session not found")
-  
-    return session.model_dump(mode='json')
+### 当前结论
 
-@router.get("/api/sessions/{session_id}/logs")
-async def get_session_logs(session_id: str):
-    """获取 session 的完整日志"""
-    from app.utils.path_utils import get_session_logs_dir
-  
-    session = session_store.get_session(session_id)
-    if not session:
-        raise HTTPException(status_code=404, detail="Session not found")
-  
-    logs_dir = get_session_logs_dir(session_id)
-    log_file = logs_dir / "generation.jsonl"
-  
-    if not log_file.exists():
-        return {"logs": []}
-  
-    logs = []
-    with open(log_file, "r", encoding="utf-8") as f:
-        for line in f:
-            if line.strip():
-                logs.append(json.loads(line))
-  
-    return {"logs": logs}
-```
+这说明一个非常实际的教训：
+
+> prompt 不是只负责“告诉模型做什么”，还必须告诉模型“当前环境能做什么、不能假设什么”。
 
 ---
 
-## 四、实现优先级和时间表
+## 3.7 问题七：系统可观测性不足，导致“看起来都像一个问题”
 
-| 阶段                            | 工作                                          | 复杂度 | 依赖   | 预期收益                                 |
-| ------------------------------- | --------------------------------------------- | ------ | ------ | ---------------------------------------- |
-| **Day 1（第一层基础）**   | models.py + path_utils.py + log_manager.py    | ⭐⭐   | 无     | 后续所有工作的基础，目录结构设定         |
-| **Day 2（第二层真进度）** | progress_tracker.py + task_manager 改造       | ⭐⭐⭐ | 第一层 | 用户看到真实进度和日志，可以快速定位问题 |
-| **Day 3（第二层错误）**   | 改进错误处理和推送                            | ⭐     | 第一层 | 失败信息完整可见                         |
-| **Day 4（第三层缓存）**   | cache_manager.py + upload 改造 + sessions API | ⭐⭐   | 前三天 | 多文件支持 + 统一接口                    |
+### 现象
 
----
+用户在排障过程中多次需要手动查看 `generation.jsonl`，否则前端给出的信息远远不足以判断：
 
-## 五、实施建议
+- 当前是否还在继续生成；
+- 是 PPT 卡住还是 RAG 卡住；
+- 是前端没收到事件还是后端确实没有进展；
+- 中断是否来自用户手动停止还是任务自身报错。
 
-### 5.1 立即开始（第一层）
+### 根因
 
-```bash
-# 1. 创建新文件
-touch backend/app/utils/__init__.py
-touch backend/app/utils/path_utils.py
-touch backend/app/utils/log_manager.py
+根因是**系统内部已经有一些状态，但没有被组织成用户能消费的观测面板**。
 
-# 2. 改造现有文件
-# - backend/app/models.py    （扩展 SessionState, 新增 LogEvent 等）
-# - backend/app/core/config.py  （改造路径配置）
-# - backend/app/core/startup.py （初始化新目录）
+日志、阶段、产物、错误详情原本更像散落在不同层次的技术细节，而不是统一的会话视图。
 
-# 3. 测试
-pytest backend/tests/test_models.py
-pytest backend/tests/test_path_utils.py
-```
+### 已完成修复
 
-### 5.2 逐步推进
+这轮已经完成的改善包括：
 
-- **第一层完成后**，`uploads/` 目录结构立刻变成新的，所有 session 的产物集中管理
-- **第二层完成后**，前端能看到真实进度（不再是假的 85%）和实时日志
-- **第三层完成后**，多篇上传和统一接口就能接上
+- session snapshot 能带出 progress / stages / recent_logs / paths；
+- 前端进度页能展示更完整的会话状态；
+- 错误详情中可带出阶段、stdout_tail、stderr_tail；
+- 日志接口失败时也会有显式的连接提示，而不是静默。
 
-### 5.3 兼容性处理
+### 当前结论
 
-- 改造不会立刻删除旧的 `ppt_cache/`、`rag_cache/` 等目录
-- 新代码自动使用新路径，旧缓存保留以防需要回滚
-- 逐步更新调用方，确保没有代码还在用 `settings.ppt_cache_path`
+这类问题背后的核心不是“缺少更多日志”，而是：
 
-### 5.4 测试覆盖
-
-```python
-# 关键测试用例
-def test_path_utils():
-    """确保路径工具正确生成目录"""
-  
-def test_log_manager():
-    """确保日志正确写入文件 + 推送 WebSocket"""
-  
-def test_progress_tracker():
-    """确保能正确监听产物并推进阶段"""
-  
-def test_cache_key_v2():
-    """确保多文件缓存键計算正確、可复现"""
-  
-def test_upload_multi_files():
-    """确保支持多文件上传"""
-```
+> **需要把运行状态重新组织为用户可理解的产品信息结构。**
 
 ---
 
-## 六、成功指标
+## 四、这轮已经完成的关键修复总结
 
-完成后的效果应该是：
+截至目前，可以把已经落地并产生明显效果的修复概括为：
 
-- ✅ **路径干净统一**：所有 session 的产物都在 `uploads/sessions/{session_id}/` 下，清晰可见
-- ✅ **真实进度**：前端显示 5% → 15% → 25% → ... → 100%，而不是假的 85%
-- ✅ **用户看得见日志**：前端有日志面板，能看到 Claude CLI 的每一步动作
-- ✅ **失败快速明确**：出错时，前端显示完整的错误堆栈和日志上下文，不再需要猜测
-- ✅ **缓存可复用**：同配置二次运行命中同一个 PPT cache，节省时间和额度
-- ✅ **单多篇统一**：单篇和多篇走同一套接口和数据模型，后续扩展不会再割裂
+### 4.1 PPT 主链路收口
+
+- 后端主执行思路已收敛到 `/ppt-master`
+- 历史混杂路径对排障的干扰明显降低
+
+### 4.2 产物发现与路径回写增强
+
+- 更早识别 `project_dir`
+- 更清晰地区分 partial artifacts 与 final artifacts
+- 更准确回写 `project_dir / slides_dir / notes_dir / ppt_path`
+
+### 4.3 原始 PDF 保留策略对齐
+
+- 会话输入目录中的原始 PDF 不再被轻易搬走
+- RAG 与原文查看链路保持稳定输入来源
+
+### 4.4 前端进度展示增强
+
+- 不再只显示粗粒度百分比
+- 能看到阶段、日志和产物状态
+- 用户可以更快判断是“慢”还是“异常”
+
+### 4.5 错误可见性增强
+
+- 阶段信息更明确
+- stdout/stderr tail 可见
+- `artifact_discovery` 的错误语义更接近真实情况
+
+### 4.6 Windows 执行约束修复
+
+- 明确避免默认 `python3`
+- 优先使用当前 Python 解释器与绝对路径
+- 这是 PPT 真正跑通的重要前提
+
+---
+
+## 五、当前系统状态（2026-04-24）
+
+### 5.1 PPT 部分的状态
+
+当前应将 PPT 部分视为：
+
+- **已经阶段性实现**；
+- **已经完成本轮最重要的 P0 收口**；
+- **可以继续做回归验证和小修补，但不应再作为当前主开发方向继续扩面。**
+
+换句话说，PPT 现在最需要的是：
+
+- 回归测试；
+- 稳定性验证；
+- 发现个别尾部问题时再最小修复。
+
+而不是再重新拉起一轮“大统一架构重写”。
+
+### 5.2 RAG / 问答部分的状态
+
+问答部分并不是“完全没有原文跳转能力”，而是：
+
+- 后端 `chat.py` 已经强制答案输出 `(第N页)`；
+- 后端 `_parse_citations()` 已经会从答案中反解析实际引用页；
+- 前端 `ChatPanel.tsx` 原本就能把 `(第N页)` 渲染为可点击按钮；
+- `PdfViewer.tsx` 也仍可打开 `/api/sessions/{session_id}/pdf` 并跳到对应页。
+
+所以当前问题更准确地说是：
+
+- **能力基础还在**；
+- **但来源展示不够显式、用户感知不够强、体验上像是“功能消失了”。**
+
+---
+
+## 六、为什么下一步要转向“答案可回指原文”
+
+PPT 主链路本轮已经收口，而问答链路现在是更值得优先打磨的方向，原因有三点：
+
+### 6.1 这是用户感知最强的价值点之一
+
+对文献问答来说，最核心的信任来源不是“回答看起来像真的”，而是：
+
+- 回答能指向论文原文；
+- 用户能立刻点开查看对应页；
+- 答案和来源之间关系清晰可见。
+
+### 6.2 当前系统已经具备页级原文跳转基础
+
+这不是从零开始开发，而是：
+
+- 后端已有 `answer + sources` 返回结构；
+- 前端已有行内 citation → PDF viewer 的链路；
+- `/api/sessions/{session_id}/pdf` 已能提供原始 PDF。
+
+因此现在更适合做的是 **体验补全**，而不是重写协议。
+
+### 6.3 这是当前范围下投入产出比最高的改动
+
+相比继续扩大 PPT 代码改动，问答原文定位增强：
+
+- 影响面更小；
+- 用户价值更直接；
+- 更容易验证“是否真的变好了”。
+
+---
+
+## 七、下一步计划（明确收口版）
+
+## 7.1 第一优先级：增强问答来源展示与原文跳转
+
+目标：把当前“已有但不够显眼”的页级引用能力，变成用户一眼能感知、能点击、能回看的交互。
+
+### 计划内容
+
+1. **保留现有行内 citation 机制**
+   - 继续使用答案中的 `(第N页)`
+   - 继续把它渲染成可点击入口
+
+2. **在 assistant 消息下方增加显式来源区**
+   - 展示论文名 / 页码 / 原文片段摘要
+   - 每条有页码的来源项都提供“查看原文”按钮
+
+3. **统一复用现有 PDF viewer**
+   - 所有来源跳转仍使用 `/api/sessions/{session_id}/pdf`
+   - 当前只承诺页级跳转，不承诺页内高亮
+
+4. **保持 schema 最小变更**
+   - 优先继续复用当前 `answer + sources` 结构
+   - 不为了 UI 小增强而重写整个聊天协议
+
+## 7.2 第二优先级：把这轮经验固定成团队可复用知识
+
+- 本文档即作为本轮问题复盘基线；
+- 后续如果再出现 PPT 路径、进度或 artifact 误判问题，应优先回到这里核对：
+  - 是旧问题回归；
+  - 还是新增问题。
+
+## 7.3 当前明确不做的事
+
+以下事项当前**不在本轮范围内**：
+
+- 不继续大改 `/ppt-master` 主链路；
+- 不继续扩展 PPT 新能力；
+- 不重做 RAG 索引或切换向量库；
+- 不实现 PDF 页内坐标级高亮；
+- 不重写整套聊天状态管理与后端响应 schema。
+
+---
+
+## 八、对这轮工作的最终判断
+
+如果把这轮工作简单理解成“修了几个 bug”，是不准确的。
+
+更准确的结论是：
+
+1. **PPT 主链路已经完成了一次必要的 P0 收口**；
+2. **真正导致反复排障的，不是单点逻辑错误，而是链路耦合、产物发现不一致、平台假设错误和可观测性不足的叠加**；
+3. **当前最合理的下一步不是继续扩大 PPT，而是把问答链路升级到“答案可直接回指原文页”的可验证体验。**
+
+这也意味着，当前系统的阶段目标已经发生变化：
+
+- 前一阶段：**先把 PPT 做通**；
+- 当前阶段：**把问答做得可信、可追溯、可跳回原文。**
+---
+
+## 8. 2026-04-24 Q&A / RAG Optimization Addendum
+
+### 8.1 What changed
+
+- RAG cache version was bumped from `v3` to `v4`.
+  This forces fresh index builds so the new retrieval logic actually takes effect instead of silently reusing older cached indexes.
+
+- Retrieval moved from pure vector search to hybrid retrieval.
+  The current path is:
+  1. vector retrieval for semantic recall
+  2. lightweight BM25-style lexical retrieval over persisted `docstore.json`
+  3. RRF-based fusion and reranking
+  4. final source dedupe, context-length control, and source-count limiting
+
+- The embedding model is now expected to live in the project directory:
+  - `backend/models/bge-m3`
+  - `backend/models/cache`
+
+### 8.2 Why this was necessary
+
+- Pure vector retrieval was good for broad semantic matching, but still weak on exact technical terms such as model names, dataset names, table numbers, and section-specific keywords.
+- Older cached indexes could still contain noisy back matter or reference-like text, which made citations look like bibliography entries instead of main-body evidence.
+- Without a cache-version upgrade, code changes alone would not change user-visible retrieval quality.
+
+### 8.3 Current Q&A flow
+
+1. After PDF upload, the system launches PPT generation and RAG indexing in parallel.
+2. The RAG task checks the session-independent cache using the PDF hash plus cache version `v4`.
+3. On cache miss, `rag_index.py` parses the PDF, trims reference sections, filters noisy paragraphs, chunks the main body, and builds the vector index.
+4. At question time, the system runs hybrid retrieval on the session index and assigns source ids such as `C1`, `C2`, `C3`.
+5. The LLM answers with inline citation markers like `[[C1]]` at the sentence level.
+6. The frontend renders those markers as clickable references and opens the PDF at the cited page on demand, while keeping source details collapsed by default.
+
+### 8.4 Direct benefits
+
+- New sessions and rebuilt indexes no longer reuse stale `v3` retrieval results.
+- Questions containing exact paper terms should retrieve more precisely.
+- Semantic recall is preserved because vector retrieval remains the first-stage backbone.
+- The answer-first UI stays cleaner because evidence remains collapsed until the user wants to inspect it.
+
+### 8.5 Recommended next steps
+
+- Add a reranker on top of the current hybrid retrieval stack.
+- Add query rewriting for broad questions such as "What does this paper say?".
+- Introduce conversation memory only for query rewriting and context carry-over, not as a substitute for evidence retrieval.
+- Extend indexing beyond plain paragraphs to include section headers, figure captions, tables, and formula-adjacent content.
+- Add an explicit cache cleanup policy for historical RAG index versions.

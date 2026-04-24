@@ -148,7 +148,7 @@ async def _rag_task(session_id: str, pdf_path: str) -> str:
     from app.services.rag_index import build_index
 
     recorder = SessionLogRecorder(session_id)
-    cache_version = "v3"
+    cache_version = "v6"
 
     await _broadcast_progress(session_id, "rag", "检查索引缓存", 5, stage="cache_check")
     await _log(recorder, source="rag", level="INFO", stage="cache_check", message="检查 RAG 缓存")

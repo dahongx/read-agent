@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     LLM_API_KEY: str = ""
     LLM_BASE_URL: str = "https://open.bigmodel.cn/api/paas/v4/"
     LLM_MODEL: str = "glm-4-flash"
+    EMBED_MODEL_NAME: str = "BAAI/bge-m3"
+    EMBED_MODEL_DIR: str = "backend/models/bge-m3"
+    EMBED_CACHE_DIR: str = "backend/models/cache"
 
     @property
     def project_root(self) -> Path:
@@ -65,6 +68,14 @@ class Settings(BaseSettings):
     @property
     def skill_path(self) -> Path:
         return self._resolve_project_path(self.SKILL_DIR)
+
+    @property
+    def embed_model_path(self) -> Path:
+        return self._resolve_project_path(self.EMBED_MODEL_DIR)
+
+    @property
+    def embed_cache_path(self) -> Path:
+        return self._resolve_project_path(self.EMBED_CACHE_DIR)
 
     @property
     def claude_cli_path(self) -> Path | None:

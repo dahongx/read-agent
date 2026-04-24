@@ -15,6 +15,7 @@ frontend/dist/
 
 # Generated runtime data
 backend/uploads/
+backend/models/
 projects/
 output/
 paper/
