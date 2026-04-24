@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     FIXTURE_DIR: str = "projects/M_plus_MemoryLLM_ppt169_20260409"
     UPLOAD_DIR: str = "backend/uploads"
     PPT_CACHE_DIR: str = "backend/uploads/ppt_cache"
-    SKILL_DIR: str = ".claude/skills/paper-to-ppt"
+    SKILL_DIR: str = ".claude/skills/ppt-master"
     CLAUDE_CLI_PATH: str = ""
     GIT_BASH_PATH: str = ""
     LLM_API_KEY: str = ""
@@ -47,8 +47,20 @@ class Settings(BaseSettings):
         return self._resolve_project_path(self.UPLOAD_DIR)
 
     @property
+    def sessions_path(self) -> Path:
+        return self.upload_path / "sessions"
+
+    @property
+    def cache_path(self) -> Path:
+        return self.upload_path / "cache"
+
+    @property
     def ppt_cache_path(self) -> Path:
-        return self._resolve_project_path(self.PPT_CACHE_DIR)
+        return self.cache_path / "ppt"
+
+    @property
+    def rag_cache_path(self) -> Path:
+        return self.cache_path / "rag"
 
     @property
     def skill_path(self) -> Path:

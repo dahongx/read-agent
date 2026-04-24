@@ -42,7 +42,7 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 ## 1. Eight Confirmations Process
 
-⛔ **BLOCKING**: Before starting analysis, reference `templates/design_spec_reference.md` and provide professional recommendations for the following eight items, then **present them as a bundled package to the user and wait for explicit confirmation or modifications**.
+⛔ **BLOCKING**: Before starting analysis, reference `templates/design_spec_reference.md` and provide professional recommendations for the following eight items, then **present them as a bundled package to the user and wait for explicit confirmation or modifications**. In batch mode, if the incoming request already provides the required constraints, treat them as confirmed and proceed directly without pausing.
 
 > **Execution discipline**: This is the last BLOCKING checkpoint in the pipeline (besides template selection). Once the user confirms, the AI must automatically complete the Design Specification & Content Outline and seamlessly proceed to subsequent image generation (if applicable), SVG generation, and post-processing — no additional questions or pauses in between.
 

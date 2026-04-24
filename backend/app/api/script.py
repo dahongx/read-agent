@@ -56,9 +56,12 @@ async def generate_script(session_id: str) -> ScriptResponse:
 
     # Try loading from notes/ directory in the PPT project
     if session.ppt_path:
+        candidate_dirs = []
+        if session.paths.notes_dir:
+            candidate_dirs.append(Path(session.paths.notes_dir))
         ppt_path = Path(session.ppt_path)
-        # notes/ may be sibling of .pptx or inside project dir
-        for notes_dir in [ppt_path.parent / "notes", ppt_path / "notes"]:
+        candidate_dirs.extend([ppt_path.parent / "notes", ppt_path / "notes"])
+        for notes_dir in candidate_dirs:
             notes = _load_notes_from_dir(notes_dir)
             if notes:
                 session_store.set_script(session_id, notes)

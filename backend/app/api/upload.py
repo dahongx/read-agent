@@ -9,9 +9,14 @@ import aiofiles
 from fastapi import APIRouter, Form, HTTPException, UploadFile
 from pydantic import ValidationError
 
-from app.core.config import settings
-from app.models import PptConfig, SessionStatus, UploadResponse
+from app.models import PptConfig, SessionFile, SessionPaths, SessionStatus, UploadResponse
 from app.services import session_store, task_manager
+from app.services.session_paths import (
+    get_session_dir,
+    get_session_input_dir,
+    get_session_logs_dir,
+    get_session_output_dir,
+)
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -45,21 +50,38 @@ async def upload_pdf(
             raise HTTPException(status_code=400, detail=exc.errors()) from exc
 
     session = session_store.create_session(pdf_path="")
-    session_store._sessions[session.session_id].ppt_config = config
+    session_store.set_ppt_config(session.session_id, config)
 
-    upload_dir = settings.upload_path / session.session_id
-    upload_dir.mkdir(parents=True, exist_ok=True)
-    dest = upload_dir / filename
+    session_dir = get_session_dir(session.session_id)
+    input_dir = get_session_input_dir(session.session_id)
+    output_dir = get_session_output_dir(session.session_id)
+    logs_dir = get_session_logs_dir(session.session_id)
+    dest = input_dir / filename
 
     async with aiofiles.open(dest, "wb") as f:
         await f.write(first_chunk)
         while chunk := await file.read(1024 * 64):
             await f.write(chunk)
 
-    session_store._sessions[session.session_id].pdf_path = str(dest)
+    file_size = dest.stat().st_size
+    session_store.set_paths(
+        session.session_id,
+        SessionPaths(
+            session_dir=str(session_dir),
+            input_dir=str(input_dir),
+            output_dir=str(output_dir),
+            logs_dir=str(logs_dir),
+            pdf_path=str(dest),
+        ),
+    )
+    session_store.set_pdf_path(session.session_id, str(dest))
+    session_store.set_input_files(
+        session.session_id,
+        [SessionFile(filename=filename, path=str(dest), size=file_size)],
+    )
     logger.info(
         "[UPLOAD] session=%s  file=%s  size=%s bytes  config=%s",
-        session.session_id, dest, dest.stat().st_size, config.model_dump(),
+        session.session_id, dest, file_size, config.model_dump(),
     )
 
     asyncio.create_task(task_manager.run_tasks(session.session_id, str(dest), config))

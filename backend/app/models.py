@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import ClassVar, Literal, Optional
+from typing import Any, ClassVar, Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 TemplateValue = Literal[
     "academic_defense",
@@ -89,6 +89,55 @@ class ProgressState(BaseModel):
     rag_pct: int = 0
 
 
+class SessionFile(BaseModel):
+    filename: str
+    path: str
+    size: int
+
+
+class SessionPaths(BaseModel):
+    session_dir: str = ""
+    input_dir: str = ""
+    output_dir: str = ""
+    logs_dir: str = ""
+    project_dir: str = ""
+    pdf_path: str = ""
+    ppt_path: str = ""
+    slides_dir: str = ""
+    notes_dir: str = ""
+    rag_index_path: str = ""
+
+
+class TaskStageState(BaseModel):
+    task: str
+    stage: str = ""
+    stage_label: str = ""
+    pct: int = 0
+    status: str = "pending"
+
+
+class SessionStages(BaseModel):
+    ppt: TaskStageState = Field(default_factory=lambda: TaskStageState(task="ppt"))
+    rag: TaskStageState = Field(default_factory=lambda: TaskStageState(task="rag"))
+
+
+class LogEvent(BaseModel):
+    ts: str
+    source: Literal["ppt", "rag", "system"]
+    level: Literal["INFO", "WARNING", "ERROR"]
+    stage: str
+    message: str
+    details: Optional[dict[str, Any]] = None
+
+
+class SessionError(BaseModel):
+    message: str
+    source: Literal["ppt", "rag", "system"] = "system"
+    stage: str = ""
+    stdout_tail: Optional[str] = None
+    stderr_tail: Optional[str] = None
+
+
 class SessionState(BaseModel):
     session_id: str
     status: SessionStatus = SessionStatus.pending
@@ -99,6 +148,12 @@ class SessionState(BaseModel):
     rag_index_path: Optional[str] = None
     script: Optional[list[str]] = None
     ppt_config: Optional[PptConfig] = None
+    session_type: Literal["single"] = "single"
+    input_files: list[SessionFile] = Field(default_factory=list)
+    paths: SessionPaths = Field(default_factory=SessionPaths)
+    stages: SessionStages = Field(default_factory=SessionStages)
+    recent_logs: list[LogEvent] = Field(default_factory=list)
+    error_detail: Optional[SessionError] = None
 
 
 class UploadResponse(BaseModel):

@@ -11,17 +11,15 @@ async def websocket_progress(websocket: WebSocket, session_id: str) -> None:
     session = session_store.get_session(session_id)
     if session is None:
         await websocket.accept()
-        await websocket.send_json({"error": "session not found"})
+        await websocket.send_json({"error": "session not found", "terminal": True})
         await websocket.close()
         return
 
     await manager.connect(session_id, websocket)
-    # Send current state immediately after connecting
-    await websocket.send_json(session.model_dump())
+    await websocket.send_json(session.model_dump(mode="json"))
 
     try:
         while True:
-            # Keep connection open; client messages are ignored for now
             await websocket.receive_text()
     except WebSocketDisconnect:
         manager.disconnect(session_id, websocket)

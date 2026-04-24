@@ -32,12 +32,19 @@ description: >
 2. **两个用户交互点**：模板选择 + 八项确认，其余全部自动执行（批量模式下跳过）
 3. **中文输出**：分析报告和PPT内容均使用中文，专业术语保留英文
 4. **speaker notes 必须生成**：每一页PPT都要有演讲稿，供TTS朗读使用
+5. **阶段标记必须输出**：为便于后端定位卡点，在批量模式下必须在关键节点原样输出单独一行 marker：
+   - `[[P2P_PHASE:paper_glance_started]]`
+   - `[[P2P_PHASE:paper_glance_completed]]`
+   - `[[P2P_PHASE:ppt_master_started]]`
+   marker 必须单独成行，不要加解释文字，不要改写大小写。
 
 ---
 
 ## 流程
 
 ### 阶段一：paper-glance 论文解析（全自动）
+
+进入本阶段后，先输出单独一行：`[[P2P_PHASE:paper_glance_started]]`
 
 读取用户提供的 PDF，按以下结构在内部构建 PAPER_CORE（不展示给用户），然后生成**深度分析报告 Markdown**，包含：
 
@@ -48,11 +55,14 @@ description: >
 - 实验表现（数据具体，有数字）
 - 总结（一句话核心思想 + 速记Pipeline）
 
-> 分析完成后，告知用户："✅ 论文解析完成，正在进入PPT生成阶段..."
+> 分析完成后，先输出单独一行：`[[P2P_PHASE:paper_glance_completed]]`
+> 然后告知用户："✅ 论文解析完成，正在进入PPT生成阶段..."
 
 ---
 
 ### 阶段二：ppt-master PPT生成
+
+进入本阶段后，先输出单独一行：`[[P2P_PHASE:ppt_master_started]]`
 
 将阶段一的分析报告作为源内容，调用 ppt-master 完整流程：
 

@@ -3,7 +3,8 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 export type WsReadyState = 'connecting' | 'open' | 'reconnecting' | 'closed'
 
 export interface WsMessage {
-  event: string
+  event?: string
+  terminal?: boolean
   [key: string]: unknown
 }
 
@@ -12,11 +13,17 @@ export function useWebSocket(sessionId: string) {
   const [readyState, setReadyState] = useState<WsReadyState>('connecting')
   const wsRef = useRef<WebSocket | null>(null)
   const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const retryCount = useRef(0)
   const unmounted = useRef(false)
-  const wasEverOpen = useRef(false)   // only show "reconnecting" after a real connection
+  const wasEverOpen = useRef(false)
+  const terminalClose = useRef(false)
 
   const connect = useCallback(() => {
-    if (unmounted.current) return
+    if (unmounted.current || terminalClose.current) return
+    if (retryCount.current >= 10) {
+      setReadyState('closed')
+      return
+    }
 
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
     const ws = new WebSocket(`${protocol}://${window.location.host}/ws/${sessionId}`)
@@ -24,30 +31,38 @@ export function useWebSocket(sessionId: string) {
 
     ws.onopen = () => {
       if (!unmounted.current) {
+        retryCount.current = 0
         wasEverOpen.current = true
         setReadyState('open')
       }
     }
 
     ws.onmessage = (e) => {
-      if (!unmounted.current) {
-        try {
-          setLastMessage(JSON.parse(e.data) as WsMessage)
-        } catch {
-          // ignore non-JSON
+      if (unmounted.current) return
+      try {
+        const parsed = JSON.parse(e.data) as WsMessage
+        if (parsed.terminal === true) {
+          terminalClose.current = true
+          setReadyState('closed')
         }
+        setLastMessage(parsed)
+      } catch {
+        // ignore non-JSON
       }
     }
 
     ws.onclose = (e) => {
-      if (unmounted.current) return
-      // Normal closure (e.g., navigating away) — don't retry
+      if (unmounted.current || terminalClose.current) {
+        setReadyState('closed')
+        return
+      }
       if (e.wasClean && e.code === 1000) {
         setReadyState('closed')
         return
       }
-      // Only show "reconnecting" if we had a real connection before
+      retryCount.current += 1
       if (wasEverOpen.current) setReadyState('reconnecting')
+      else setReadyState('connecting')
       retryTimer.current = setTimeout(connect, 3000)
     }
 
@@ -58,6 +73,7 @@ export function useWebSocket(sessionId: string) {
 
   useEffect(() => {
     unmounted.current = false
+    terminalClose.current = false
     connect()
     return () => {
       unmounted.current = true

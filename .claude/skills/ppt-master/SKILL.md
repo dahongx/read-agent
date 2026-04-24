@@ -74,6 +74,21 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 
 ---
 
+## Batch Mode
+
+**Detection**: Treat the run as batch mode when either of the following is present:
+- The user message contains `[BATCH_MODE]`
+- The message already provides template/style/page-count/audience style constraints and explicitly asks to proceed without questions
+
+**Batch mode behavior**:
+- Skip all `⛔ BLOCKING` waits for template selection and Eight Confirmations
+- Do **not** call AskUserQuestion
+- Use the provided values directly; fill any unspecified confirmation items with reasonable defaults consistent with the requested presentation style
+- If the template is explicitly `自由设计` / `no_template`, skip template querying and continue directly
+- Continue automatically through `svg_final/` and PPTX export before ending the run
+
+---
+
 ## Workflow
 
 ### Step 1: Source Content Processing
@@ -109,13 +124,13 @@ Import source content (choose based on the situation):
 
 | Situation | Action |
 |-----------|--------|
-| Has source files (PDF/MD/etc.) | `python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <source_files...> --move` |
+| Has source files (PDF/MD/etc.) | `python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <source_files...>` |
 | User provided text directly in conversation | No import needed — content is already in conversation context; subsequent steps can reference it directly |
 
-> ⚠️ **MUST use `--move`**: All source files (original PDF / MD / images) MUST be **moved** (not copied) into `sources/` for archiving.
-> - Markdown files generated in Step 1, original PDFs, original MDs — **all** must be moved into the project via `import-sources --move`
+> ⚠️ **Archive source files into `sources/`**: By default, `import-sources` copies external files into the project for archiving.
+> - For backend-uploaded PDFs under `backend/uploads/`, keep the original file in place and copy it into `sources/` so RAG and PPT can run safely in parallel.
+> - Use `--move` only when the caller explicitly wants the original files relocated into the project.
 > - Intermediate artifacts (e.g., `_files/` directories) are handled automatically by `import-sources`
-> - After execution, source files no longer exist at their original location
 
 **✅ Checkpoint — Confirm project structure created successfully, `sources/` contains all source files, converted materials are ready. Proceed to Step 3.**
 
@@ -125,7 +140,7 @@ Import source content (choose based on the situation):
 
 🚧 **GATE**: Step 2 complete; project directory structure is ready.
 
-⛔ **BLOCKING**: If the user has not yet clearly expressed whether to use a template, you MUST present options and **wait for an explicit user response** before proceeding. If the user has previously stated "no template" or specified a particular template, skip this prompt and proceed directly.
+⛔ **BLOCKING**: If the user has not yet clearly expressed whether to use a template, you MUST present options and **wait for an explicit user response** before proceeding. If the user has previously stated "no template" or specified a particular template, skip this prompt and proceed directly. In batch mode, treat the provided template preference as already confirmed and do not pause.
 
 **⚡ Early-exit**: If the user has already stated "no template" / "不使用模板" / "自由设计" (or equivalent) at any prior point in the conversation, **do NOT query `layouts_index.json`** — skip directly to Step 4. This avoids unnecessary token consumption.
 
@@ -166,7 +181,7 @@ Read references/strategist.md
 
 **Must complete the Eight Confirmations** (refer to `templates/design_spec_reference.md` for the template structure):
 
-⛔ **BLOCKING**: The Eight Confirmations MUST be presented to the user as a bundled set of recommendations, and you MUST **wait for the user to confirm or modify** before outputting the Design Specification & Content Outline. This is one of only two core confirmation points in the workflow (the other is template selection). Once confirmed, all subsequent script execution and slide generation should proceed fully automatically.
+⛔ **BLOCKING**: The Eight Confirmations MUST be presented to the user as a bundled set of recommendations, and you MUST **wait for the user to confirm or modify** before outputting the Design Specification & Content Outline. This is one of only two core confirmation points in the workflow (the other is template selection). Once confirmed, all subsequent script execution and slide generation should proceed fully automatically. In batch mode, treat the supplied constraints as already confirmed and continue without pausing.
 
 1. Canvas format
 2. Page count range

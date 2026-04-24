@@ -1,7 +1,16 @@
 @echo off
+setlocal EnableExtensions
 title Reading Agent Backend
 cd /d "%~dp0"
-set PYTHONPATH=%~dp0
+
+if exist ".env" (
+    for /f "usebackq eol=# tokens=1,* delims==" %%A in (".env") do (
+        set "%%A=%%B"
+    )
+)
+
+set "PYTHONPATH=%~dp0"
+
 if not defined PYTHON_EXE (
     if exist "D:\program\anaconda3\envs\pocket-souls\python.exe" (
         set "PYTHON_EXE=D:\program\anaconda3\envs\pocket-souls\python.exe"
@@ -10,11 +19,8 @@ if not defined PYTHON_EXE (
     )
 )
 
-echo ==============================
-echo  Starting backend on :8000
-echo  Docs: http://localhost:8000/docs
-echo  Press Ctrl+C to stop
-echo ==============================
+echo Starting backend at http://localhost:8000
+echo Open http://localhost:8000/docs for API docs
 echo.
 
 "%PYTHON_EXE%" -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload --reload-dir app

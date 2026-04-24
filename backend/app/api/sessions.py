@@ -1,11 +1,12 @@
 from pathlib import Path
 from urllib.parse import unquote
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import FileResponse
 
 from app.models import SessionState
 from app.services import session_store
+from app.services.session_logs import load_session_logs
 
 router = APIRouter()
 
@@ -58,13 +59,16 @@ def _get_slides_dir(session_id: str) -> Path | None:
     session = session_store.get_session(session_id)
     if session is None:
         return None
+    if session.paths.slides_dir:
+        slides_dir = Path(session.paths.slides_dir)
+        if slides_dir.exists() and any(slides_dir.glob("*.svg")):
+            return slides_dir
     if not session.ppt_path:
         return None
     ppt_path = Path(session.ppt_path)
-    # ppt_path may be the .pptx file or the project dir itself
     candidates = [
-        ppt_path.parent / "svg_final",   # .pptx sibling
-        ppt_path / "svg_final",           # ppt_path is project dir
+        ppt_path.parent / "svg_final",
+        ppt_path / "svg_final",
     ]
     for candidate in candidates:
         if candidate.exists() and any(candidate.glob("*.svg")):
@@ -92,9 +96,17 @@ async def get_slide_file(session_id: str, filename: str) -> FileResponse:
     slides_dir = _get_slides_dir(session_id)
     if slides_dir is None:
         raise HTTPException(status_code=404, detail="Slides not available")
-    # decode URL-encoded filename
-    safe_name = Path(unquote(filename)).name  # strip any path traversal
+    safe_name = Path(unquote(filename)).name
     slide_path = slides_dir / safe_name
     if not slide_path.exists():
         raise HTTPException(status_code=404, detail="Slide not found")
     return FileResponse(path=str(slide_path), media_type="image/svg+xml")
+
+
+@router.get("/api/sessions/{session_id}/logs")
+async def get_session_logs(session_id: str, limit: int = Query(default=200, ge=1, le=1000)) -> dict:
+    session = session_store.get_session(session_id)
+    if session is None:
+        raise HTTPException(status_code=404, detail="Session not found")
+    logs = load_session_logs(session_id, limit=limit)
+    return {"logs": logs, "count": len(logs)}

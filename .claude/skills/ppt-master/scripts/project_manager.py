@@ -89,6 +89,13 @@ def is_within_path(path: Path, parent: Path) -> bool:
         return False
 
 
+def should_force_move(source_path: Path) -> bool:
+    backend_uploads_dir = REPO_ROOT / "backend" / "uploads"
+    if is_within_path(source_path, backend_uploads_dir):
+        return False
+    return is_within_path(source_path, REPO_ROOT)
+
+
 class ProjectManager:
     """Create, inspect, validate, and populate project folders."""
 
@@ -402,7 +409,7 @@ class ProjectManager:
                 summary["skipped"].append(f"{item}: directories are not supported")
                 continue
 
-            effective_move = move or is_within_path(source_path, REPO_ROOT)
+            effective_move = move or should_force_move(source_path)
             suffix = source_path.suffix.lower()
 
             if suffix in {".md", ".markdown"}:
