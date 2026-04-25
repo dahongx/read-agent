@@ -3,7 +3,17 @@ from __future__ import annotations
 import uuid
 from typing import Dict, Optional
 
-from app.models import LogEvent, ProgressState, SessionError, SessionFile, SessionPaths, SessionState, SessionStatus
+from app.models import (
+    LogEvent,
+    ProgressState,
+    SessionError,
+    SessionFile,
+    SessionPaths,
+    SessionSourceDoc,
+    SessionState,
+    SessionStatus,
+    SessionType,
+)
 
 # Valid status transitions
 _TRANSITIONS: Dict[SessionStatus, set] = {
@@ -16,9 +26,9 @@ _TRANSITIONS: Dict[SessionStatus, set] = {
 _sessions: Dict[str, SessionState] = {}
 
 
-def create_session(pdf_path: str) -> SessionState:
+def create_session(pdf_path: str, *, session_type: SessionType = "single") -> SessionState:
     session_id = str(uuid.uuid4())
-    session = SessionState(session_id=session_id, pdf_path=pdf_path)
+    session = SessionState(session_id=session_id, pdf_path=pdf_path, session_type=session_type)
     _sessions[session_id] = session
     return session
 
@@ -112,9 +122,30 @@ def set_ppt_config(session_id: str, config) -> SessionState:
     return session
 
 
+def set_session_type(session_id: str, session_type: SessionType) -> SessionState:
+    session = _sessions[session_id]
+    session.session_type = session_type
+    return session
+
+
 def set_input_files(session_id: str, files: list[SessionFile]) -> SessionState:
     session = _sessions[session_id]
     session.input_files = files
+    session.source_count = max(len(files), len(session.source_documents), 1)
+    return session
+
+
+def set_source_documents(session_id: str, source_documents: list[SessionSourceDoc]) -> SessionState:
+    session = _sessions[session_id]
+    session.source_documents = source_documents
+    session.source_count = max(len(source_documents), len(session.input_files), 1)
+    return session
+
+
+def set_merged_markdown_path(session_id: str, merged_markdown_path: str) -> SessionState:
+    session = _sessions[session_id]
+    session.merged_markdown_path = merged_markdown_path
+    session.paths.merged_markdown_path = merged_markdown_path
     return session
 
 
@@ -123,6 +154,8 @@ def set_paths(session_id: str, paths: SessionPaths) -> SessionState:
     session.paths = paths
     if paths.pdf_path:
         session.pdf_path = paths.pdf_path
+    if paths.merged_markdown_path:
+        session.merged_markdown_path = paths.merged_markdown_path
     if paths.ppt_path:
         session.ppt_path = paths.ppt_path
     if paths.rag_index_path:
@@ -134,6 +167,7 @@ def update_path_fields(
     session_id: str,
     *,
     project_dir: str | None = None,
+    merged_markdown_path: str | None = None,
     ppt_path: str | None = None,
     slides_dir: str | None = None,
     notes_dir: str | None = None,
@@ -142,6 +176,9 @@ def update_path_fields(
     session = _sessions[session_id]
     if project_dir is not None:
         session.paths.project_dir = project_dir
+    if merged_markdown_path is not None:
+        session.merged_markdown_path = merged_markdown_path
+        session.paths.merged_markdown_path = merged_markdown_path
     if ppt_path is not None:
         session.ppt_path = ppt_path
         session.paths.ppt_path = ppt_path

@@ -4,11 +4,23 @@ from urllib.parse import unquote
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import FileResponse
 
-from app.models import SessionState
+from app.models import SessionSourceDoc, SessionState
 from app.services import session_store
 from app.services.session_logs import load_session_logs
 
 router = APIRouter()
+
+
+def _resolve_session_source_doc(session_id: str, doc_id: str) -> SessionSourceDoc:
+    session = session_store.get_session(session_id)
+    if session is None:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    for source_doc in session.source_documents:
+        if source_doc.doc_id == doc_id:
+            return source_doc
+
+    raise HTTPException(status_code=404, detail="Source document not found")
 
 
 @router.get("/api/sessions/{session_id}", response_model=SessionState)
@@ -44,6 +56,20 @@ async def get_session_pdf(session_id: str) -> FileResponse:
     if not session.pdf_path:
         raise HTTPException(status_code=404, detail="PDF not available")
     pdf_file = Path(session.pdf_path)
+    if not pdf_file.exists():
+        raise HTTPException(status_code=404, detail="PDF file not found")
+    return FileResponse(
+        path=str(pdf_file),
+        media_type="application/pdf",
+        filename=pdf_file.name,
+        content_disposition_type="inline",
+    )
+
+
+@router.get("/api/sessions/{session_id}/pdf/{doc_id}")
+async def get_session_source_pdf(session_id: str, doc_id: str) -> FileResponse:
+    source_doc = _resolve_session_source_doc(session_id, doc_id)
+    pdf_file = Path(source_doc.pdf_path)
     if not pdf_file.exists():
         raise HTTPException(status_code=404, detail="PDF file not found")
     return FileResponse(

@@ -32,6 +32,9 @@ class Source(BaseModel):
     text: str
     file: str
     page: Optional[int] = None
+    doc_id: Optional[str] = None
+    doc_order: Optional[int] = None
+    source_file_name: Optional[str] = None
 
 
 class ChatResponse(BaseModel):
@@ -55,6 +58,27 @@ _SYSTEM_PROMPT = """你是一个文献阅读助手，基于提供的论文原文
 """
 
 
+def _source_key(item: dict) -> tuple[Optional[str], Optional[int], Optional[int], str]:
+    return (
+        item.get("doc_id"),
+        item.get("page") if isinstance(item.get("page"), int) else None,
+        item.get("doc_order") if isinstance(item.get("doc_order"), int) else None,
+        str(item.get("file") or ""),
+    )
+
+
+def _dedupe_sources(items: list[dict]) -> list[dict]:
+    seen: set[tuple[Optional[str], Optional[int], Optional[int], str]] = set()
+    deduped: list[dict] = []
+    for item in items:
+        key = _source_key(item)
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(item)
+    return deduped
+
+
 def _parse_citations(answer: str, retrieved: list[dict]) -> list[dict]:
     """Extract cited pages from the answer and map them back to retrieved chunks."""
     pages = list(
@@ -65,11 +89,10 @@ def _parse_citations(answer: str, retrieved: list[dict]) -> list[dict]:
     results: list[dict] = []
 
     for page in pages:
-        chunk = next((item for item in retrieved if item.get("page") == page), None)
-        if chunk is not None:
-            results.append(chunk)
+        matched = [item for item in retrieved if item.get("page") == page]
+        results.extend(matched)
 
-    return results
+    return _dedupe_sources(results)
 
 
 @router.post("/api/chat", response_model=ChatResponse)
@@ -103,7 +126,7 @@ async def chat(req: ChatRequest) -> ChatResponse:
         raise HTTPException(status_code=502, detail=f"LLM error: {exc}") from exc
 
     cited_sources = _parse_citations(answer, sources)
-    final_sources = cited_sources if cited_sources else sources
+    final_sources = cited_sources if cited_sources else _dedupe_sources(sources)
 
     return ChatResponse(
         answer=answer,

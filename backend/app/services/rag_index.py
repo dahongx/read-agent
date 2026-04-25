@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import re
 from pathlib import Path
+from typing import Any
 
 from llama_index.core import Settings, StorageContext, VectorStoreIndex, load_index_from_storage
 from llama_index.core.retrievers import VectorIndexRetriever
@@ -11,6 +12,7 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from pypdf import PdfReader
 
 from app.core.config import settings
+from app.models import SessionSourceDoc
 
 logger = logging.getLogger(__name__)
 
@@ -84,6 +86,7 @@ def _group_paragraphs(
     page_num: int,
     file_name: str,
     paper_title: str,
+    metadata_extra: dict[str, Any] | None = None,
 ) -> list[TextNode]:
     """Group paragraphs into balanced chunks with metadata."""
     nodes: list[TextNode] = []
@@ -92,14 +95,16 @@ def _group_paragraphs(
 
     def flush() -> None:
         if current_parts:
+            metadata = {
+                "page_label": str(page_num),
+                "file_name": file_name,
+                "paper_title": paper_title,
+                **(metadata_extra or {}),
+            }
             nodes.append(
                 TextNode(
                     text="\n\n".join(current_parts),
-                    metadata={
-                        "page_label": str(page_num),
-                        "file_name": file_name,
-                        "paper_title": paper_title,
-                    },
+                    metadata=metadata,
                 )
             )
 
@@ -128,7 +133,7 @@ def _group_paragraphs(
     return nodes
 
 
-def _build_nodes(pdf_path: str) -> list[TextNode]:
+def _build_nodes(pdf_path: str, metadata_extra: dict[str, Any] | None = None) -> list[TextNode]:
     """Parse PDF into paragraph-based TextNodes with paper title metadata."""
     reader = PdfReader(pdf_path)
     file_name = Path(pdf_path).name
@@ -162,7 +167,7 @@ def _build_nodes(pdf_path: str) -> list[TextNode]:
         cleaned_text = "\n".join(cleaned_lines)
 
         paragraphs = _split_into_paragraphs(cleaned_text)
-        all_nodes.extend(_group_paragraphs(paragraphs, page_num, file_name, paper_title))
+        all_nodes.extend(_group_paragraphs(paragraphs, page_num, file_name, paper_title, metadata_extra))
 
     logger.info(
         "Built %d paragraph-based chunks from %d pages (title: %s)",
@@ -171,6 +176,38 @@ def _build_nodes(pdf_path: str) -> list[TextNode]:
         paper_title,
     )
     return all_nodes
+
+
+
+
+def build_multi_index(source_docs: list[SessionSourceDoc], index_dir: str) -> None:
+    """Build a unified vector index from multiple PDFs while preserving source metadata."""
+    Path(index_dir).mkdir(parents=True, exist_ok=True)
+    logger.info("Building multi-doc RAG index into %s (%d docs)", index_dir, len(source_docs))
+
+    Settings.embed_model = _get_embed_model()
+    Settings.llm = None
+
+    all_nodes: list[TextNode] = []
+    for source_doc in sorted(source_docs, key=lambda doc: doc.order):
+        metadata_extra = {
+            "doc_id": source_doc.doc_id,
+            "doc_order": source_doc.order,
+            "source_file_name": source_doc.source_file_name,
+            "content_hash": source_doc.content_hash,
+        }
+        nodes = _build_nodes(source_doc.pdf_path, metadata_extra=metadata_extra)
+        all_nodes.extend(nodes)
+        logger.info(
+            "Added %d nodes for %s (doc_id=%s)",
+            len(nodes),
+            source_doc.source_file_name,
+            source_doc.doc_id,
+        )
+
+    index = VectorStoreIndex(all_nodes, show_progress=False)
+    index.storage_context.persist(persist_dir=index_dir)
+    logger.info("Multi-doc index persisted to %s (%d nodes, %d docs)", index_dir, len(all_nodes), len(source_docs))
 
 
 def build_index(pdf_path: str, index_dir: str) -> None:
@@ -185,8 +222,6 @@ def build_index(pdf_path: str, index_dir: str) -> None:
     index = VectorStoreIndex(nodes, show_progress=False)
     index.storage_context.persist(persist_dir=index_dir)
     logger.info("Index persisted to %s (%d nodes)", index_dir, len(nodes))
-
-
 def query_index(index_dir: str, question: str) -> list[dict]:
     """Load persisted index and retrieve paragraph chunks by pure vector similarity."""
     Settings.embed_model = _get_embed_model()
@@ -216,6 +251,9 @@ def query_index(index_dir: str, question: str) -> list[dict]:
             "full_text": text,
             "file": paper_title,
             "page": page,
+            "doc_id": meta.get("doc_id"),
+            "doc_order": meta.get("doc_order"),
+            "source_file_name": meta.get("source_file_name", file_name),
         })
 
     return results

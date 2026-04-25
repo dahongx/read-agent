@@ -18,6 +18,7 @@ PageCountValue = Literal[8, 10, 12, 15, 20]
 LanguageValue = Literal["中文", "英文", "中英双语"]
 StyleValue = Literal["学术汇报", "商务简报", "技术分享"]
 AudienceValue = Literal["高校师生", "企业团队", "通用"]
+SessionType = Literal["single", "multi"]
 
 
 class SessionStatus(str, Enum):
@@ -95,6 +96,15 @@ class SessionFile(BaseModel):
     size: int
 
 
+class SessionSourceDoc(BaseModel):
+    doc_id: str
+    order: int
+    source_file_name: str
+    pdf_path: str
+    content_hash: str
+    markdown_path: Optional[str] = None
+
+
 class SessionPaths(BaseModel):
     session_dir: str = ""
     input_dir: str = ""
@@ -102,6 +112,7 @@ class SessionPaths(BaseModel):
     logs_dir: str = ""
     project_dir: str = ""
     pdf_path: str = ""
+    merged_markdown_path: str = ""
     ppt_path: str = ""
     slides_dir: str = ""
     notes_dir: str = ""
@@ -148,8 +159,11 @@ class SessionState(BaseModel):
     rag_index_path: Optional[str] = None
     script: Optional[list[str]] = None
     ppt_config: Optional[PptConfig] = None
-    session_type: Literal["single"] = "single"
+    session_type: SessionType = "single"
     input_files: list[SessionFile] = Field(default_factory=list)
+    source_documents: list[SessionSourceDoc] = Field(default_factory=list)
+    source_count: int = 1
+    merged_markdown_path: Optional[str] = None
     paths: SessionPaths = Field(default_factory=SessionPaths)
     stages: SessionStages = Field(default_factory=SessionStages)
     recent_logs: list[LogEvent] = Field(default_factory=list)

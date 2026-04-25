@@ -24,12 +24,18 @@ def _build_context_and_sources(chunks: list[dict]) -> tuple[str, list[dict]]:
         file_name = chunk.get("file", "unknown")
         page = chunk.get("page")
         page_label = f"第{page}页" if isinstance(page, int) else "页码未知"
+        source_file_name = chunk.get("source_file_name")
+        doc_id = chunk.get("doc_id")
+        doc_order = chunk.get("doc_order")
 
         context_parts.append(f"[来自《{file_name}》{page_label}]\n{full_text}")
         sources.append({
             "text": preview_text,
             "file": file_name,
             "page": page,
+            "doc_id": doc_id,
+            "doc_order": doc_order,
+            "source_file_name": source_file_name,
         })
 
     return "\n\n---\n\n".join(context_parts), sources
@@ -49,6 +55,9 @@ def retrieve(session_id: str, question: str) -> tuple[str, list[dict]]:
                 "text": text[:300] + ("..." if len(text) > 300 else ""),
                 "file": "design_spec.md",
                 "page": None,
+                "doc_id": None,
+                "doc_order": None,
+                "source_file_name": "design_spec.md",
             }]
             logger.info("DEV_MODE RAG: using fixture design_spec.md (%d chars)", len(text))
             return text, sources

@@ -46,6 +46,9 @@ interface Source {
   text: string
   file: string
   page: number | null
+  doc_id?: string | null
+  doc_order?: number | null
+  source_file_name?: string | null
 }
 
 interface Message {
@@ -59,43 +62,70 @@ interface Props {
   onJumpToSlide?: (page: number) => void
 }
 
+interface PdfTarget {
+  page: number
+  docId?: string | null
+  fileLabel?: string | null
+}
+
 const INLINE_CITATION_SPLIT_REGEX = /(\(\s*第\s*\d{1,3}\s*页\s*\)|（\s*第\s*\d{1,3}\s*页\s*）)/u
 const INLINE_CITATION_MATCH_REGEX = /第\s*(\d{1,3})\s*页/u
 
-function renderPageLink(page: number, key: React.Key, onPageClick: (page: number) => void) {
+function sourceLabel(source: Source): string {
+  return source.source_file_name || source.file
+}
+
+function renderPageLink(
+  target: PdfTarget,
+  key: React.Key,
+  onPageClick: (target: PdfTarget) => void,
+  label?: string,
+) {
   return (
     <button
       key={key}
-      onClick={() => onPageClick(page)}
+      onClick={() => onPageClick(target)}
       className="mx-0.5 inline-flex items-center rounded border border-blue-200 bg-blue-50 px-1.5 py-0 text-xs font-medium text-blue-600 transition-colors hover:border-blue-400 hover:bg-blue-100"
-      title={`点击查看第 ${page} 页原文`}
+      title={`点击查看${target.fileLabel ? `${target.fileLabel} ` : ''}第 ${target.page} 页原文`}
     >
-      第{page}页↗
+      {label ?? `第${target.page}页↗`}
     </button>
   )
 }
 
-function getFallbackPages(sources?: Source[]): number[] {
+function getFallbackSources(sources?: Source[]): Source[] {
   if (!sources?.length) return []
 
-  const seen = new Set<number>()
-  const pages: number[] = []
+  const seen = new Set<string>()
+  const items: Source[] = []
 
   for (const source of sources) {
-    if (typeof source.page !== 'number' || seen.has(source.page)) continue
-    seen.add(source.page)
-    pages.push(source.page)
-    if (pages.length >= 3) break
+    if (typeof source.page !== 'number') continue
+    const key = `${source.doc_id ?? 'session'}:${source.page}`
+    if (seen.has(key)) continue
+    seen.add(key)
+    items.push(source)
+    if (items.length >= 4) break
   }
 
-  return pages
+  return items
 }
 
-function hasInlineCitations(text: string): boolean {
-  return INLINE_CITATION_SPLIT_REGEX.test(text)
+
+function findSourceForPage(sources: Source[] | undefined, page: number): Source | null {
+  if (!sources?.length) return null
+
+  const exactDocSource = sources.find(source => source.page === page && !!source.doc_id)
+  if (exactDocSource) return exactDocSource
+
+  return sources.find(source => source.page === page) ?? null
 }
 
-function renderWithCitations(text: string, onPageClick: (page: number) => void): React.ReactNode {
+function renderWithCitations(
+  text: string,
+  sources: Source[] | undefined,
+  onPageClick: (target: PdfTarget) => void,
+): React.ReactNode {
   const parts = text.split(INLINE_CITATION_SPLIT_REGEX)
   const nodes: React.ReactNode[] = []
 
@@ -103,7 +133,12 @@ function renderWithCitations(text: string, onPageClick: (page: number) => void):
     const match = part.match(INLINE_CITATION_MATCH_REGEX)
     if (match) {
       const page = Number.parseInt(match[1], 10)
-      nodes.push(renderPageLink(page, index, onPageClick))
+      const source = findSourceForPage(sources, page)
+      nodes.push(renderPageLink({
+        page,
+        docId: source?.doc_id,
+        fileLabel: source ? sourceLabel(source) : null,
+      }, index, onPageClick))
       return
     }
 
@@ -123,18 +158,29 @@ function AssistantMessage({
   onViewPdf,
 }: {
   msg: Message
-  onViewPdf: (page: number) => void
+  onViewPdf: (target: PdfTarget) => void
 }) {
-  const fallbackPages = hasInlineCitations(msg.content) ? [] : getFallbackPages(msg.sources)
+  const fallbackSources = getFallbackSources(msg.sources)
 
   return (
     <div className="max-w-[90%] self-start rounded-2xl rounded-tl-sm border border-gray-200 bg-white px-3 py-2 text-sm leading-relaxed text-gray-800">
-      {renderWithCitations(msg.content, onViewPdf)}
-      {fallbackPages.length > 0 && (
-        <span className="ml-1 inline-flex flex-wrap items-center gap-1 align-middle text-xs text-gray-500">
-          <span>参考：</span>
-          {fallbackPages.map(page => renderPageLink(page, `fallback-${page}`, onViewPdf))}
-        </span>
+      {renderWithCitations(msg.content, msg.sources, onViewPdf)}
+      {fallbackSources.length > 0 && (
+        <div className="mt-2 flex flex-col gap-1 text-xs text-gray-500">
+          <span>参考出处：</span>
+          <div className="flex flex-wrap gap-1">
+            {fallbackSources.map((source, index) => renderPageLink(
+              {
+                page: source.page!,
+                docId: source.doc_id,
+                fileLabel: sourceLabel(source),
+              },
+              `fallback-${source.doc_id ?? 'session'}-${source.page}-${index}`,
+              onViewPdf,
+              `${sourceLabel(source)} 第${source.page}页↗`,
+            ))}
+          </div>
+        </div>
       )}
     </div>
   )
@@ -144,7 +190,7 @@ export default function ChatPanel({ sessionId }: Props) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
-  const [pdfPage, setPdfPage] = useState<number | null>(null)
+  const [pdfTarget, setPdfTarget] = useState<PdfTarget | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   const SR = typeof window !== 'undefined'
@@ -273,8 +319,14 @@ export default function ChatPanel({ sessionId }: Props) {
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden border-l border-gray-200 bg-gray-50">
-      {pdfPage !== null && (
-        <PdfViewer sessionId={sessionId} page={pdfPage} onClose={() => setPdfPage(null)} />
+      {pdfTarget !== null && (
+        <PdfViewer
+          sessionId={sessionId}
+          page={pdfTarget.page}
+          docId={pdfTarget.docId}
+          fileLabel={pdfTarget.fileLabel}
+          onClose={() => setPdfTarget(null)}
+        />
       )}
 
       <div className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
@@ -319,7 +371,7 @@ export default function ChatPanel({ sessionId }: Props) {
               {msg.content}
             </div>
           ) : (
-            <AssistantMessage key={index} msg={msg} onViewPdf={setPdfPage} />
+            <AssistantMessage key={index} msg={msg} onViewPdf={setPdfTarget} />
           )
         ))}
 
