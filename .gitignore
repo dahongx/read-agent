@@ -37,6 +37,10 @@ paper_text.txt
 # Local work reports
 /工作周报*.md
 
+# Do not upload sensitive or large local files
+/ARCHITECTURE_P0_UNIFIED.md
+/openspec.pdf
+
 # Local Claude workspace state
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
