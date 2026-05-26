@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 顶部深蓝横条 -->
+  <rect x="0" y="0" width="1280" height="100" fill="#003366"/>
+  <rect x="0" y="0" width="8" height="100" fill="#E87722"/>
+
+  <!-- Logo区域 -->
+  <text x="1240" y="58" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="18" font-weight="bold">LLM 长期记忆综述</text>
+
+  <!-- 感谢语 -->
+  <text x="640" y="185" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="48" font-weight="bold">感谢聆听，欢迎交流与指正</text>
+
+  <!-- 副标语 -->
+  <text x="640" y="235" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="20">结构化时序 × 认知闭环，双路径逼近持续智能</text>
+
+  <!-- 装饰分割线 -->
+  <line x1="400" y1="258" x2="880" y2="258" stroke="#0066CC" stroke-width="1.5"/>
+  <circle cx="640" cy="258" r="5" fill="#E87722"/>
+
+  <!-- 三个核心结论卡片 -->
+  <!-- 卡片1 -->
+  <rect x="40" y="278" width="370" height="350" fill="#003366" fill-opacity="0.04" stroke="#003366" stroke-width="1.5" rx="10"/>
+  <rect x="40" y="278" width="370" height="8" fill="#003366" rx="5"/>
+  <rect x="40" y="278" width="8" height="350" fill="#003366" rx="5"/>
+  <text x="225" y="318" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="18" font-weight="bold">① 核心贡献共识</text>
+  <rect x="90" y="326" width="270" height="2" fill="#003366" fill-opacity="0.2" rx="1"/>
+  <text x="60" y="355" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">结构化记忆比纯向量检索</text>
+  <text x="60" y="378" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">具有本质性能优势</text>
+  <text x="60" y="418" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">• Chronos 在对话记忆达 SOTA</text>
+  <text x="60" y="442" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">  （95.60%，+3.02% over prior）</text>
+  <text x="60" y="472" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">• 认知建模在长程决策达 SOTA</text>
+  <text x="60" y="496" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">  （SR 93.2%，MRU 80.1%）</text>
+  <text x="60" y="530" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">两篇论文互相独立验证了</text>
+  <text x="60" y="552" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">同一核心原则的有效性</text>
+  <rect x="60" y="572" width="310" height="46" fill="#003366" fill-opacity="0.08" rx="6"/>
+  <text x="215" y="600" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">记忆结构 → 推理质量 → 最终性能</text>
+
+  <!-- 卡片2 -->
+  <rect x="455" y="278" width="370" height="350" fill="#0066CC" fill-opacity="0.04" stroke="#0066CC" stroke-width="1.5" rx="10"/>
+  <rect x="455" y="278" width="370" height="8" fill="#0066CC" rx="5"/>
+  <rect x="455" y="278" width="8" height="350" fill="#0066CC" rx="5"/>
+  <text x="640" y="318" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="18" font-weight="bold">② 方法论互补</text>
+  <rect x="505" y="326" width="270" height="2" fill="#0066CC" fill-opacity="0.2" rx="1"/>
+  <text x="475" y="355" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">对话侧强调时序精度与动态</text>
+  <text x="475" y="378" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">检索；决策侧强调认知闭环</text>
+  <text x="475" y="418" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">• Chronos：事件历法 + 工具调用</text>
+  <text x="475" y="442" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">  → 时序精确召回为核心</text>
+  <text x="475" y="472" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">• 认知框架：注意力检索 + 策略生成</text>
+  <text x="475" y="496" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">  → 长程决策一致性为目标</text>
+  <text x="475" y="530" fill="#0066CC" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">两者共同指向核心命题：</text>
+  <text x="475" y="552" fill="#0066CC" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">记忆与推理的深度耦合</text>
+  <rect x="475" y="572" width="310" height="46" fill="#0066CC" fill-opacity="0.08" rx="6"/>
+  <text x="630" y="600" text-anchor="middle" fill="#0066CC" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">可探索跨场景迁移与融合路径</text>
+
+  <!-- 卡片3 -->
+  <rect x="870" y="278" width="370" height="350" fill="#E87722" fill-opacity="0.04" stroke="#E87722" stroke-width="1.5" rx="10"/>
+  <rect x="870" y="278" width="370" height="8" fill="#E87722" rx="5"/>
+  <rect x="870" y="278" width="8" height="350" fill="#E87722" rx="5"/>
+  <text x="1055" y="318" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="18" font-weight="bold">③ 未来研究方向</text>
+  <rect x="920" y="326" width="270" height="2" fill="#E87722" fill-opacity="0.3" rx="1"/>
+  <text x="890" y="355" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">多个开放问题值得深入</text>
+  <text x="890" y="378" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">探索与持续研究</text>
+  <text x="890" y="416" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">• 连续学习中的记忆老化策略</text>
+  <text x="890" y="440" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">• 多 Agent 共享记忆架构</text>
+  <text x="890" y="464" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">• 认知建模向 LLM 对话场景迁移</text>
+  <text x="890" y="488" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">• 高效记忆操作（减少检索噪声）</text>
+  <text x="890" y="518" fill="#E87722" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">从事件积累中学习、更新模型</text>
+  <text x="890" y="540" fill="#E87722" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">权重是最前沿方向之一</text>
+  <rect x="890" y="572" width="310" height="46" fill="#E87722" fill-opacity="0.10" rx="6"/>
+  <text x="1045" y="600" text-anchor="middle" fill="#E87722" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">持续演化的智能记忆系统</text>
+
+  <!-- 底部信息栏 -->
+  <rect x="0" y="665" width="1280" height="55" fill="#F5F7FA"/>
+  <text x="640" y="692" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">arXiv:2603.16862 (Chronos, Lumer et al., 2026)　|　preprints202602.1990 (Yang et al., 2026)</text>
+  <text x="1240" y="692" text-anchor="end" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">12 / 12</text>
+</svg>

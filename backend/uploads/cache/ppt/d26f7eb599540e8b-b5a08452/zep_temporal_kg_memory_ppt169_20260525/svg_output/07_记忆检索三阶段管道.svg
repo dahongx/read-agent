@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="7"/>
+      <feOffset dx="0" dy="3" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.10" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 页眉 -->
+  <rect x="0" y="0" width="1280" height="70" fill="#003366"/>
+  <rect x="0" y="0" width="6" height="70" fill="#F07C00"/>
+  <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="26" font-weight="bold">04  记忆检索：三阶段管道</text>
+  <text x="1220" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">ZEP AI</text>
+
+  <!-- 核心观点条 -->
+  <rect x="0" y="70" width="1280" height="50" fill="#E8F4FC"/>
+  <rect x="0" y="70" width="6" height="50" fill="#0066CC"/>
+  <text x="40" y="102" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">f(α) = χ(ρ(φ(α))) — 查询经搜索召回、重排精排、构造输出三步组合，转化为 LLM 上下文</text>
+
+  <!-- ======= 顶部三步管道 ======= -->
+
+  <!-- 查询输入 -->
+  <g id="query-input">
+    <rect x="55" y="145" width="130" height="60" fill="#003366" rx="8"/>
+    <text x="120" y="172" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">查询</text>
+    <text x="120" y="192" text-anchor="middle" fill="#AACCEE" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">α ∈ S</text>
+  </g>
+  <!-- 箭头 -->
+  <line x1="185" y1="175" x2="215" y2="175" stroke="#0066CC" stroke-width="2"/>
+  <polygon points="215,170 227,175 215,180" fill="#0066CC"/>
+
+  <!-- Step 1: φ Search -->
+  <g id="step-search">
+    <rect x="228" y="138" width="270" height="75" fill="#003366" rx="10"/>
+    <text x="363" y="167" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">φ  搜索</text>
+    <text x="363" y="188" text-anchor="middle" fill="#AACCEE" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">cosine + BM25 + BFS</text>
+    <text x="363" y="204" text-anchor="middle" fill="#7AADDD" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">候选三元组（边+实体+社区）</text>
+  </g>
+  <!-- 箭头 -->
+  <line x1="498" y1="175" x2="528" y2="175" stroke="#0066CC" stroke-width="2"/>
+  <polygon points="528,170 540,175 528,180" fill="#0066CC"/>
+
+  <!-- Step 2: ρ Reranker -->
+  <g id="step-rerank">
+    <rect x="541" y="138" width="270" height="75" fill="#0066CC" rx="10"/>
+    <text x="676" y="167" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">ρ  重排</text>
+    <text x="676" y="188" text-anchor="middle" fill="#CCE5FF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">RRF / MMR / 频率 / 距离 / 交叉编码器</text>
+    <text x="676" y="204" text-anchor="middle" fill="#AAD4FF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">召回→精排，提升准确率</text>
+  </g>
+  <!-- 箭头 -->
+  <line x1="811" y1="175" x2="841" y2="175" stroke="#0066CC" stroke-width="2"/>
+  <polygon points="841,170 853,175 841,180" fill="#0066CC"/>
+
+  <!-- Step 3: χ Constructor -->
+  <g id="step-construct">
+    <rect x="854" y="138" width="270" height="75" fill="#F07C00" rx="10"/>
+    <text x="989" y="167" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">χ  构造</text>
+    <text x="989" y="188" text-anchor="middle" fill="#FFE0BB" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">FACTS + ENTITIES 上下文字符串</text>
+    <text x="989" y="204" text-anchor="middle" fill="#FFD0A0" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">格式化后输出给 LLM Agent</text>
+  </g>
+  <!-- 箭头 -->
+  <line x1="1124" y1="175" x2="1154" y2="175" stroke="#F07C00" stroke-width="2"/>
+  <polygon points="1154,170 1166,175 1154,180" fill="#F07C00"/>
+
+  <!-- 输出 -->
+  <g id="output">
+    <rect x="1166" y="145" width="90" height="60" fill="#003366" rx="8"/>
+    <text x="1211" y="172" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">上下文</text>
+    <text x="1211" y="192" text-anchor="middle" fill="#AACCEE" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">β ∈ S</text>
+  </g>
+
+  <!-- 公式标注 -->
+  <rect x="55" y="228" width="1201" height="28" fill="#E8F4FC" rx="4"/>
+  <text x="640" y="248" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">f(α) = χ(ρ(φ(α))) = β     检索上下文从查询到最终上下文字符串的完整函数组合</text>
+
+  <!-- ======= 下方三种搜索卡片 ======= -->
+
+  <text x="55" y="288" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">φ 搜索层：三种互补搜索方法</text>
+  <line x1="55" y1="294" x2="370" y2="294" stroke="#0066CC" stroke-width="2"/>
+
+  <!-- 搜索方式1: 余弦语义 -->
+  <g id="search-cosine">
+    <rect x="55" y="305" width="368" height="260" fill="#FFFFFF" rx="8" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1"/>
+    <rect x="55" y="305" width="368" height="55" fill="#003366" rx="8"/>
+    <rect x="55" y="340" width="368" height="20" fill="#003366"/>
+    <text x="239" y="337" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">φcos  余弦语义搜索</text>
+    <use data-icon="tabler-outline/adjustments-search" x="75" y="312" width="28" height="28" fill="#FFFFFF"/>
+    <!-- 内容 -->
+    <text x="75" y="388" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">捕捉语义相似性</text>
+    <text x="75" y="414" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">基于 1024维向量嵌入</text>
+    <text x="75" y="436" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">利用 Neo4j Lucene 实现</text>
+    <text x="75" y="458" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">适用：语义相近但用词不同的查询</text>
+    <!-- 搜索字段 -->
+    <rect x="75" y="478" width="320" height="28" fill="#E8F4FC" rx="4"/>
+    <text x="235" y="497" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">搜索字段：边-fact / 实体-name / 社区-name</text>
+    <!-- 特性标签 -->
+    <rect x="75" y="515" width="80" height="24" fill="#003366" rx="4"/>
+    <text x="115" y="532" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">语义维度</text>
+  </g>
+
+  <!-- 搜索方式2: BM25全文 -->
+  <g id="search-bm25">
+    <rect x="456" y="305" width="368" height="260" fill="#FFFFFF" rx="8" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1"/>
+    <rect x="456" y="305" width="368" height="55" fill="#0066CC" rx="8"/>
+    <rect x="456" y="340" width="368" height="20" fill="#0066CC"/>
+    <text x="640" y="337" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">φbm25  BM25 全文搜索</text>
+    <use data-icon="tabler-outline/bolt" x="476" y="312" width="28" height="28" fill="#FFFFFF"/>
+    <!-- 内容 -->
+    <text x="476" y="388" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">捕捉词汇相似性</text>
+    <text x="476" y="414" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">Okapi BM25 算法（TF-IDF类）</text>
+    <text x="476" y="436" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">利用 Neo4j Lucene 实现</text>
+    <text x="476" y="458" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">适用：精确词语匹配、专有名词</text>
+    <rect x="476" y="478" width="320" height="28" fill="#E8F4FC" rx="4"/>
+    <text x="636" y="497" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">与余弦搜索互补，提高整体召回率</text>
+    <rect x="476" y="515" width="80" height="24" fill="#0066CC" rx="4"/>
+    <text x="516" y="532" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">词汇维度</text>
+  </g>
+
+  <!-- 搜索方式3: BFS广度优先 -->
+  <g id="search-bfs">
+    <rect x="857" y="305" width="368" height="260" fill="#FFFFFF" rx="8" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1"/>
+    <rect x="857" y="305" width="368" height="55" fill="#1B5E20" rx="8"/>
+    <rect x="857" y="340" width="368" height="20" fill="#1B5E20"/>
+    <text x="1041" y="337" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">φbfs  广度优先搜索</text>
+    <use data-icon="tabler-outline/cloud-network" x="877" y="312" width="28" height="28" fill="#FFFFFF"/>
+    <!-- 内容 -->
+    <text x="877" y="388" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">捕捉上下文相似性</text>
+    <text x="877" y="414" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">图结构 n-跳邻域扩展</text>
+    <text x="877" y="436" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">以最近 Episodes 为种子节点</text>
+    <text x="877" y="458" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">图距离越近 → 上下文越相关</text>
+    <rect x="877" y="478" width="320" height="28" fill="#E8FFF2" rx="4"/>
+    <text x="1037" y="497" text-anchor="middle" fill="#1B5E20" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">参数化节点种子，控制局部检索范围</text>
+    <rect x="877" y="515" width="80" height="24" fill="#1B5E20" rx="4"/>
+    <text x="917" y="532" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">图结构维度</text>
+  </g>
+
+  <!-- 重排方法说明 -->
+  <rect x="55" y="580" width="1170" height="60" fill="#F5F7FA" rx="6" stroke="#D0D7E0" stroke-width="1"/>
+  <rect x="55" y="580" width="4" height="60" fill="#F07C00" rx="2"/>
+  <text x="75" y="603" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">ρ 重排层支持的策略</text>
+  <text x="75" y="625" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">RRF（倒数排名融合）| MMR（最大边际相关）| 频率重排（高频引用优先）| 图距离重排 | 交叉编码器（最精准，计算成本最高）</text>
+
+  <!-- 页脚 -->
+  <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1"/>
+  <text x="40" y="695" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">来源：arXiv:2501.13956v1 §3</text>
+  <text x="640" y="695" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">记忆检索系统</text>
+  <text x="1220" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">7 / 12</text>
+</svg>

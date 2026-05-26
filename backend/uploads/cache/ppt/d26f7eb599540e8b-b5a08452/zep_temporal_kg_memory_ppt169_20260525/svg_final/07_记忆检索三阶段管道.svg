@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="7" />
+      <feOffset dx="0" dy="3" result="offsetBlur" />
+      <feFlood flood-color="#000000" flood-opacity="0.10" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+
+  
+  <rect x="0" y="0" width="1280" height="70" fill="#003366" />
+  <rect x="0" y="0" width="6" height="70" fill="#F07C00" />
+  <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="26" font-weight="bold">04  记忆检索：三阶段管道</text>
+  <text x="1220" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">ZEP AI</text>
+
+  
+  <rect x="0" y="70" width="1280" height="50" fill="#E8F4FC" />
+  <rect x="0" y="70" width="6" height="50" fill="#0066CC" />
+  <text x="40" y="102" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">f(α) = χ(ρ(φ(α))) — 查询经搜索召回、重排精排、构造输出三步组合，转化为 LLM 上下文</text>
+
+  
+
+  
+  <g id="query-input">
+    <path fill="#003366" d="M63,145 H177 A8,8 0 0 1 185,153 V197 A8,8 0 0 1 177,205 H63 A8,8 0 0 1 55,197 V153 A8,8 0 0 1 63,145 Z" />
+    <text x="120" y="172" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">查询</text>
+    <text x="120" y="192" text-anchor="middle" fill="#AACCEE" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">α ∈ S</text>
+  </g>
+  
+  <line x1="185" y1="175" x2="215" y2="175" stroke="#0066CC" stroke-width="2" />
+  <polygon points="215,170 227,175 215,180" fill="#0066CC" />
+
+  
+  <g id="step-search">
+    <path fill="#003366" d="M238,138 H488 A10,10 0 0 1 498,148 V203 A10,10 0 0 1 488,213 H238 A10,10 0 0 1 228,203 V148 A10,10 0 0 1 238,138 Z" />
+    <text x="363" y="167" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">φ  搜索</text>
+    <text x="363" y="188" text-anchor="middle" fill="#AACCEE" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">cosine + BM25 + BFS</text>
+    <text x="363" y="204" text-anchor="middle" fill="#7AADDD" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">候选三元组（边+实体+社区）</text>
+  </g>
+  
+  <line x1="498" y1="175" x2="528" y2="175" stroke="#0066CC" stroke-width="2" />
+  <polygon points="528,170 540,175 528,180" fill="#0066CC" />
+
+  
+  <g id="step-rerank">
+    <path fill="#0066CC" d="M551,138 H801 A10,10 0 0 1 811,148 V203 A10,10 0 0 1 801,213 H551 A10,10 0 0 1 541,203 V148 A10,10 0 0 1 551,138 Z" />
+    <text x="676" y="167" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">ρ  重排</text>
+    <text x="676" y="188" text-anchor="middle" fill="#CCE5FF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">RRF / MMR / 频率 / 距离 / 交叉编码器</text>
+    <text x="676" y="204" text-anchor="middle" fill="#AAD4FF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">召回→精排，提升准确率</text>
+  </g>
+  
+  <line x1="811" y1="175" x2="841" y2="175" stroke="#0066CC" stroke-width="2" />
+  <polygon points="841,170 853,175 841,180" fill="#0066CC" />
+
+  
+  <g id="step-construct">
+    <path fill="#F07C00" d="M864,138 H1114 A10,10 0 0 1 1124,148 V203 A10,10 0 0 1 1114,213 H864 A10,10 0 0 1 854,203 V148 A10,10 0 0 1 864,138 Z" />
+    <text x="989" y="167" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">χ  构造</text>
+    <text x="989" y="188" text-anchor="middle" fill="#FFE0BB" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">FACTS + ENTITIES 上下文字符串</text>
+    <text x="989" y="204" text-anchor="middle" fill="#FFD0A0" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">格式化后输出给 LLM Agent</text>
+  </g>
+  
+  <line x1="1124" y1="175" x2="1154" y2="175" stroke="#F07C00" stroke-width="2" />
+  <polygon points="1154,170 1166,175 1154,180" fill="#F07C00" />
+
+  
+  <g id="output">
+    <path fill="#003366" d="M1174,145 H1248 A8,8 0 0 1 1256,153 V197 A8,8 0 0 1 1248,205 H1174 A8,8 0 0 1 1166,197 V153 A8,8 0 0 1 1174,145 Z" />
+    <text x="1211" y="172" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">上下文</text>
+    <text x="1211" y="192" text-anchor="middle" fill="#AACCEE" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">β ∈ S</text>
+  </g>
+
+  
+  <path fill="#E8F4FC" d="M59,228 H1252 A4,4 0 0 1 1256,232 V252 A4,4 0 0 1 1252,256 H59 A4,4 0 0 1 55,252 V232 A4,4 0 0 1 59,228 Z" />
+  <text x="640" y="248" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">f(α) = χ(ρ(φ(α))) = β     检索上下文从查询到最终上下文字符串的完整函数组合</text>
+
+  
+
+  <text x="55" y="288" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">φ 搜索层：三种互补搜索方法</text>
+  <line x1="55" y1="294" x2="370" y2="294" stroke="#0066CC" stroke-width="2" />
+
+  
+  <g id="search-cosine">
+    <path fill="#FFFFFF" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1" d="M63,305 H415 A8,8 0 0 1 423,313 V557 A8,8 0 0 1 415,565 H63 A8,8 0 0 1 55,557 V313 A8,8 0 0 1 63,305 Z" />
+    <path fill="#003366" d="M63,305 H415 A8,8 0 0 1 423,313 V352 A8,8 0 0 1 415,360 H63 A8,8 0 0 1 55,352 V313 A8,8 0 0 1 63,305 Z" />
+    <rect x="55" y="340" width="368" height="20" fill="#003366" />
+    <text x="239" y="337" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">φcos  余弦语义搜索</text>
+    
+  <g transform="translate(75.0, 312.0) scale(1.1666666666666667)" fill="none" stroke="#FFFFFF">
+    <path d="M4 10a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+    <path d="M6 4v4" />
+    <path d="M6 12v8" />
+    <path d="M12 14a2 2 0 0 0 -1.042 3.707" />
+    <path d="M12 4v10" />
+    <path d="M16 7a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+    <path d="M18 4v1" />
+    <path d="M18 9v2" />
+    <path d="M15 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+    <path d="M20.2 20.2l1.8 1.8" />
+  </g>
+    
+    <text x="75" y="388" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">捕捉语义相似性</text>
+    <text x="75" y="414" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">基于 1024维向量嵌入</text>
+    <text x="75" y="436" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">利用 Neo4j Lucene 实现</text>
+    <text x="75" y="458" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">适用：语义相近但用词不同的查询</text>
+    
+    <path fill="#E8F4FC" d="M79,478 H391 A4,4 0 0 1 395,482 V502 A4,4 0 0 1 391,506 H79 A4,4 0 0 1 75,502 V482 A4,4 0 0 1 79,478 Z" />
+    <text x="235" y="497" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">搜索字段：边-fact / 实体-name / 社区-name</text>
+    
+    <path fill="#003366" d="M79,515 H151 A4,4 0 0 1 155,519 V535 A4,4 0 0 1 151,539 H79 A4,4 0 0 1 75,535 V519 A4,4 0 0 1 79,515 Z" />
+    <text x="115" y="532" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">语义维度</text>
+  </g>
+
+  
+  <g id="search-bm25">
+    <path fill="#FFFFFF" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1" d="M464,305 H816 A8,8 0 0 1 824,313 V557 A8,8 0 0 1 816,565 H464 A8,8 0 0 1 456,557 V313 A8,8 0 0 1 464,305 Z" />
+    <path fill="#0066CC" d="M464,305 H816 A8,8 0 0 1 824,313 V352 A8,8 0 0 1 816,360 H464 A8,8 0 0 1 456,352 V313 A8,8 0 0 1 464,305 Z" />
+    <rect x="456" y="340" width="368" height="20" fill="#0066CC" />
+    <text x="640" y="337" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">φbm25  BM25 全文搜索</text>
+    
+  <g transform="translate(476.0, 312.0) scale(1.1666666666666667)" fill="none" stroke="#FFFFFF">
+    <path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11" />
+  </g>
+    
+    <text x="476" y="388" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">捕捉词汇相似性</text>
+    <text x="476" y="414" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">Okapi BM25 算法（TF-IDF类）</text>
+    <text x="476" y="436" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">利用 Neo4j Lucene 实现</text>
+    <text x="476" y="458" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">适用：精确词语匹配、专有名词</text>
+    <path fill="#E8F4FC" d="M480,478 H792 A4,4 0 0 1 796,482 V502 A4,4 0 0 1 792,506 H480 A4,4 0 0 1 476,502 V482 A4,4 0 0 1 480,478 Z" />
+    <text x="636" y="497" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">与余弦搜索互补，提高整体召回率</text>
+    <path fill="#0066CC" d="M480,515 H552 A4,4 0 0 1 556,519 V535 A4,4 0 0 1 552,539 H480 A4,4 0 0 1 476,535 V519 A4,4 0 0 1 480,515 Z" />
+    <text x="516" y="532" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">词汇维度</text>
+  </g>
+
+  
+  <g id="search-bfs">
+    <path fill="#FFFFFF" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1" d="M865,305 H1217 A8,8 0 0 1 1225,313 V557 A8,8 0 0 1 1217,565 H865 A8,8 0 0 1 857,557 V313 A8,8 0 0 1 865,305 Z" />
+    <path fill="#1B5E20" d="M865,305 H1217 A8,8 0 0 1 1225,313 V352 A8,8 0 0 1 1217,360 H865 A8,8 0 0 1 857,352 V313 A8,8 0 0 1 865,305 Z" />
+    <rect x="857" y="340" width="368" height="20" fill="#1B5E20" />
+    <text x="1041" y="337" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">φbfs  广度优先搜索</text>
+    
+  <g transform="translate(877.0, 312.0) scale(1.1666666666666667)" fill="none" stroke="#FFFFFF">
+    <path d="M3 20h7" />
+    <path d="M14 20h7" />
+    <path d="M10 20a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+    <path d="M12 16v2" />
+    <path d="M8 16.004h-1.343c-2.572 -.004 -4.657 -2.011 -4.657 -4.487c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-2.535" />
+  </g>
+    
+    <text x="877" y="388" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">捕捉上下文相似性</text>
+    <text x="877" y="414" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">图结构 n-跳邻域扩展</text>
+    <text x="877" y="436" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">以最近 Episodes 为种子节点</text>
+    <text x="877" y="458" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">图距离越近 → 上下文越相关</text>
+    <path fill="#E8FFF2" d="M881,478 H1193 A4,4 0 0 1 1197,482 V502 A4,4 0 0 1 1193,506 H881 A4,4 0 0 1 877,502 V482 A4,4 0 0 1 881,478 Z" />
+    <text x="1037" y="497" text-anchor="middle" fill="#1B5E20" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">参数化节点种子，控制局部检索范围</text>
+    <path fill="#1B5E20" d="M881,515 H953 A4,4 0 0 1 957,519 V535 A4,4 0 0 1 953,539 H881 A4,4 0 0 1 877,535 V519 A4,4 0 0 1 881,515 Z" />
+    <text x="917" y="532" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">图结构维度</text>
+  </g>
+
+  
+  <path fill="#F5F7FA" stroke="#D0D7E0" stroke-width="1" d="M61,580 H1219 A6,6 0 0 1 1225,586 V634 A6,6 0 0 1 1219,640 H61 A6,6 0 0 1 55,634 V586 A6,6 0 0 1 61,580 Z" />
+  <path fill="#F07C00" d="M57,580 H57 A2,2 0 0 1 59,582 V638 A2,2 0 0 1 57,640 H57 A2,2 0 0 1 55,638 V582 A2,2 0 0 1 57,580 Z" />
+  <text x="75" y="603" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">ρ 重排层支持的策略</text>
+  <text x="75" y="625" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">RRF（倒数排名融合）| MMR（最大边际相关）| 频率重排（高频引用优先）| 图距离重排 | 交叉编码器（最精准，计算成本最高）</text>
+
+  
+  <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1" />
+  <text x="40" y="695" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">来源：arXiv:2501.13956v1 §3</text>
+  <text x="640" y="695" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">记忆检索系统</text>
+  <text x="1220" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">7 / 12</text>
+</svg>

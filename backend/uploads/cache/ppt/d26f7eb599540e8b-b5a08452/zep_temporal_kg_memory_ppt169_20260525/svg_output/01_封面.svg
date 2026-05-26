@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="softShadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="5" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.12" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="coverBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#003366"/>
+      <stop offset="100%" stop-color="#0055AA"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 白色背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 顶部深蓝横条 + 橙色左竖条 -->
+  <rect x="0" y="0" width="1280" height="110" fill="url(#coverBg)"/>
+  <rect x="0" y="0" width="6" height="110" fill="#F07C00"/>
+
+  <!-- 右上角 Logo -->
+  <g id="logo-area">
+    <rect x="1060" y="28" width="180" height="54" fill="#FFFFFF" fill-opacity="0.1" rx="4" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1"/>
+    <text x="1150" y="62" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">ZEP AI</text>
+  </g>
+
+  <!-- 顶栏标签文字 -->
+  <text x="40" y="64" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" fill-opacity="0.8">论文汇报 | 论文精读</text>
+
+  <!-- 装饰背景图形 -->
+  <circle cx="1150" cy="450" r="220" fill="#003366" fill-opacity="0.04"/>
+  <circle cx="1150" cy="450" r="150" fill="#0066CC" fill-opacity="0.05"/>
+  <circle cx="80" cy="620" r="120" fill="#E8F4FC" fill-opacity="0.6"/>
+
+  <!-- 主标题 -->
+  <g id="main-title">
+    <text x="640" y="270" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="42" font-weight="bold">ZEP：面向智能体记忆的时序知识图谱架构</text>
+    <text x="640" y="335" text-anchor="middle" fill="#0066CC" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22">ZEP: A Temporal Knowledge Graph Architecture for Agent Memory</text>
+  </g>
+
+  <!-- 装饰分割线 -->
+  <g id="divider">
+    <line x1="360" y1="375" x2="920" y2="375" stroke="#0066CC" stroke-width="2"/>
+    <circle cx="640" cy="375" r="5" fill="#F07C00"/>
+    <circle cx="360" cy="375" r="3" fill="#0066CC"/>
+    <circle cx="920" cy="375" r="3" fill="#0066CC"/>
+  </g>
+
+  <!-- 论文信息 -->
+  <g id="paper-info">
+    <text x="640" y="425" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18">Zep AI团队 | arXiv:2501.13956v1 | 2025年1月</text>
+  </g>
+
+  <!-- 汇报人信息区域 -->
+  <g id="presenter-area">
+    <rect x="380" y="460" width="520" height="110" fill="#F5F7FA" rx="8" filter="url(#softShadow)"/>
+    <rect x="380" y="460" width="6" height="110" fill="#F07C00" rx="3"/>
+    <text x="640" y="498" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18">汇报人：[学生姓名]</text>
+    <text x="640" y="530" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">指导教师：[教师姓名]</text>
+    <text x="640" y="558" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15">[所在高校/研究机构]</text>
+  </g>
+
+  <!-- 底部信息区域 -->
+  <rect x="0" y="665" width="1280" height="55" fill="#F5F7FA"/>
+  <text x="640" y="698" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">2026年5月 | 学术论文汇报</text>
+</svg>

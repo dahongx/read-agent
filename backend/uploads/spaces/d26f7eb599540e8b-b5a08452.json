@@ -1,0 +1,25 @@
+{
+  "space_id": "d26f7eb599540e8b-b5a08452",
+  "pdf_filename": "2501.13956v1.pdf",
+  "pdf_path": "backend/uploads/sessions/5a83235b-6fa5-401a-ae1a-38ec88997725/input/2501.13956v1.pdf",
+  "pdf_hash": "d26f7eb599540e8b",
+  "config": {
+    "template": "academic_defense",
+    "page_count": 12,
+    "language": "中文",
+    "style": "学术汇报",
+    "audience": "高校师生"
+  },
+  "paper_title": "2501.13956v1",
+  "session_type": "single",
+  "source_documents": [],
+  "contributors": [
+    "123"
+  ],
+  "created_at": 1779728114.8746479,
+  "updated_at": 1779728328.664649,
+  "last_accessed_by": {
+    "123": 1779728328.664649
+  },
+  "state": "ready"
+}

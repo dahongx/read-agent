@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="7"/>
+      <feOffset dx="0" dy="3" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.10" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 页眉 -->
+  <rect x="0" y="0" width="1280" height="70" fill="#003366"/>
+  <rect x="0" y="0" width="6" height="70" fill="#F07C00"/>
+  <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="26" font-weight="bold">05  DMR 基准结果：Zep 超越 MemGPT</text>
+  <text x="1220" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">ZEP AI</text>
+
+  <!-- 核心观点条 -->
+  <rect x="0" y="70" width="1280" height="50" fill="#E8F4FC"/>
+  <rect x="0" y="70" width="6" height="50" fill="#0066CC"/>
+  <text x="40" y="102" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">Zep 94.8% 超越 MemGPT 93.4%；但 DMR 评测本身存在局限，LongMemEval 更具代表性</text>
+
+  <!-- ====== 左侧：横向条形图 ====== -->
+  <g id="chart-area">
+    <text x="55" y="158" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">DMR 各方案准确率对比（gpt-4-turbo）</text>
+
+    <!-- 图表背景 -->
+    <rect x="55" y="170" width="750" height="455" fill="#FAFAFA" rx="6" stroke="#E8F4FC" stroke-width="1"/>
+
+    <!-- Y轴标签和条形 -->
+    <!-- 横轴 -->
+    <line x1="290" y1="595" x2="785" y2="595" stroke="#D0D7E0" stroke-width="1"/>
+    <!-- 网格线 -->
+    <line x1="380" y1="185" x2="380" y2="595" stroke="#E8F4FC" stroke-width="1" stroke-dasharray="4,3"/>
+    <line x1="470" y1="185" x2="470" y2="595" stroke="#E8F4FC" stroke-width="1" stroke-dasharray="4,3"/>
+    <line x1="560" y1="185" x2="560" y2="595" stroke="#E8F4FC" stroke-width="1" stroke-dasharray="4,3"/>
+    <line x1="650" y1="185" x2="650" y2="595" stroke="#E8F4FC" stroke-width="1" stroke-dasharray="4,3"/>
+    <line x1="740" y1="185" x2="740" y2="595" stroke="#E8F4FC" stroke-width="1" stroke-dasharray="4,3"/>
+    <!-- X轴刻度标签 -->
+    <text x="380" y="612" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">20%</text>
+    <text x="470" y="612" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">40%</text>
+    <text x="560" y="612" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">60%</text>
+    <text x="650" y="612" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">80%</text>
+    <text x="740" y="612" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">100%</text>
+
+    <!--
+      坐标计算：
+      X轴：0% = 290, 100% = 785
+      每1% = (785-290)/100 = 4.95px
+      bar_x = 290 + pct*4.95
+    -->
+
+    <!-- Bar 1: Recursive Summarization 35.3% = 290+35.3*4.95=465 -->
+    <g id="bar-1">
+      <text x="285" y="213" text-anchor="end" fill="#888888" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">递归摘要</text>
+      <text x="285" y="227" text-anchor="end" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">gpt-4-turbo</text>
+      <rect x="290" y="200" width="175" height="28" fill="#CCCCCC" rx="3"/>
+      <text x="472" y="219" fill="#888888" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">35.3%</text>
+    </g>
+
+    <!-- Bar 2: Conversation Summaries 78.6% = 290+78.6*4.95=679 -->
+    <g id="bar-2">
+      <text x="285" y="268" text-anchor="end" fill="#888888" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">对话摘要</text>
+      <text x="285" y="282" text-anchor="end" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">gpt-4-turbo</text>
+      <rect x="290" y="255" width="389" height="28" fill="#AAAAAA" rx="3"/>
+      <text x="686" y="274" fill="#888888" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">78.6%</text>
+    </g>
+
+    <!-- Bar 3: MemGPT 93.4% = 290+93.4*4.95=752 (SOTA highlighted) -->
+    <g id="bar-memgpt">
+      <text x="285" y="323" text-anchor="end" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">MemGPT</text>
+      <text x="285" y="337" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">gpt-4-turbo ← SOTA</text>
+      <rect x="290" y="310" width="462" height="30" fill="#005599" rx="3"/>
+      <text x="759" y="330" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">93.4%</text>
+      <!-- SOTA 标注 -->
+      <rect x="679" y="305" width="60" height="18" fill="#003366" rx="3"/>
+      <text x="709" y="318" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">SOTA</text>
+    </g>
+
+    <!-- Bar 4: Full-context 94.4% = 290+94.4*4.95=757 -->
+    <g id="bar-fullctx">
+      <text x="285" y="375" text-anchor="end" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">完整上下文</text>
+      <text x="285" y="389" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">gpt-4-turbo</text>
+      <rect x="290" y="362" width="467" height="28" fill="#668BBB" rx="3"/>
+      <text x="764" y="381" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">94.4%</text>
+    </g>
+
+    <!-- Bar 5: Zep 94.8% = 290+94.8*4.95=759 (HIGHLIGHTED ORANGE) -->
+    <g id="bar-zep-turbo">
+      <text x="285" y="430" text-anchor="end" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">Zep</text>
+      <text x="285" y="444" text-anchor="end" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">gpt-4-turbo ★</text>
+      <rect x="290" y="417" width="469" height="30" fill="#F07C00" rx="3"/>
+      <text x="766" y="437" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">94.8%</text>
+      <!-- 超越标注 -->
+      <rect x="683" y="411" width="72" height="18" fill="#F07C00" rx="3"/>
+      <text x="719" y="424" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11" font-weight="bold">+1.4% ↑</text>
+    </g>
+
+    <!-- gpt-4o-mini 分隔线 -->
+    <line x1="70" y1="467" x2="790" y2="467" stroke="#E8F4FC" stroke-width="1" stroke-dasharray="6,3"/>
+    <text x="400" y="480" text-anchor="middle" fill="#AAAAAA" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">— gpt-4o-mini 组 —</text>
+
+    <!-- Bar 6: Full-context gpt-4o-mini 98.0% -->
+    <g id="bar-fullctx-mini">
+      <text x="285" y="511" text-anchor="end" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">完整上下文</text>
+      <text x="285" y="525" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">gpt-4o-mini</text>
+      <rect x="290" y="498" width="485" height="28" fill="#668BBB" rx="3"/>
+      <text x="782" y="517" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">98.0%</text>
+    </g>
+
+    <!-- Bar 7: Zep gpt-4o-mini 98.2% = 290+98.2*4.95=776 (HIGHLIGHTED ORANGE) -->
+    <g id="bar-zep-mini">
+      <text x="285" y="563" text-anchor="end" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">Zep</text>
+      <text x="285" y="577" text-anchor="end" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">gpt-4o-mini ★</text>
+      <rect x="290" y="550" width="486" height="30" fill="#F07C00" rx="3"/>
+      <text x="783" y="570" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">98.2%</text>
+    </g>
+  </g>
+
+  <!-- ====== 右侧：结论卡片 ====== -->
+  <g id="right-insight">
+    <text x="830" y="158" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">深度解读</text>
+    <line x1="830" y1="164" x2="1000" y2="164" stroke="#F07C00" stroke-width="2"/>
+
+    <!-- 正向结论 -->
+    <rect x="830" y="174" width="405" height="170" fill="#E8F4FC" rx="8" stroke="#0066CC" stroke-width="1.5"/>
+    <rect x="830" y="174" width="6" height="170" fill="#F07C00" rx="3"/>
+    <text x="854" y="202" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">Zep 超越 MemGPT</text>
+    <text x="848" y="228" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">Zep 94.8% vs MemGPT 93.4%</text>
+    <text x="848" y="250" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">（gpt-4-turbo，差距 +1.4%）</text>
+    <text x="848" y="274" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">gpt-4o-mini 下提升至 98.2%</text>
+    <text x="848" y="296" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">优于所有 Baseline 方案</text>
+    <rect x="848" y="308" width="370" height="24" fill="#FFFFFF" rx="4"/>
+    <text x="1033" y="325" text-anchor="middle" fill="#0066CC" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">✓ 在 MemGPT 团队的评测指标上获胜</text>
+
+    <!-- 局限卡片 -->
+    <rect x="830" y="360" width="405" height="205" fill="#FFF5E8" rx="8" stroke="#F07C00" stroke-width="1.5"/>
+    <rect x="830" y="360" width="6" height="205" fill="#F07C00" rx="3"/>
+    <text x="854" y="388" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">DMR 评测局限（作者分析）</text>
+    <text x="848" y="416" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">① 60条消息可完整放入上下文窗口</text>
+    <text x="848" y="438" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">→ 简单全上下文也能达 94.4%</text>
+    <text x="848" y="462" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">② 仅单轮事实问答，不考察时序推理</text>
+    <text x="848" y="484" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">③ 问题模糊（"favorite drink"等）</text>
+    <text x="848" y="506" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">④ 不代表真实企业使用场景</text>
+    <rect x="848" y="518" width="370" height="32" fill="#FFF0D8" rx="4"/>
+    <text x="1033" y="539" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">→ LongMemEval 更能反映真实能力</text>
+  </g>
+
+  <!-- 页脚 -->
+  <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1"/>
+  <text x="40" y="695" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">来源：arXiv:2501.13956v1 Table 1 §4.2</text>
+  <text x="640" y="695" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">实验结果</text>
+  <text x="1220" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">9 / 12</text>
+</svg>

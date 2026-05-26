@@ -98,7 +98,7 @@ def run_skill_script(script_name: str, *args: str, allow_partial_failure: bool =
     return stdout
 
 
-def _build_batch_prompt(pdf_path: str, config: PptConfig) -> str:
+def _build_batch_prompt(pdf_path: str, config: PptConfig, output_dir: Path) -> str:
     return (
         f"[BATCH_MODE]\n"
         f"/{SKILL_NAME}\n\n"
@@ -109,9 +109,14 @@ def _build_batch_prompt(pdf_path: str, config: PptConfig) -> str:
         f"- 若模板为自由设计，则不要查询模板选项，直接继续\n"
         f"- 连续执行到 svg_final 和 pptx 导出后再结束\n\n"
         f"运行环境补充约束：\n"
-        f"- 当前是 Windows 后端任务，请不要假设 `python3` 命令存在\n"
+        f"- 当前是后端任务（可能跑在 Windows 或 Linux），请不要假设 `python3` 命令存在\n"
         f"- 如需运行 Python 脚本，请优先使用这个解释器：{PYTHON}\n"
         f"- 如需调用 skill 内脚本，请使用绝对路径，并优先写成：\"{PYTHON}\" \"<script_path>\"\n\n"
+        f"项目目录约束（**必须遵守**）：\n"
+        f"- 必须用 project_manager.py init 时显式带上 --dir \"{output_dir}\"\n"
+        f"- 即生成的项目必须落在：{output_dir}/<project_name>_ppt169_YYYYMMDD/\n"
+        f"- 所有产物（design_spec.md / sources/ / svg_output/ / svg_final/ / notes/ / *.pptx）都在该项目目录下\n"
+        f"- 不允许把项目建到 <repo>/projects/，只允许在上面指定的输出目录\n\n"
         f"论文PDF：{pdf_path}\n"
         f"模板：{config.template_prompt_value}\n"
         f"语言：{config.language}\n"
@@ -216,6 +221,41 @@ def get_cache_manifest_path(cache_dir: Path) -> Path:
     return cache_dir / CACHE_MANIFEST_NAME
 
 
+def _path_to_portable(value: str | Path | None, base: Path) -> str:
+    """把绝对路径转成相对 base 的相对路径（POSIX 风格），写盘前调用。
+    base 通常就是 cache_dir，写出来的相对路径与机器无关，跨 Windows/Linux 通用。
+    路径不在 base 下时退化成相对 REPO_ROOT，再不行就原样存绝对（极少见）。"""
+    if not value:
+        return ""
+    p = Path(value)
+    if not p.is_absolute():
+        return p.as_posix()
+    try:
+        rel = p.resolve().relative_to(base.resolve())
+        return rel.as_posix()
+    except (ValueError, OSError):
+        try:
+            rel = p.resolve().relative_to(Path(REPO_ROOT).resolve())
+            return rel.as_posix()
+        except (ValueError, OSError):
+            return p.as_posix()
+
+
+def _path_from_portable(value: str | None, base: Path) -> str:
+    """读盘后把存的可移植路径还原成当前机器的绝对路径。
+    优先解释为相对 base，退化为相对 REPO_ROOT，已经是绝对路径就原样。"""
+    if not value:
+        return ""
+    p = Path(value)
+    if p.is_absolute():
+        return str(p)
+    candidate = (base / p).resolve()
+    if candidate.exists():
+        return str(candidate)
+    fallback = (Path(REPO_ROOT) / p).resolve()
+    return str(fallback)
+
+
 def load_cached_project_outputs(cache_dir: Path) -> dict[str, str] | None:
     manifest_path = get_cache_manifest_path(cache_dir)
     if not manifest_path.exists():
@@ -230,11 +270,13 @@ def load_cached_project_outputs(cache_dir: Path) -> dict[str, str] | None:
     if not all(isinstance(data.get(key), str) for key in required):
         return None
 
-    project_dir = Path(data["project_dir"])
-    ppt_path = Path(data["ppt_path"]) if data.get("ppt_path") else None
-    slides_dir = Path(data["slides_dir"]) if data.get("slides_dir") else project_dir / "svg_final"
-    notes_dir = Path(data["notes_dir"]) if data.get("notes_dir") else project_dir / "notes"
-    merged_md = Path(data["merged_markdown_path"]) if data.get("merged_markdown_path") else project_dir / "sources" / "merged.md"
+    project_dir = Path(_path_from_portable(data["project_dir"], cache_dir))
+    ppt_raw = _path_from_portable(data.get("ppt_path"), cache_dir)
+    ppt_path = Path(ppt_raw) if ppt_raw else None
+    slides_dir = Path(_path_from_portable(data.get("slides_dir"), cache_dir)) if data.get("slides_dir") else (project_dir / "svg_final")
+    notes_dir = Path(_path_from_portable(data.get("notes_dir"), cache_dir)) if data.get("notes_dir") else (project_dir / "notes")
+    merged_raw = _path_from_portable(data.get("merged_markdown_path"), cache_dir)
+    merged_md = Path(merged_raw) if merged_raw else (project_dir / "sources" / "merged.md")
 
     if not project_dir.exists():
         return None
@@ -254,8 +296,15 @@ def load_cached_project_outputs(cache_dir: Path) -> dict[str, str] | None:
 
 def save_cached_project_outputs(cache_dir: Path, outputs: dict[str, str], cache_key: str) -> None:
     manifest_path = get_cache_manifest_path(cache_dir)
+    portable = {
+        "project_dir": _path_to_portable(outputs.get("project_dir"), cache_dir),
+        "merged_markdown_path": _path_to_portable(outputs.get("merged_markdown_path"), cache_dir),
+        "ppt_path": _path_to_portable(outputs.get("ppt_path"), cache_dir),
+        "slides_dir": _path_to_portable(outputs.get("slides_dir"), cache_dir),
+        "notes_dir": _path_to_portable(outputs.get("notes_dir"), cache_dir),
+    }
     payload = {
-        **outputs,
+        **portable,
         "cache_key": cache_key,
         "updated_at": int(time.time()),
     }
@@ -706,7 +755,7 @@ async def run_ppt_generation(
     if not skill_file:
         raise GenerationError(f"Skill file not found under: {settings.skill_path}", stage="preflight")
 
-    prompt = prompt_override or _build_batch_prompt(pdf_path, config)
+    prompt = prompt_override or _build_batch_prompt(pdf_path, config, output_dir)
     cmd = [
         str(claude_exe),
         "--print",
@@ -879,15 +928,19 @@ async def run_ppt_generation(
     await progress_cb(session_id, "ppt", "查找生成的项目...", 88, stage="artifact_discovery")
     await log_recorder.record(source="ppt", level="INFO", stage="artifact_discovery", message="查找生成的项目")
 
-    projects_root = project_search_dir or (Path(REPO_ROOT) / "projects")
-    logger.info("[PPT][%s] Searching for generated project under %s", session_id, projects_root)
-    project_dir = _find_latest_project(projects_root)
+    # 单篇 prompt 现在强制把项目建到 output_dir 下，所以优先在 output_dir 找；
+    # fallback <repo>/projects/ 是为了兼容历史数据（早期单篇默认建到 projects/）
+    primary_search = project_search_dir or output_dir
+    logger.info("[PPT][%s] Searching for generated project under %s", session_id, primary_search)
+    project_dir = _find_latest_project(primary_search)
     if not project_dir:
-        logger.info("[PPT][%s] Not found in projects_root, trying output_dir: %s", session_id, output_dir)
-        project_dir = _find_latest_project(output_dir)
+        legacy_projects = Path(REPO_ROOT) / "projects"
+        if legacy_projects != primary_search:
+            logger.info("[PPT][%s] Not in %s, trying legacy projects/: %s", session_id, primary_search, legacy_projects)
+            project_dir = _find_latest_project(legacy_projects)
     if not project_dir:
         raise GenerationError(
-            "Claude CLI completed but no project directory was found under projects/ or cache output.",
+            "Claude CLI completed but no project directory was found under output_dir or projects/.",
             stage="artifact_discovery",
             stdout=stdout,
             stderr=stderr,

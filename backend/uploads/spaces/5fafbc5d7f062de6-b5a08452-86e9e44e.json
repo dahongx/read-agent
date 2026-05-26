@@ -1,0 +1,43 @@
+{
+  "space_id": "5fafbc5d7f062de6-b5a08452-86e9e44e",
+  "pdf_filename": "2603.16862v1.pdf, preprints202602.1990.v1.pdf",
+  "pdf_path": "",
+  "pdf_hash": "multi",
+  "config": {
+    "template": "academic_defense",
+    "page_count": 12,
+    "language": "中文",
+    "style": "学术汇报",
+    "audience": "高校师生"
+  },
+  "paper_title": "多篇综述 (2)",
+  "session_type": "multi",
+  "source_documents": [
+    {
+      "doc_id": "doc_001",
+      "order": 1,
+      "source_file_name": "2603.16862v1.pdf",
+      "pdf_path": "backend/uploads/sessions/793fb056-784a-4c7a-86b1-ac557fa00aac/input/2603.16862v1.pdf",
+      "content_hash": "a6a75d611a381ba8e244c77601c21ad4567e39e2e97426c85999a0cea21ae738",
+      "markdown_path": null
+    },
+    {
+      "doc_id": "doc_002",
+      "order": 2,
+      "source_file_name": "preprints202602.1990.v1.pdf",
+      "pdf_path": "backend/uploads/sessions/793fb056-784a-4c7a-86b1-ac557fa00aac/input/preprints202602.1990.v1.pdf",
+      "content_hash": "cab988c97f4cafc3eb56577b5949a7006bd02ff8ad5fac995ed48e6bb1b86b60",
+      "markdown_path": null
+    }
+  ],
+  "contributors": [
+    "123"
+  ],
+  "state": "ready",
+  "error_message": null,
+  "created_at": 1779730164.659692,
+  "updated_at": 1779738202.3784904,
+  "last_accessed_by": {
+    "123": 1779738202.3784904
+  }
+}

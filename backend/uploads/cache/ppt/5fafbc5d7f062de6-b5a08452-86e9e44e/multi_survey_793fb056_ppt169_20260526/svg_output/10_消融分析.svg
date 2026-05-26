@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 页眉 -->
+  <rect x="0" y="0" width="1280" height="70" fill="#003366"/>
+  <rect x="0" y="0" width="8" height="70" fill="#E87722"/>
+  <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="26" font-weight="bold">05　消融分析与深度讨论</text>
+  <text x="1240" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">LLM 长期记忆综述</text>
+
+  <!-- 核心观点条 -->
+  <rect x="0" y="70" width="1280" height="50" fill="#E8F4FC"/>
+  <rect x="0" y="70" width="6" height="50" fill="#0066CC"/>
+  <text x="30" y="102" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17">事件历法是 Chronos 最核心组件（移除后降 34.5pp）；记忆容量存在性能最优区间</text>
+
+  <!-- 左侧：消融研究（Chronos Low配置） -->
+  <text x="40" y="140" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17" font-weight="bold">Chronos 消融研究（Low 配置，116题样本）</text>
+
+  <!-- 水平条形图 -->
+  <!-- 事件历法 -->
+  <text x="40" y="170" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">移除事件历法索引</text>
+  <rect x="40" y="178" width="490" height="22" fill="#E87722" fill-opacity="0.15" rx="3"/>
+  <rect x="40" y="178" width="490" height="22" fill="#E87722" rx="3"/>
+  <text x="536" y="194" fill="#E87722" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">−34.5pp ⚠</text>
+
+  <text x="40" y="218" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">移除初始检索阶段</text>
+  <rect x="40" y="226" width="160" height="22" fill="#0066CC" fill-opacity="0.15" rx="3"/>
+  <rect x="40" y="226" width="143" height="22" fill="#0066CC" rx="3"/>
+  <text x="190" y="242" fill="#0066CC" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">−14.3pp</text>
+
+  <text x="40" y="266" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">移除动态提示系统</text>
+  <rect x="40" y="274" width="160" height="22" fill="#0066CC" fill-opacity="0.15" rx="3"/>
+  <rect x="40" y="274" width="126" height="22" fill="#0066CC" rx="3"/>
+  <text x="172" y="290" fill="#0066CC" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">−12.6pp</text>
+
+  <text x="40" y="314" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">移除 Reranking</text>
+  <rect x="40" y="322" width="160" height="22" fill="#003366" fill-opacity="0.15" rx="3"/>
+  <rect x="40" y="322" width="92" height="22" fill="#003366" rx="3"/>
+  <text x="138" y="338" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">−9.2pp</text>
+
+  <text x="40" y="362" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">移除日期过滤</text>
+  <rect x="40" y="370" width="160" height="22" fill="#003366" fill-opacity="0.15" rx="3"/>
+  <rect x="40" y="370" width="92" height="22" fill="#003366" fill-opacity="0.6" rx="3"/>
+  <text x="138" y="386" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">−9.2pp</text>
+
+  <!-- 关键洞察框 -->
+  <rect x="40" y="408" width="555" height="58" fill="#E87722" fill-opacity="0.08" stroke="#E87722" stroke-width="1" rx="6"/>
+  <text x="317" y="430" text-anchor="middle" fill="#E87722" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">关键洞察</text>
+  <text x="317" y="452" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">事件历法单独对基线贡献 +58.9%，为最核心组件</text>
+
+  <!-- 模型能力分析 -->
+  <rect x="40" y="478" width="555" height="72" fill="#F5F7FA" rx="6"/>
+  <text x="60" y="500" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15" font-weight="bold">模型能力差异分析</text>
+  <text x="60" y="522" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">• Chronos High → Low 移除事件索引：降幅仅 2.6pp（vs Low 的 34.5pp）</text>
+  <text x="60" y="542" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">• 高能力模型（Opus 4.6）可部分弥补结构缺失，但架构贡献依然显著</text>
+
+  <!-- 右侧：误差分析图 + 记忆容量图 -->
+  <text x="620" y="140" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17" font-weight="bold">Chronos 错误类型分析（High vs Low）</text>
+  <rect x="620" y="150" width="620" height="250" fill="#F5F7FA" stroke="#D0D7E0" stroke-width="1" rx="8"/>
+  <image href="../images/chronos_error_analysis.png" x="630" y="158" width="600" height="232" preserveAspectRatio="xMidYMid meet"/>
+  <text x="930" y="412" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">图3：Chronos High vs Low 各错误类别对比（检索失败仍最大）</text>
+
+  <text x="620" y="440" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17" font-weight="bold">记忆容量对决策效率的影响（认知建模）</text>
+  <rect x="620" y="450" width="620" height="190" fill="#F5F7FA" stroke="#D0D7E0" stroke-width="1" rx="8"/>
+  <image href="../images/cognitive_memory_cap.png" x="630" y="458" width="600" height="173" preserveAspectRatio="xMidYMid meet"/>
+
+  <!-- 记忆容量注释 -->
+  <text x="930" y="650" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">图3：记忆容量K对Avg.Steps的影响（适中K值最优）</text>
+
+  <!-- 页脚 -->
+  <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1"/>
+  <text x="40" y="695" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">来源：Chronos §4.4 消融实验 (Table 3) | 认知建模 §IV-B (Fig.3)</text>
+  <text x="640" y="695" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">消融分析</text>
+  <text x="1240" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">10 / 12</text>
+</svg>

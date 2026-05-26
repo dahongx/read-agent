@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" />
+      <feOffset dx="0" dy="4" result="offsetBlur" />
+      <feFlood flood-color="#000000" flood-opacity="0.12" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="glowOrange" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur" />
+      <feFlood flood-color="#F07C00" flood-opacity="0.35" result="glowColor" />
+      <feComposite in="glowColor" in2="blur" operator="in" result="glow" />
+      <feMerge>
+        <feMergeNode in="glow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+
+  
+  <rect x="0" y="0" width="1280" height="70" fill="#003366" />
+  <rect x="0" y="0" width="6" height="70" fill="#F07C00" />
+  <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="26" font-weight="bold">06  核心贡献总结</text>
+  <text x="1220" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">ZEP AI</text>
+
+  
+  <rect x="0" y="70" width="1280" height="50" fill="#E8F4FC" />
+  <rect x="0" y="70" width="6" height="50" fill="#0066CC" />
+  <text x="40" y="102" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">Zep 通过时序知识图谱，实现精度、延迟、可扩展性三维兼顾的企业级 AI Agent 记忆方案</text>
+
+  
+
+  
+  <g id="contrib-1">
+    <path fill="#FFFFFF" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1" d="M65,148 H420 A10,10 0 0 1 430,158 V418 A10,10 0 0 1 420,428 H65 A10,10 0 0 1 55,418 V158 A10,10 0 0 1 65,148 Z" />
+    
+    <path fill="#003366" d="M65,148 H420 A10,10 0 0 1 430,158 V198 A10,10 0 0 1 420,208 H65 A10,10 0 0 1 55,198 V158 A10,10 0 0 1 65,148 Z" />
+    <rect x="55" y="188" width="375" height="20" fill="#003366" />
+    <circle cx="90" cy="178" r="22" fill="#F07C00" />
+    <text x="90" y="185" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="bold">1</text>
+    <text x="126" y="171" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">Graphiti 时序 KG 引擎</text>
+    <text x="126" y="192" fill="#AACCEE" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">Temporal Knowledge Graph Engine</text>
+    
+    
+  <g transform="translate(75.0, 222.0) scale(1.1666666666666667)" fill="none" stroke="#003366">
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+    <path d="M12 7v5l3 3" />
+  </g>
+    <text x="115" y="241" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">双时态建模</text>
+    <text x="75" y="268" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">T轴（现实时间）+ T'轴（事务时间）</text>
+    <text x="75" y="290" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">四个时间戳精准管理事实生命周期</text>
+    <line x1="75" y1="306" x2="405" y2="306" stroke="#E8F4FC" stroke-width="1.5" />
+    
+  <g transform="translate(75.0, 314.0) scale(1.1666666666666667)" fill="none" stroke="#003366">
+    <path d="M4 6a8 3 0 1 0 16 0a8 3 0 1 0 -16 0" />
+    <path d="M4 6v6a8 3 0 0 0 16 0v-6" />
+    <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
+  </g>
+    <text x="115" y="333" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">非无损情节存储</text>
+    <text x="75" y="358" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">原始数据完整保留，支持溯源引用</text>
+    <text x="75" y="378" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">语义矛盾自动失效旧边</text>
+    <text x="75" y="398" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">Neo4j + 预定义 Cypher 查询</text>
+  </g>
+
+  
+  <g id="contrib-2">
+    <path fill="#FFFFFF" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1" d="M465,148 H820 A10,10 0 0 1 830,158 V418 A10,10 0 0 1 820,428 H465 A10,10 0 0 1 455,418 V158 A10,10 0 0 1 465,148 Z" />
+    <path fill="#0066CC" d="M465,148 H820 A10,10 0 0 1 830,158 V198 A10,10 0 0 1 820,208 H465 A10,10 0 0 1 455,198 V158 A10,10 0 0 1 465,148 Z" />
+    <rect x="455" y="188" width="375" height="20" fill="#0066CC" />
+    <circle cx="490" cy="178" r="22" fill="#003366" />
+    <text x="490" y="185" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="bold">2</text>
+    <text x="526" y="171" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">三层分级记忆架构</text>
+    <text x="526" y="192" fill="#CCE5FF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">Hierarchical Memory Organization</text>
+    
+    
+  <g transform="translate(475.0, 222.0) scale(1.1666666666666667)" fill="none" stroke="#0066CC">
+    <path d="M15.5 13a3.5 3.5 0 0 0 -3.5 3.5v1a3.5 3.5 0 0 0 7 0v-1.8" />
+    <path d="M8.5 13a3.5 3.5 0 0 1 3.5 3.5v1a3.5 3.5 0 0 1 -7 0v-1.8" />
+    <path d="M17.5 16a3.5 3.5 0 0 0 0 -7h-.5" />
+    <path d="M19 9.3v-2.8a3.5 3.5 0 0 0 -7 0" />
+    <path d="M6.5 16a3.5 3.5 0 0 1 0 -7h.5" />
+    <path d="M5 9.3v-2.8a3.5 3.5 0 0 1 7 0v10" />
+  </g>
+    <text x="515" y="241" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">类比人类记忆结构</text>
+    <text x="475" y="268" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">情节子图（原始事件）</text>
+    <text x="475" y="290" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">→ 语义实体（关联概念）</text>
+    <text x="475" y="312" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">→ 社区摘要（全局理解）</text>
+    <line x1="475" y1="325" x2="805" y2="325" stroke="#E8F4FC" stroke-width="1.5" />
+    
+  <g transform="translate(475.0, 333.0) scale(1.1666666666666667)" fill="none" stroke="#0066CC">
+    <path d="M3 20h7" />
+    <path d="M14 20h7" />
+    <path d="M10 20a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+    <path d="M12 16v2" />
+    <path d="M8 16.004h-1.343c-2.572 -.004 -4.657 -2.011 -4.657 -4.487c0 -2.475 2.085 -4.482 4.657 -4.482c.393 -1.762 1.794 -3.2 3.675 -3.773c1.88 -.572 3.956 -.193 5.444 1c1.488 1.19 2.162 3.007 1.77 4.769h.99c1.913 0 3.464 1.56 3.464 3.486c0 1.927 -1.551 3.487 -3.465 3.487h-2.535" />
+  </g>
+    <text x="515" y="352" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">标签传播动态社区</text>
+    <text x="475" y="378" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">增量更新无需全量重算</text>
+    <text x="475" y="398" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">支持流式数据持续摄入</text>
+  </g>
+
+  
+  <g id="contrib-3">
+    <path fill="#FFFFFF" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1" d="M865,148 H1220 A10,10 0 0 1 1230,158 V418 A10,10 0 0 1 1220,428 H865 A10,10 0 0 1 855,418 V158 A10,10 0 0 1 865,148 Z" />
+    <path fill="#28A745" d="M865,148 H1220 A10,10 0 0 1 1230,158 V198 A10,10 0 0 1 1220,208 H865 A10,10 0 0 1 855,198 V158 A10,10 0 0 1 865,148 Z" />
+    <rect x="855" y="188" width="375" height="20" fill="#28A745" />
+    <circle cx="890" cy="178" r="22" fill="#1B5E20" />
+    <text x="890" y="185" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="bold">3</text>
+    <text x="926" y="171" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">混合检索 + 重排管道</text>
+    <text x="926" y="192" fill="#AAEEBB" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">Hybrid Retrieval + Reranking</text>
+    
+    
+  <g transform="translate(875.0, 222.0) scale(1.1666666666666667)" fill="none" stroke="#28A745">
+    <path d="M4 10a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+    <path d="M6 4v4" />
+    <path d="M6 12v8" />
+    <path d="M12 14a2 2 0 0 0 -1.042 3.707" />
+    <path d="M12 4v10" />
+    <path d="M16 7a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+    <path d="M18 4v1" />
+    <path d="M18 9v2" />
+    <path d="M15 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+    <path d="M20.2 20.2l1.8 1.8" />
+  </g>
+    <text x="915" y="241" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">三路搜索召回</text>
+    <text x="875" y="268" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">cosine + BM25 + BFS 三维并行</text>
+    <text x="875" y="290" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">覆盖语义/词汇/图结构相似性</text>
+    <line x1="875" y1="306" x2="1205" y2="306" stroke="#E8F4FC" stroke-width="1.5" />
+    
+  <g transform="translate(875.0, 314.0) scale(1.1666666666666667)" fill="none" stroke="#28A745">
+    <path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11" />
+  </g>
+    <text x="915" y="333" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">多策略重排精化</text>
+    <text x="875" y="358" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">RRF / MMR / 频率重排</text>
+    <text x="875" y="378" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">交叉编码器精排（最高精度）</text>
+    <text x="875" y="398" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">f(α) = χ(ρ(φ(α)))</text>
+  </g>
+
+  
+
+  <path fill="#003366" d="M65,450 H1215 A10,10 0 0 1 1225,460 V540 A10,10 0 0 1 1215,550 H65 A10,10 0 0 1 55,540 V460 A10,10 0 0 1 65,450 Z" />
+
+  
+  <g id="kpi-row">
+    
+    <text x="220" y="495" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="36" font-weight="bold" filter="url(#glowOrange)">+18.5%</text>
+    <text x="220" y="520" text-anchor="middle" fill="#AACCEE" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">LongMemEval 准确率提升</text>
+    <text x="220" y="538" text-anchor="middle" fill="#7799BB" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">gpt-4o 模型</text>
+    <line x1="370" y1="462" x2="370" y2="535" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1" />
+
+    
+    <text x="530" y="495" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="36" font-weight="bold" filter="url(#glowOrange)">-90%</text>
+    <text x="530" y="520" text-anchor="middle" fill="#AACCEE" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">响应延迟降低</text>
+    <text x="530" y="538" text-anchor="middle" fill="#7799BB" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">31.3s → 3.20s</text>
+    <line x1="680" y1="462" x2="680" y2="535" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1" />
+
+    
+    <text x="840" y="495" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="36" font-weight="bold" filter="url(#glowOrange)">94.8%</text>
+    <text x="840" y="520" text-anchor="middle" fill="#AACCEE" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">DMR 准确率</text>
+    <text x="840" y="538" text-anchor="middle" fill="#7799BB" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">超越 MemGPT 93.4%</text>
+    <line x1="990" y1="462" x2="990" y2="535" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1" />
+
+    
+    <text x="1140" y="495" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="36" font-weight="bold" filter="url(#glowOrange)">-99%</text>
+    <text x="1140" y="520" text-anchor="middle" fill="#AACCEE" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">上下文 Token 压缩</text>
+    <text x="1140" y="538" text-anchor="middle" fill="#7799BB" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">115k → 1.6k tokens</text>
+  </g>
+
+  
+  <path fill="#F5F7FA" d="M63,565 H1217 A8,8 0 0 1 1225,573 V607 A8,8 0 0 1 1217,615 H63 A8,8 0 0 1 55,607 V573 A8,8 0 0 1 63,565 Z" />
+  <path fill="#F07C00" d="M58,565 H58 A3,3 0 0 1 61,568 V612 A3,3 0 0 1 58,615 H58 A3,3 0 0 1 55,612 V568 A3,3 0 0 1 58,565 Z" />
+  <text x="640" y="596" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">Zep 开源于 GitHub | Production-grade 生产可用 | 集成 Zep 云服务或自部署</text>
+
+  
+  <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1" />
+  <text x="40" y="695" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">来源：arXiv:2501.13956v1</text>
+  <text x="640" y="695" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">结论与贡献</text>
+  <text x="1220" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">11 / 12</text>
+</svg>

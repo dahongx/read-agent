@@ -1,0 +1,252 @@
+{
+  "id": "030da231b2354bf3ac8d47bbc52bbdb1",
+  "title": "文章内容概述请求",
+  "messages": [
+    {
+      "role": "user",
+      "content": "这篇文章讲了什么",
+      "ts": 1779728233.9012468
+    },
+    {
+      "role": "assistant",
+      "content": "这篇论文介绍了 Zep——一个专为 AI 智能体设计的记忆层服务，其核心是一个名为 Graphiti 的时序感知知识图谱引擎。\n\n**背景与动机**\n\n当前基于 RAG 的 LLM 智能体主要依赖静态文档检索，无法满足企业级应用对动态、持续演化知识的需求。论文认为，赋予智能体广泛且动态的\"记忆\"能力是实现真正自主智能体的关键构建块 (第1页)。\n\n**核心架构**\n\nZep 的记忆由一个三层层级知识图谱驱动：最底层是情节子图（存储原始消息、文本或 JSON 数据），中间层是语义实体子图（存储从情节中提取并解析的实体及其关系），最高层是社区子图（对强连接实体簇进行高层摘要）(第2页)。这种双重存储原始情节数据与派生语义信息的设计，借鉴了人类记忆中情节记忆与语义记忆的心理学模型 (第2页)。\n\nGraphiti 的一个关键特性是双时间轴模型：时间轴 T 记录事件的真实发生顺序，时间轴 T′ 记录数据摄入的事务顺序。系统会为每条事实边追踪四个时间戳，并在新信息与旧信息矛盾时自动使旧边失效，从而动态维护知识图谱的时效性 (第3页)。\n\n**检索机制**\n\nZep 采用混合检索策略，结合全文搜索、余弦相似度搜索和广度优先图搜索三种方式，分别捕捉词汇相似性、语义相似性和上下文相似性 (第5页)。检索后还支持多种重排序方法，包括 RRF、MMR、基于图的实体提及频率重排序，以及使用交叉编码器的 LLM 重排序 (第5页)。\n\n**实验结果**\n\n论文通过两个基准测试验证了 Zep 的效果。在 DMR 基准上，Zep 使用 gpt-4-turbo 达到 94.8% 的准确率，超过 MemGPT 的 93.4% (第6页)。在更贴近真实企业场景的 LongMemEval 基准上，Zep 实现了最高 18.5% 的准确率提升，同时将响应延迟降低了 90% (第1页)。论文同时指出 DMR 基准本身存在局限性——其对话仅含约 60 条消息，现代 LLM 可直接放入上下文窗口处理，因此该基准难以真正考验记忆系统的能力 (第6页)。\n\n总体而言，这篇论文的核心贡献是提出了一套将时序知识图谱与混合检索相结合的智能体记忆方案，并通过基准测试证明其在准确率和延迟上均优于现有方法。",
+      "ts": 1779728234.0252564,
+      "sources": [
+        {
+          "text": "arXiv:2501.13956v1 [cs.CL] 20 Jan 2025 ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR AGENT MEMORY Preston Rasmussen Zep AI preston@getzep.com Pavlo Paliychuk Zep AI paul@getzep.com Travis Beauvais Zep AI travis@getzep.com Jack Ryan Zep AI jack@getzep.com Daniel Chalef Zep AI daniel@getzep.com ABSTRACT We introduce Zep, a novel memory layer service for AI agents t hat outperforms the current s...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 1,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "a novel memory layer service for AI agents that outperforms the current state-of-the-art system, MemGPT",
+          "chunk_id": 1
+        },
+        {
+          "text": "arXiv:2501.13956v1 [cs.CL] 20 Jan 2025 ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR AGENT MEMORY Preston Rasmussen Zep AI preston@getzep.com Pavlo Paliychuk Zep AI paul@getzep.com Travis Beauvais Zep AI travis@getzep.com Jack Ryan Zep AI jack@getzep.com Daniel Chalef Zep AI daniel@getzep.com ABSTRACT We introduce Zep, a novel memory layer service for AI agents t hat outperforms the current s...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 1,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "empowering agents with this broad and dynamic \"memory\" as a crucial building block",
+          "chunk_id": 1
+        },
+        {
+          "text": "memory. Adding memory to LLM-powered agents isn’t a new idea —this concept has been explored previously in MemGPT [3]. Recently, Knowledge Graphs (KGs) have been employed to enha nce RAG architectures to address many of the shortcomings of traditional IR techniques[4]. In this paper, we i ntroduce Zep[5], a memory layer service powered by Graphiti[6], a dynamic, temporally-aware knowledge graph en...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 2,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "three hierarchical tiers of subgraphs: an episode subgraph, a semantic entity subgraph, and a community subgraph",
+          "chunk_id": 5
+        },
+        {
+          "text": "memory. Adding memory to LLM-powered agents isn’t a new idea —this concept has been explored previously in MemGPT [3]. Recently, Knowledge Graphs (KGs) have been employed to enha nce RAG architectures to address many of the shortcomings of traditional IR techniques[4]. In this paper, we i ntroduce Zep[5], a memory layer service powered by Graphiti[6], a dynamic, temporally-aware knowledge graph en...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 2,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "dual storage of both raw episodic data and derived semantic entity information mirrors psychological models of human memory",
+          "chunk_id": 5
+        },
+        {
+          "text": "memory. Adding memory to LLM-powered agents isn’t a new idea —this concept has been explored previously in MemGPT [3]. Recently, Knowledge Graphs (KGs) have been employed to enha nce RAG architectures to address many of the shortcomings of traditional IR techniques[4]. In this paper, we i ntroduce Zep[5], a memory layer service powered by Graphiti[6], a dynamic, temporally-aware knowledge graph en...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 2,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "Zep implements a bi-temporal model, where timeline T represents the chronological ordering of events",
+          "chunk_id": 5
+        },
+        {
+          "text": "The episodic edges, Ee, connect episodes to their extracted entity nodes. Episode s and their derived semantic edges maintain bidirectional indices that track the relationshi ps between edges and their source episodes. This design rein - forces the non-lossy nature of Graphiti’s episodic subgrap h by enabling both forward and backward traversal: semantic artifacts can be traced to their sources fo...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 3,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "system tracks four timestamps: t′created and t′expired",
+          "chunk_id": 6
+        },
+        {
+          "text": "search function offers distinct capabilities in identifyi ng relevant documents, and together they provide comprehensive coverage of candidate results before reranking. The search ﬁeld varies across the three object types: for Es, we search the fact ﬁeld; for Ns, the entity name; and for Nc, the community name, which comprises relevant keywords and phrases covered in the community. While developed...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 5,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "full-text search identifies word similarities, cosine similarity captures semantic similarities, and breadth-first search reveals contextual similarities",
+          "chunk_id": 3
+        },
+        {
+          "text": "search function offers distinct capabilities in identifyi ng relevant documents, and together they provide comprehensive coverage of candidate results before reranking. The search ﬁeld varies across the three object types: for Es, we search the fact ﬁeld; for Ns, the entity name; and for Nc, the community name, which comprises relevant keywords and phrases covered in the community. While developed...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 5,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "Zep supports existing reranking approaches such as Reciprocal Rank Fusion (RRF) and Maximal Marginal Relevance (MMR)",
+          "chunk_id": 3
+        },
+        {
+          "text": "Table 1: Deep Memory Retrieval Memory Model Score Recursive Summarization† gpt-4-turbo 35.3% Conversation Summaries gpt-4-turbo 78.6% MemGPT† gpt-4-turbo 93.4% Full-conversation gpt-4-turbo 94.4% Zep gpt-4-turbo 94.8% Conversation Summaries gpt-4o-mini 88.0% Full-conversation gpt-4o-mini 98.0% Zep gpt-4o-mini 98.2% † Results reported in [3]. 4.2 Deep Memory Retrieval (DMR) The Deep Memory Retrieva...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 6,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "Zep achieved 94.8% accuracy with gpt-4-turbo",
+          "chunk_id": 2
+        },
+        {
+          "text": "arXiv:2501.13956v1 [cs.CL] 20 Jan 2025 ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR AGENT MEMORY Preston Rasmussen Zep AI preston@getzep.com Pavlo Paliychuk Zep AI paul@getzep.com Travis Beauvais Zep AI travis@getzep.com Jack Ryan Zep AI jack@getzep.com Daniel Chalef Zep AI daniel@getzep.com ABSTRACT We introduce Zep, a novel memory layer service for AI agents t hat outperforms the current s...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 1,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "accuracy improvements of up to 18.5% while simultaneously reducing response latency by 90%",
+          "chunk_id": 1
+        },
+        {
+          "text": "Table 1: Deep Memory Retrieval Memory Model Score Recursive Summarization† gpt-4-turbo 35.3% Conversation Summaries gpt-4-turbo 78.6% MemGPT† gpt-4-turbo 93.4% Full-conversation gpt-4-turbo 94.4% Zep gpt-4-turbo 94.8% Conversation Summaries gpt-4o-mini 88.0% Full-conversation gpt-4o-mini 98.0% Zep gpt-4o-mini 98.2% † Results reported in [3]. 4.2 Deep Memory Retrieval (DMR) The Deep Memory Retrieva...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 6,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "each conversation contains only 60 messages, easily fitting within current LLM context windows",
+          "chunk_id": 2
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": "实验结果是什么",
+      "ts": 1779728328.2048354
+    },
+    {
+      "role": "assistant",
+      "content": "## 实验结果\n\n### Deep Memory Retrieval (DMR) 基准测试\n\nZep 在 DMR 基准上表现出色。该评测包含 500 段多轮对话，每段含 5 个会话、每会话最多 12 条消息 (第6页)。Zep 使用 gpt-4-turbo 达到了 94.8% 的准确率，使用 gpt-4o-mini 达到 98.2%，均略优于对应基线方法 (第6页)。作为对比，MemGPT 使用 gpt-4-turbo 的准确率为 93.4%，而最简单的递归摘要基线仅有 35.3% (第6页)。\n\n不过论文也指出 DMR 评测本身存在明显局限：问题全部为单轮事实检索，无法评估复杂记忆理解能力，且数据集规模较小，每段对话仅 60 条消息，完全可以放入当前 LLM 的上下文窗口，因此简单的全上下文方法也能取得很高分数，削弱了该基准的区分度 (第6页)。\n\n### LongMemEval (LME) 基准测试\n\nLongMemEval 是更具挑战性的评测，对话平均长度约 115,000 tokens，涵盖六种问题类型，更贴近真实企业场景 (第6页)。\n\n在准确率方面，Zep 相比全上下文基线取得了显著提升：使用 gpt-4o-mini 提升了 15.2%（从 55.4% 到 63.8%），使用 gpt-4o 提升了 18.5%（从 60.2% 到 71.2%）(第7页)。\n\n在延迟方面，Zep 的表现尤为突出。使用 gpt-4o-mini 时，响应时间从 31.3 秒降至 3.20 秒；使用 gpt-4o 时，从 28.9 秒降至 2.58 秒，整体延迟降低约 90%，同时平均上下文 token 数从 115k 压缩至 1.6k (第7页)。\n\n按问题类型细分来看，Zep 在复杂问题类型上提升最为显著。以 gpt-4o-mini 为例，single-session-preference 提升 77.7%，temporal-reasoning 提升 48.2%，multi-session 提升 16.7%；而 single-session-assistant 和 knowledge-update 两类则略有下降 (第7页)。使用 gpt-4o 时，knowledge-update 类别也出现了改善，说明更强的模型能更好地理解 Zep 的时序数据 (第7页)。\n\n总体而言，Zep 在两项基准上均超越了基线，在更贴近企业实际场景的 LongMemEval 上优势更为明显，同时大幅降低了响应延迟 (第1页)。",
+      "ts": 1779728328.59295,
+      "sources": [
+        {
+          "text": "Table 1: Deep Memory Retrieval Memory Model Score Recursive Summarization† gpt-4-turbo 35.3% Conversation Summaries gpt-4-turbo 78.6% MemGPT† gpt-4-turbo 93.4% Full-conversation gpt-4-turbo 94.4% Zep gpt-4-turbo 94.8% Conversation Summaries gpt-4o-mini 88.0% Full-conversation gpt-4o-mini 98.0% Zep gpt-4o-mini 98.2% † Results reported in [3]. 4.2 Deep Memory Retrieval (DMR) The Deep Memory Retrieva...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 6,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "Zep achieved 94.8% accuracy with gpt-4-turbo and 98.2% with gpt-4o-mini",
+          "chunk_id": 1
+        },
+        {
+          "text": "Table 1: Deep Memory Retrieval Memory Model Score Recursive Summarization† gpt-4-turbo 35.3% Conversation Summaries gpt-4-turbo 78.6% MemGPT† gpt-4-turbo 93.4% Full-conversation gpt-4-turbo 94.4% Zep gpt-4-turbo 94.8% Conversation Summaries gpt-4o-mini 88.0% Full-conversation gpt-4o-mini 98.0% Zep gpt-4o-mini 98.2% † Results reported in [3]. 4.2 Deep Memory Retrieval (DMR) The Deep Memory Retrieva...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 6,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "MemGPT framework [3] currently leads performance metrics with 93.4% accuracy using gpt-4-turbo",
+          "chunk_id": 1
+        },
+        {
+          "text": "Table 1: Deep Memory Retrieval Memory Model Score Recursive Summarization† gpt-4-turbo 35.3% Conversation Summaries gpt-4-turbo 78.6% MemGPT† gpt-4-turbo 93.4% Full-conversation gpt-4-turbo 94.4% Zep gpt-4-turbo 94.8% Conversation Summaries gpt-4o-mini 88.0% Full-conversation gpt-4o-mini 98.0% Zep gpt-4o-mini 98.2% † Results reported in [3]. 4.2 Deep Memory Retrieval (DMR) The Deep Memory Retrieva...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 6,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "35.3% baseline achieved through recursive summarization",
+          "chunk_id": 1
+        },
+        {
+          "text": "Table 1: Deep Memory Retrieval Memory Model Score Recursive Summarization† gpt-4-turbo 35.3% Conversation Summaries gpt-4-turbo 78.6% MemGPT† gpt-4-turbo 93.4% Full-conversation gpt-4-turbo 94.4% Zep gpt-4-turbo 94.8% Conversation Summaries gpt-4o-mini 88.0% Full-conversation gpt-4o-mini 98.0% Zep gpt-4o-mini 98.2% † Results reported in [3]. 4.2 Deep Memory Retrieval (DMR) The Deep Memory Retrieva...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 6,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "each conversation contains only 60 messages, easily fitting within current LLM context windows",
+          "chunk_id": 1
+        },
+        {
+          "text": "Table 1: Deep Memory Retrieval Memory Model Score Recursive Summarization† gpt-4-turbo 35.3% Conversation Summaries gpt-4-turbo 78.6% MemGPT† gpt-4-turbo 93.4% Full-conversation gpt-4-turbo 94.4% Zep gpt-4-turbo 94.8% Conversation Summaries gpt-4o-mini 88.0% Full-conversation gpt-4o-mini 98.0% Zep gpt-4o-mini 98.2% † Results reported in [3]. 4.2 Deep Memory Retrieval (DMR) The Deep Memory Retrieva...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 6,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "conversations averaging approximately 115,000 tokens in length",
+          "chunk_id": 1
+        },
+        {
+          "text": "tributed architecture introduced additional network late ncy when evaluating Zep’s performance, though this latency was not present in our baseline evaluations. For answer evaluation, we employed GPT-4o with the question -speciﬁc prompts provided in [7], which have demonstrated high correlation with human evaluators. 4.3.1 LongMemEval and MemGPT To establish a comparative benchmark between Zep and...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 7,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "Zep achieved a 15.2% accuracy improvement over the baseline",
+          "chunk_id": 3
+        },
+        {
+          "text": "tributed architecture introduced additional network late ncy when evaluating Zep’s performance, though this latency was not present in our baseline evaluations. For answer evaluation, we employed GPT-4o with the question -speciﬁc prompts provided in [7], which have demonstrated high correlation with human evaluators. 4.3.1 LongMemEval and MemGPT To establish a comparative benchmark between Zep and...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 7,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "gpt-4o showed an 18.5% improvement",
+          "chunk_id": 3
+        },
+        {
+          "text": "tributed architecture introduced additional network late ncy when evaluating Zep’s performance, though this latency was not present in our baseline evaluations. For answer evaluation, we employed GPT-4o with the question -speciﬁc prompts provided in [7], which have demonstrated high correlation with human evaluators. 4.3.1 LongMemEval and MemGPT To establish a comparative benchmark between Zep and...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 7,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "Zep reducing response times by approximately 90%",
+          "chunk_id": 3
+        },
+        {
+          "text": "tributed architecture introduced additional network late ncy when evaluating Zep’s performance, though this latency was not present in our baseline evaluations. For answer evaluation, we employed GPT-4o with the question -speciﬁc prompts provided in [7], which have demonstrated high correlation with human evaluators. 4.3.1 LongMemEval and MemGPT To establish a comparative benchmark between Zep and...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 7,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "most substantial gains in complex question types: single-session-preference, multi-session, and temporal-reasoning",
+          "chunk_id": 3
+        },
+        {
+          "text": "tributed architecture introduced additional network late ncy when evaluating Zep’s performance, though this latency was not present in our baseline evaluations. For answer evaluation, we employed GPT-4o with the question -speciﬁc prompts provided in [7], which have demonstrated high correlation with human evaluators. 4.3.1 LongMemEval and MemGPT To establish a comparative benchmark between Zep and...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 7,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "Avg Context Tokens Full-context gpt-4o-mini 55.4%",
+          "chunk_id": 3
+        },
+        {
+          "text": "arXiv:2501.13956v1 [cs.CL] 20 Jan 2025 ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR AGENT MEMORY Preston Rasmussen Zep AI preston@getzep.com Pavlo Paliychuk Zep AI paul@getzep.com Travis Beauvais Zep AI travis@getzep.com Jack Ryan Zep AI jack@getzep.com Daniel Chalef Zep AI daniel@getzep.com ABSTRACT We introduce Zep, a novel memory layer service for AI agents t hat outperforms the current s...",
+          "file": "ZEP : A T EMPORAL KNOWLEDGE GRAPH ARCHITECTURE FOR",
+          "page": 1,
+          "doc_id": null,
+          "doc_order": null,
+          "source_file_name": "2501.13956v1.pdf",
+          "quote": "accuracy improvements of up to 18.5% while simultaneously reducing response latency by 90%",
+          "chunk_id": 5
+        }
+      ]
+    }
+  ],
+  "created_at": 1779728142.4427643,
+  "updated_at": 1779728328.59295
+}

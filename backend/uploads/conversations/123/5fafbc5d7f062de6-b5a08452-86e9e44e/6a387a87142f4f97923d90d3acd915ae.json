@@ -1,0 +1,110 @@
+{
+  "id": "6a387a87142f4f97923d90d3acd915ae",
+  "title": "两篇文献创新点对比",
+  "messages": [
+    {
+      "role": "user",
+      "content": "这两篇文献的创新点分别是什么",
+      "ts": 1779738198.7968972
+    },
+    {
+      "role": "assistant",
+      "content": "根据提供的片段，以下是两篇文献各自的创新点：\n\n**《Chronos: Temporal-Aware Conversational Agents with Structured Event Retrieval for Long-Term Memory》**\n\n该论文的核心创新在于针对对话式智能体的长期记忆问题提出了一套时序感知的结构化检索框架。现有系统在知识积累时通常独立于未来查询进行预计算，导致预计算表示与查询时的信息需求不匹配，无关上下文会稀释检索信号 (第4页)。Chronos 的创新之处在于，它是首个专门针对时序锚定事件进行结构化索引、同时保留原始对话用于通用语义查询的系统，从而避免了系统在\"全面抽取\"与\"检索简洁性\"之间被迫二选一的困境 (第4页)。\n\n在检索架构层面，该论文指出现有检索系统无论查询类型如何（时序推理、知识更新、偏好回忆），都采用同一套固定流水线，缺乏查询条件自适应能力 (第4页)。Chronos 的创新在于引入了查询感知的检索策略引导机制，能够根据查询类别动态调整检索方式，这在对话记忆系统中尚属首次 (第4页)。此外，从评测结果来看，该系统在 LongMemEval 基准上取得了具有竞争力的表现，Claude Opus 4 整体准确率达到 95.60%，在多个类别上实现满分 (第15页)。\n\n**《Cognitive Modeling for Long-Horizon Agent Learning via Integrated Long-Term Memory and Reasoning》**\n\n该论文的创新聚焦于将长期记忆与推理能力融合，用于支持智能体在长时序决策任务中的认知建模。其核心贡献在于通过结构化记忆检索与推理的协同机制，减少策略震荡和无效探索，从而在长决策序列中维持对约束条件的持续感知 (第7页)。论文还创新性地分析了熵正则化系数对记忆写入、检索与推理一致性的影响，指出适中的系数范围能在探索与记忆复用之间取得最佳平衡，过高的熵值则会削弱记忆复用并降低效率 (第7页)。此外，论文揭示了记忆容量对决策的非线性、阶段依赖性影响——适中容量能保留最具判别性的信息，而过大容量则引入检索噪声和注意力分散，削弱推理稳定性 (第7页)。这些发现共同支持了\"性能提升源于有效的长期记忆整合与复用\"这一核心论点 (第7页)。\n\n需要说明的是，片段5和6对第二篇论文的方法细节覆盖有限，上述创新点描述主要基于实验结论部分，该论文的完整方法论创新可能在未检索到的片段中有更详细的阐述。",
+      "ts": 1779738199.1646557,
+      "sources": [
+        {
+          "text": "A key tension across all these representations is that knowledge accumulation typically proceeds at ingestion time, independent of any future query. Systems must anticipate which facts, relationships, or observations will prove relevant, an inherently lossy process. When precomputed representations do not align with query-time information needs, irrelevant context dilutes the retrieval signal. No ...",
+          "file": "Chronos: Temporal-Aware Conversational Agents with Structured Event Retrieval for Long-Term Memory",
+          "page": 4,
+          "doc_id": "doc_001",
+          "doc_order": 1,
+          "source_file_name": "2603.16862v1.pdf",
+          "quote": "No existing representation scheme targets only temporally grounded events for structured indexing while retaining raw dialogue for general semantic queries",
+          "chunk_id": 2
+        },
+        {
+          "text": "A key tension across all these representations is that knowledge accumulation typically proceeds at ingestion time, independent of any future query. Systems must anticipate which facts, relationships, or observations will prove relevant, an inherently lossy process. When precomputed representations do not align with query-time information needs, irrelevant context dilutes the retrieval signal. No ...",
+          "file": "Chronos: Temporal-Aware Conversational Agents with Structured Event Retrieval for Long-Term Memory",
+          "page": 4,
+          "doc_id": "doc_001",
+          "doc_order": 1,
+          "source_file_name": "2603.16862v1.pdf",
+          "quote": "precomputed representations do not align with query-time information needs, irrelevant context dilutes the retrieval signal",
+          "chunk_id": 2
+        },
+        {
+          "text": "A key tension across all these representations is that knowledge accumulation typically proceeds at ingestion time, independent of any future query. Systems must anticipate which facts, relationships, or observations will prove relevant, an inherently lossy process. When precomputed representations do not align with query-time information needs, irrelevant context dilutes the retrieval signal. No ...",
+          "file": "Chronos: Temporal-Aware Conversational Agents with Structured Event Retrieval for Long-Term Memory",
+          "page": 4,
+          "doc_id": "doc_001",
+          "doc_order": 1,
+          "source_file_name": "2603.16862v1.pdf",
+          "quote": "no conversational memory system applies query-aware retrieval guidance to long-term memory",
+          "chunk_id": 2
+        },
+        {
+          "text": "A key tension across all these representations is that knowledge accumulation typically proceeds at ingestion time, independent of any future query. Systems must anticipate which facts, relationships, or observations will prove relevant, an inherently lossy process. When precomputed representations do not align with query-time information needs, irrelevant context dilutes the retrieval signal. No ...",
+          "file": "Chronos: Temporal-Aware Conversational Agents with Structured Event Retrieval for Long-Term Memory",
+          "page": 4,
+          "doc_id": "doc_001",
+          "doc_order": 1,
+          "source_file_name": "2603.16862v1.pdf",
+          "quote": "Existing retrieval architectures also lack query-conditioned adaptation of the retrieval strategy itself",
+          "chunk_id": 2
+        },
+        {
+          "text": "A Additional LongMemEvalSResults Table 4: Model comparison on LongMemEvalSacross 500 total questions. Numbers in parentheses indicate total questions per category. Bold indicates best or tied-best performance in each category. Model Overall (500) Category-Level Accuracy (%) KU (78) MS (133) SSA (56) SSP (30) SSU (70) TR (133) Claude Opus 4.695.60 100.0088.72100.00 100.00 98.5795.49 GPT-5-mini 94.2...",
+          "file": "Chronos: Temporal-Aware Conversational Agents with Structured Event Retrieval for Long-Term Memory",
+          "page": 15,
+          "doc_id": "doc_001",
+          "doc_order": 1,
+          "source_file_name": "2603.16862v1.pdf",
+          "quote": "Claude Opus 4.695.60 100.0088.72100.00 100.00 98.5795.49",
+          "chunk_id": 4
+        },
+        {
+          "text": "6 of 8 horizons, reducing policy oscillation and ine ﬀective exploration. Improvements in task success indicate sustained awareness of constraints across extended decision sequences, while gains in eﬃciency metrics reﬂect more directed actions enabled by structured memory retrieval and reasoning. The concurrent improvement in memory utilization further shows that performance gains stem from eﬀecti...",
+          "file": "Article Not peer-reviewed version",
+          "page": 7,
+          "doc_id": "doc_002",
+          "doc_order": 2,
+          "source_file_name": "preprints202602.1990.v1.pdf",
+          "quote": "reducing policy oscillation and ineffective exploration",
+          "chunk_id": 6
+        },
+        {
+          "text": "6 of 8 horizons, reducing policy oscillation and ine ﬀective exploration. Improvements in task success indicate sustained awareness of constraints across extended decision sequences, while gains in eﬃciency metrics reﬂect more directed actions enabled by structured memory retrieval and reasoning. The concurrent improvement in memory utilization further shows that performance gains stem from eﬀecti...",
+          "file": "Article Not peer-reviewed version",
+          "page": 7,
+          "doc_id": "doc_002",
+          "doc_order": 2,
+          "source_file_name": "preprints202602.1990.v1.pdf",
+          "quote": "moderate values promote effective exploration that supports stable memory writing, retrieval, and coherent reasoning across long decision horizons",
+          "chunk_id": 6
+        },
+        {
+          "text": "6 of 8 horizons, reducing policy oscillation and ine ﬀective exploration. Improvements in task success indicate sustained awareness of constraints across extended decision sequences, while gains in eﬃciency metrics reﬂect more directed actions enabled by structured memory retrieval and reasoning. The concurrent improvement in memory utilization further shows that performance gains stem from eﬀecti...",
+          "file": "Article Not peer-reviewed version",
+          "page": 7,
+          "doc_id": "doc_002",
+          "doc_order": 2,
+          "source_file_name": "preprints202602.1990.v1.pdf",
+          "quote": "memory capacity affects decision-making in a stage-dependent, non-linear manner",
+          "chunk_id": 6
+        },
+        {
+          "text": "6 of 8 horizons, reducing policy oscillation and ine ﬀective exploration. Improvements in task success indicate sustained awareness of constraints across extended decision sequences, while gains in eﬃciency metrics reﬂect more directed actions enabled by structured memory retrieval and reasoning. The concurrent improvement in memory utilization further shows that performance gains stem from eﬀecti...",
+          "file": "Article Not peer-reviewed version",
+          "page": 7,
+          "doc_id": "doc_002",
+          "doc_order": 2,
+          "source_file_name": "preprints202602.1990.v1.pdf",
+          "quote": "performance gains arise from effective long-term memory consolidation and reuse",
+          "chunk_id": 6
+        }
+      ]
+    }
+  ],
+  "created_at": 1779738064.719999,
+  "updated_at": 1779738202.2576623
+}

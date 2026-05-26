@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="7" />
+      <feOffset dx="0" dy="3" result="offsetBlur" />
+      <feFlood flood-color="#000000" flood-opacity="0.10" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+
+  
+  <rect x="0" y="0" width="1280" height="70" fill="#003366" />
+  <rect x="0" y="0" width="6" height="70" fill="#F07C00" />
+  <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="26" font-weight="bold">05  实验设计与基准选择</text>
+  <text x="1220" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">ZEP AI</text>
+
+  
+  <rect x="0" y="70" width="1280" height="50" fill="#E8F4FC" />
+  <rect x="0" y="70" width="6" height="50" fill="#0066CC" />
+  <text x="40" y="102" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">两大基准覆盖不同难度：DMR 测短会话事实检索，LongMemEval 测长对话复杂时序推理</text>
+
+  
+  <g id="left-benchmarks">
+    <text x="55" y="158" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">两大评测基准</text>
+    <line x1="55" y1="164" x2="260" y2="164" stroke="#F07C00" stroke-width="2" />
+
+    
+    <g id="dmr-card">
+      <path fill="#FFFFFF" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1" d="M63,174 H612 A8,8 0 0 1 620,182 V376 A8,8 0 0 1 612,384 H63 A8,8 0 0 1 55,376 V182 A8,8 0 0 1 63,174 Z" />
+      <path fill="#003366" d="M63,174 H612 A8,8 0 0 1 620,182 V218 A8,8 0 0 1 612,226 H63 A8,8 0 0 1 55,218 V182 A8,8 0 0 1 63,174 Z" />
+      <rect x="55" y="206" width="565" height="20" fill="#003366" />
+      <text x="88" y="206" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">DMR（Deep Memory Retrieval）</text>
+      <text x="88" y="222" fill="#AACCEE" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">基准来源：MemGPT [Packer et al., 2023]</text>
+      
+      <g id="dmr-metrics">
+        <path fill="#E8F4FC" d="M81,240 H199 A6,6 0 0 1 205,246 V290 A6,6 0 0 1 199,296 H81 A6,6 0 0 1 75,290 V246 A6,6 0 0 1 81,240 Z" />
+        <text x="140" y="264" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">500</text>
+        <text x="140" y="285" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">对话数量</text>
+
+        <path fill="#E8F4FC" d="M221,240 H339 A6,6 0 0 1 345,246 V290 A6,6 0 0 1 339,296 H221 A6,6 0 0 1 215,290 V246 A6,6 0 0 1 221,240 Z" />
+        <text x="280" y="264" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">5×12</text>
+        <text x="280" y="285" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">会话×消息</text>
+
+        <path fill="#E8F4FC" d="M361,240 H479 A6,6 0 0 1 485,246 V290 A6,6 0 0 1 479,296 H361 A6,6 0 0 1 355,290 V246 A6,6 0 0 1 361,240 Z" />
+        <text x="420" y="264" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">60</text>
+        <text x="420" y="285" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">条消息/对话</text>
+      </g>
+      <text x="75" y="325" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">问答类型：单轮事实问答（Who/What/When）</text>
+      <text x="75" y="347" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">数据集：Multi-Session Chat（500条对话子集）</text>
+      <path fill="#FFF5E8" d="M78,358 H597 A3,3 0 0 1 600,361 V373 A3,3 0 0 1 597,376 H78 A3,3 0 0 1 75,373 V361 A3,3 0 0 1 78,358 Z" />
+      <text x="337" y="371" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">局限：60条消息可完整放入 LLM 上下文窗口，难以区分记忆方案优劣</text>
+    </g>
+
+    
+    <g id="lme-card">
+      <path fill="#FFFFFF" filter="url(#cardShadow)" stroke="#0066CC" stroke-width="1.5" d="M63,400 H612 A8,8 0 0 1 620,408 V622 A8,8 0 0 1 612,630 H63 A8,8 0 0 1 55,622 V408 A8,8 0 0 1 63,400 Z" />
+      <path fill="#0066CC" d="M63,400 H612 A8,8 0 0 1 620,408 V444 A8,8 0 0 1 612,452 H63 A8,8 0 0 1 55,444 V408 A8,8 0 0 1 63,400 Z" />
+      <rect x="55" y="432" width="565" height="20" fill="#0066CC" />
+      <text x="88" y="432" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">LongMemEval (LME-s)</text>
+      <text x="88" y="448" fill="#CCE5FF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">基准来源：[Wu et al., 2024]  更贴近企业真实场景</text>
+      
+      <g id="lme-metrics">
+        <path fill="#E8F4FC" d="M81,466 H229 A6,6 0 0 1 235,472 V516 A6,6 0 0 1 229,522 H81 A6,6 0 0 1 75,516 V472 A6,6 0 0 1 81,466 Z" />
+        <text x="155" y="490" text-anchor="middle" fill="#0066CC" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="bold">~115k</text>
+        <text x="155" y="510" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">平均 tokens/对话</text>
+
+        <path fill="#E8F4FC" d="M251,466 H389 A6,6 0 0 1 395,472 V516 A6,6 0 0 1 389,522 H251 A6,6 0 0 1 245,516 V472 A6,6 0 0 1 251,466 Z" />
+        <text x="320" y="490" text-anchor="middle" fill="#0066CC" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="bold">6类</text>
+        <text x="320" y="510" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">问题类型</text>
+
+        <path fill="#E8F4FC" d="M411,466 H599 A6,6 0 0 1 605,472 V516 A6,6 0 0 1 599,522 H411 A6,6 0 0 1 405,516 V472 A6,6 0 0 1 411,466 Z" />
+        <text x="505" y="490" text-anchor="middle" fill="#0066CC" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="bold">GPT-4o</text>
+        <text x="505" y="510" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">答案评判模型</text>
+      </g>
+      <text x="75" y="548" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">6种问题类型：单会话用户/助手、偏好、跨会话、</text>
+      <text x="75" y="568" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">知识更新、时序推理</text>
+      <path fill="#E8F4FC" d="M78,580 H597 A3,3 0 0 1 600,583 V595 A3,3 0 0 1 597,598 H78 A3,3 0 0 1 75,595 V583 A3,3 0 0 1 78,580 Z" />
+      <text x="337" y="593" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">优势：真实企业场景，复杂时序推理，更有区分度</text>
+    </g>
+  </g>
+
+  
+  <line x1="640" y1="140" x2="640" y2="650" stroke="#E8F4FC" stroke-width="1.5" stroke-dasharray="6,4" />
+
+  
+  <g id="right-config">
+    <text x="660" y="158" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">实验模型配置</text>
+    <line x1="660" y1="164" x2="880" y2="164" stroke="#0066CC" stroke-width="2" />
+
+    
+    <path fill="#FFFFFF" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1" d="M668,174 H1217 A8,8 0 0 1 1225,182 V586 A8,8 0 0 1 1217,594 H668 A8,8 0 0 1 660,586 V182 A8,8 0 0 1 668,174 Z" />
+
+    
+    <path fill="#003366" d="M668,174 H1217 A8,8 0 0 1 1225,182 V204 A8,8 0 0 1 1217,212 H668 A8,8 0 0 1 660,204 V182 A8,8 0 0 1 668,174 Z" />
+    <rect x="660" y="196" width="565" height="16" fill="#003366" />
+    <text x="775" y="199" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">组件</text>
+    <text x="1050" y="199" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">选用模型/方案</text>
+    <line x1="880" y1="212" x2="880" y2="594" stroke="#E8F4FC" stroke-width="1" />
+
+    
+    <rect x="660" y="212" width="565" height="42" fill="#F5F7FA" />
+    <text x="680" y="238" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">嵌入 / 重排</text>
+    <text x="892" y="238" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">BGE-m3 (BAAI)</text>
+
+    
+    <rect x="660" y="254" width="565" height="42" fill="#FFFFFF" />
+    <text x="680" y="280" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">图构建（Graphiti）</text>
+    <text x="892" y="280" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">gpt-4o-mini-2024-07-18</text>
+
+    
+    <rect x="660" y="296" width="565" height="42" fill="#F5F7FA" />
+    <text x="680" y="322" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">响应生成（方案A）</text>
+    <text x="892" y="322" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">gpt-4o-mini-2024-07-18</text>
+
+    
+    <rect x="660" y="338" width="565" height="42" fill="#FFFFFF" />
+    <text x="680" y="364" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">响应生成（方案B）</text>
+    <text x="892" y="364" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">gpt-4o-2024-11-20</text>
+
+    
+    <rect x="660" y="380" width="565" height="42" fill="#F5F7FA" />
+    <text x="680" y="406" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">DMR历史对比</text>
+    <text x="892" y="406" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">gpt-4-turbo-2024-04-09</text>
+
+    
+    <rect x="660" y="422" width="565" height="42" fill="#FFFFFF" />
+    <text x="680" y="448" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">LME 答案评判</text>
+    <text x="892" y="448" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">GPT-4o（含问题专属提示）</text>
+
+    
+    <rect x="660" y="464" width="565" height="42" fill="#F5F7FA" />
+    <text x="680" y="490" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">Zep 检索数量</text>
+    <text x="892" y="490" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">Top-20 边（事实）+ 实体节点</text>
+
+    
+    <rect x="660" y="506" width="565" height="42" fill="#FFFFFF" />
+    <text x="680" y="532" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">测试环境</text>
+    <text x="892" y="527" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">消费级笔记本（Boston, MA）</text>
+    <text x="892" y="545" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">→ Zep 部署于 AWS us-west-2</text>
+
+    
+    <path fill="#FFF5E8" d="M666,548 H1219 A6,6 0 0 1 1225,554 V588 A6,6 0 0 1 1219,594 H666 A6,6 0 0 1 660,588 V554 A6,6 0 0 1 666,548 Z" />
+    <path fill="#F07C00" d="M662,548 H662 A2,2 0 0 1 664,550 V592 A2,2 0 0 1 662,594 H662 A2,2 0 0 1 660,592 V550 A2,2 0 0 1 662,548 Z" />
+    <text x="678" y="567" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">注意：</text>
+    <text x="730" y="567" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">网络延迟包含在 Zep 延迟测量中（不利于 Zep）</text>
+    <text x="678" y="585" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">基线测量在本地执行，无额外网络开销</text>
+  </g>
+
+  
+  <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1" />
+  <text x="40" y="695" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">来源：arXiv:2501.13956v1 §4</text>
+  <text x="640" y="695" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">实验结果</text>
+  <text x="1220" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">8 / 12</text>
+</svg>

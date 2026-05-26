@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+
+  
+  <rect x="0" y="0" width="1280" height="70" fill="#003366" />
+  <rect x="0" y="0" width="8" height="70" fill="#E87722" />
+  <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="26" font-weight="bold">02　核心问题定义</text>
+  <text x="1240" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">LLM 长期记忆综述</text>
+
+  
+  <rect x="0" y="70" width="1280" height="50" fill="#E8F4FC" />
+  <rect x="0" y="70" width="6" height="50" fill="#0066CC" />
+  <text x="30" y="102" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17">两篇论文从互补视角切入：前者聚焦时序记忆精确召回，后者关注记忆驱动的长程策略一致性</text>
+
+  
+  <path fill="#FFFFFF" stroke="#0066CC" stroke-width="2" d="M50,140 H620 A10,10 0 0 1 630,150 V630 A10,10 0 0 1 620,640 H50 A10,10 0 0 1 40,630 V150 A10,10 0 0 1 50,140 Z" />
+  
+  <path fill="#003366" d="M50,140 H620 A10,10 0 0 1 630,150 V186 A10,10 0 0 1 620,196 H50 A10,10 0 0 1 40,186 V150 A10,10 0 0 1 50,140 Z" />
+  <rect x="40" y="168" width="590" height="28" fill="#003366" />
+  
+  <path fill="#E87722" d="M64,152 H176 A4,4 0 0 1 180,156 V174 A4,4 0 0 1 176,178 H64 A4,4 0 0 1 60,174 V156 A4,4 0 0 1 64,152 Z" />
+  <text x="120" y="170" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13" font-weight="bold">文献一 · Chronos</text>
+  <text x="390" y="172" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="18" font-weight="bold">arXiv:2603.16862</text>
+
+  
+  <text x="60" y="230" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="19" font-weight="bold">研究问题</text>
+  <path fill="#E87722" d="M61,238 H259 A1,1 0 0 1 260,239 V240 A1,1 0 0 1 259,241 H61 A1,1 0 0 1 60,240 V239 A1,1 0 0 1 61,238 Z" />
+  <text x="60" y="268" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16">对话 AI 系统如何精确回答</text>
+  <text x="60" y="291" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17" font-weight="bold">"时间敏感型"跨会话查询？</text>
+
+  
+  <rect x="60" y="310" width="550" height="1" fill="#D0D7E0" />
+
+  
+  <text x="60" y="340" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17" font-weight="bold">核心挑战</text>
+
+  <path fill="#F5F7FA" d="M66,358 H604 A6,6 0 0 1 610,364 V410 A6,6 0 0 1 604,416 H66 A6,6 0 0 1 60,410 V364 A6,6 0 0 1 66,358 Z" />
+  <text x="76" y="381" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  现有系统将"last month"当作普通字符串，无法映射到</text>
+  <text x="76" y="404" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    精确 ISO 8601 时间范围进行过滤</text>
+
+  <path fill="#F5F7FA" d="M66,428 H604 A6,6 0 0 1 610,434 V480 A6,6 0 0 1 604,486 H66 A6,6 0 0 1 60,480 V434 A6,6 0 0 1 66,428 Z" />
+  <text x="76" y="451" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  多跳时序查询（"度假后那周做了什么？"）需要跨会话</text>
+  <text x="76" y="474" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    事件聚合，纯语义检索无法处理</text>
+
+  <path fill="#F5F7FA" d="M66,498 H604 A6,6 0 0 1 610,504 V550 A6,6 0 0 1 604,556 H66 A6,6 0 0 1 60,550 V504 A6,6 0 0 1 66,498 Z" />
+  <text x="76" y="521" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  知识更新追踪（"我现在在哪工作？"）要求识别最新事</text>
+  <text x="76" y="544" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    件，而非历史所有提及</text>
+
+  
+  <path fill="#003366" fill-opacity="0.08" d="M66,568 H604 A6,6 0 0 1 610,574 V612 A6,6 0 0 1 604,618 H66 A6,6 0 0 1 60,612 V574 A6,6 0 0 1 66,568 Z" />
+  <text x="335" y="589" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">本质缺失</text>
+  <text x="335" y="608" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">结构化时序信息与语义检索无法有效解耦</text>
+
+  
+  <path fill="#FFFFFF" stroke="#E87722" stroke-width="2" d="M660,140 H1230 A10,10 0 0 1 1240,150 V630 A10,10 0 0 1 1230,640 H660 A10,10 0 0 1 650,630 V150 A10,10 0 0 1 660,140 Z" />
+  
+  <path fill="#E87722" d="M660,140 H1230 A10,10 0 0 1 1240,150 V186 A10,10 0 0 1 1230,196 H660 A10,10 0 0 1 650,186 V150 A10,10 0 0 1 660,140 Z" />
+  <rect x="650" y="168" width="590" height="28" fill="#E87722" />
+  
+  <path fill="#003366" d="M674,152 H814 A4,4 0 0 1 818,156 V174 A4,4 0 0 1 814,178 H674 A4,4 0 0 1 670,174 V156 A4,4 0 0 1 674,152 Z" />
+  <text x="744" y="170" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13" font-weight="bold">文献二 · 认知建模</text>
+  <text x="990" y="172" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="18" font-weight="bold">preprints202602.1990</text>
+
+  
+  <text x="670" y="230" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="19" font-weight="bold">研究问题</text>
+  <path fill="#0066CC" d="M671,238 H869 A1,1 0 0 1 870,239 V240 A1,1 0 0 1 869,241 H671 A1,1 0 0 1 670,240 V239 A1,1 0 0 1 671,238 Z" />
+  <text x="670" y="268" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16">长程顺序任务中，智能体如何</text>
+  <text x="670" y="291" fill="#E87722" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17" font-weight="bold">系统性地利用历史经验？</text>
+
+  
+  <rect x="670" y="310" width="550" height="1" fill="#D0D7E0" />
+
+  
+  <text x="670" y="340" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17" font-weight="bold">核心挑战</text>
+
+  <path fill="#F5F7FA" d="M676,358 H1214 A6,6 0 0 1 1220,364 V410 A6,6 0 0 1 1214,416 H676 A6,6 0 0 1 670,410 V364 A6,6 0 0 1 676,358 Z" />
+  <text x="686" y="381" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  现有策略模型仅基于短期状态或隐式历史压缩，缺乏</text>
+  <text x="686" y="404" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    可追踪的跨时间关键信息结构化存储</text>
+
+  <path fill="#F5F7FA" d="M676,428 H1214 A6,6 0 0 1 1220,434 V480 A6,6 0 0 1 1214,486 H676 A6,6 0 0 1 670,480 V434 A6,6 0 0 1 676,428 Z" />
+  <text x="686" y="451" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  记忆存储与决策生成相互脱节，历史经验无法显式</text>
+  <text x="686" y="474" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    参与当前决策逻辑的形成</text>
+
+  <path fill="#F5F7FA" d="M676,498 H1214 A6,6 0 0 1 1220,504 V550 A6,6 0 0 1 1214,556 H676 A6,6 0 0 1 670,550 V504 A6,6 0 0 1 676,498 Z" />
+  <text x="686" y="521" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  部分可观测环境 + 长程依赖叠加，导致策略不稳定、</text>
+  <text x="686" y="544" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    目标一致性差、无效探索比例高</text>
+
+  
+  <path fill="#E87722" fill-opacity="0.10" d="M676,568 H1214 A6,6 0 0 1 1220,574 V612 A6,6 0 0 1 1214,618 H676 A6,6 0 0 1 670,612 V574 A6,6 0 0 1 676,568 Z" />
+  <text x="945" y="589" text-anchor="middle" fill="#E87722" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">本质缺失</text>
+  <text x="945" y="608" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">感知-记忆-推理-决策缺乏统一认知闭环</text>
+
+  
+  <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1" />
+  <text x="40" y="695" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">来源：Chronos §1 Introduction | 认知建模 §I Introduction</text>
+  <text x="640" y="695" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">核心问题定义</text>
+  <text x="1240" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">4 / 12</text>
+</svg>

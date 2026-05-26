@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 页眉 -->
+  <rect x="0" y="0" width="1280" height="70" fill="#003366"/>
+  <rect x="0" y="0" width="8" height="70" fill="#E87722"/>
+  <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="26" font-weight="bold">04　实验结果对比</text>
+  <text x="1240" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">LLM 长期记忆综述</text>
+
+  <!-- 核心观点条 -->
+  <rect x="0" y="70" width="1280" height="50" fill="#E8F4FC"/>
+  <rect x="0" y="70" width="6" height="50" fill="#0066CC"/>
+  <text x="30" y="102" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17">两框架均在各自评测基准上取得最优：结构化记忆是共同关键驱动因素</text>
+
+  <!-- 左侧：LongMemEvalS 结果 -->
+  <text x="40" y="140" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="18" font-weight="bold">文献一：LongMemEvalS (500题) 准确率对比</text>
+  <rect x="40" y="148" width="4" height="20" fill="#E87722"/>
+
+  <!-- 表格 -->
+  <!-- 表头 -->
+  <rect x="40" y="174" width="600" height="30" fill="#003366" rx="4"/>
+  <text x="185" y="194" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13" font-weight="bold">方法</text>
+  <text x="360" y="194" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13" font-weight="bold">总体准确率</text>
+  <text x="480" y="194" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13" font-weight="bold">KU</text>
+  <text x="535" y="194" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13" font-weight="bold">MS</text>
+  <text x="590" y="194" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13" font-weight="bold">TR</text>
+
+  <!-- 行 1：Chronos High - 高亮 -->
+  <rect x="40" y="204" width="600" height="30" fill="#E87722" fill-opacity="0.12" rx="2"/>
+  <rect x="40" y="204" width="4" height="30" fill="#E87722"/>
+  <text x="185" y="224" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">Chronos High (Ours)</text>
+  <text x="360" y="224" text-anchor="middle" fill="#E87722" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16" font-weight="bold">95.60%</text>
+  <text x="480" y="224" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">100%</text>
+  <text x="535" y="224" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">88.7%</text>
+  <text x="590" y="224" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">95.5%</text>
+
+  <!-- 行 2：Chronos Low - 高亮 -->
+  <rect x="40" y="234" width="600" height="30" fill="#0066CC" fill-opacity="0.08" rx="2"/>
+  <rect x="40" y="234" width="4" height="30" fill="#0066CC"/>
+  <text x="185" y="254" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">Chronos Low (Ours)</text>
+  <text x="360" y="254" text-anchor="middle" fill="#0066CC" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16" font-weight="bold">92.60%</text>
+  <text x="480" y="254" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">96.2%</text>
+  <text x="535" y="254" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">91.7%</text>
+  <text x="590" y="254" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">94.3%</text>
+
+  <!-- 行 3-7：Baselines -->
+  <rect x="40" y="264" width="600" height="26" fill="#FFFFFF"/>
+  <text x="185" y="282" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">Honcho</text>
+  <text x="360" y="282" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">90.00%</text>
+  <text x="480" y="282" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">94.9%</text>
+  <text x="535" y="282" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">85.0%</text>
+  <text x="590" y="282" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">88.7%</text>
+
+  <rect x="40" y="290" width="600" height="26" fill="#F5F7FA"/>
+  <text x="185" y="308" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">EmergenceMem Internal</text>
+  <text x="360" y="308" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">86.00%</text>
+  <text x="480" y="308" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">83.3%</text>
+  <text x="535" y="308" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">81.2%</text>
+  <text x="590" y="308" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">85.7%</text>
+
+  <rect x="40" y="316" width="600" height="26" fill="#FFFFFF"/>
+  <text x="185" y="334" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">Mastra</text>
+  <text x="360" y="334" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">84.80%</text>
+  <text x="480" y="334" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">85.9%</text>
+  <text x="535" y="334" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">79.7%</text>
+  <text x="590" y="334" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">85.7%</text>
+
+  <rect x="40" y="342" width="600" height="26" fill="#F5F7FA"/>
+  <text x="185" y="360" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">Zep</text>
+  <text x="360" y="360" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">71.20%</text>
+  <text x="480" y="360" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">83.3%</text>
+  <text x="535" y="360" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">57.9%</text>
+  <text x="590" y="360" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">62.4%</text>
+
+  <!-- 图注 -->
+  <text x="40" y="388" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">KU=知识更新追踪　MS=跨会话聚合　TR=时序推理　（+7.67% vs EmergenceMem Internal）</text>
+
+  <!-- Benchmark图 -->
+  <rect x="40" y="405" width="600" height="230" fill="#F5F7FA" stroke="#D0D7E0" stroke-width="1" rx="8"/>
+  <image href="../images/chronos_benchmark.png" x="50" y="415" width="580" height="210" preserveAspectRatio="xMidYMid meet"/>
+
+  <!-- 右侧：WebShop 结果 -->
+  <text x="660" y="140" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="18" font-weight="bold">文献二：WebShop 评测结果对比</text>
+  <rect x="660" y="148" width="4" height="20" fill="#0066CC"/>
+
+  <!-- WebShop 表格 -->
+  <rect x="660" y="174" width="580" height="30" fill="#003366" rx="4"/>
+  <text x="820" y="194" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13" font-weight="bold">方法</text>
+  <text x="960" y="194" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13" font-weight="bold">SR%</text>
+  <text x="1060" y="194" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13" font-weight="bold">Avg.Steps</text>
+  <text x="1170" y="194" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13" font-weight="bold">MRU%</text>
+
+  <!-- Ours -->
+  <rect x="660" y="204" width="580" height="30" fill="#E87722" fill-opacity="0.12" rx="2"/>
+  <rect x="660" y="204" width="4" height="30" fill="#E87722"/>
+  <text x="820" y="224" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">Ours（认知建模）</text>
+  <text x="960" y="224" text-anchor="middle" fill="#E87722" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16" font-weight="bold">93.2</text>
+  <text x="1060" y="224" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">101.8</text>
+  <text x="1170" y="224" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">80.1</text>
+
+  <rect x="660" y="234" width="580" height="26" fill="#FFFFFF"/>
+  <text x="820" y="252" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">Pathfinder</text>
+  <text x="960" y="252" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">90.6</text>
+  <text x="1060" y="252" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">109.7</text>
+  <text x="1170" y="252" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">77.3</text>
+
+  <rect x="660" y="260" width="580" height="26" fill="#F5F7FA"/>
+  <text x="820" y="278" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">G-safeguard</text>
+  <text x="960" y="278" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">89.4</text>
+  <text x="1060" y="278" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">113.2</text>
+  <text x="1170" y="278" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">76.0</text>
+
+  <rect x="660" y="286" width="580" height="26" fill="#FFFFFF"/>
+  <text x="820" y="304" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">Robin</text>
+  <text x="960" y="304" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">88.1</text>
+  <text x="1060" y="304" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">117.9</text>
+  <text x="1170" y="304" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">74.6</text>
+
+  <rect x="660" y="312" width="580" height="26" fill="#F5F7FA"/>
+  <text x="820" y="330" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">Masrouter</text>
+  <text x="960" y="330" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">86.9</text>
+  <text x="1060" y="330" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">121.4</text>
+  <text x="1170" y="330" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">73.2</text>
+
+  <text x="660" y="358" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">SR=任务成功率　Avg.Steps=平均步骤数（越小越优）　MRU=记忆利用率</text>
+
+  <!-- KPI 数据亮点卡片 -->
+  <rect x="660" y="378" width="270" height="80" fill="#003366" fill-opacity="0.06" stroke="#003366" stroke-width="1" rx="8"/>
+  <text x="795" y="405" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">Chronos Low vs EmergenceMem</text>
+  <text x="795" y="432" text-anchor="middle" fill="#E87722" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="28" font-weight="bold">+7.67%</text>
+  <text x="795" y="450" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">总体准确率相对提升</text>
+
+  <rect x="960" y="378" width="280" height="80" fill="#0066CC" fill-opacity="0.06" stroke="#0066CC" stroke-width="1" rx="8"/>
+  <text x="1100" y="405" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">认知建模 vs Pathfinder</text>
+  <text x="1100" y="432" text-anchor="middle" fill="#0066CC" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="28" font-weight="bold">−7.9步</text>
+  <text x="1100" y="450" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">平均决策步骤减少（更高效）</text>
+
+  <!-- 右下综合洞察 -->
+  <rect x="660" y="475" width="580" height="162" fill="#F5F7FA" stroke="#D0D7E0" stroke-width="1" rx="8"/>
+  <text x="950" y="502" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16" font-weight="bold">综合洞察</text>
+  <rect x="680" y="512" width="540" height="1" fill="#D0D7E0"/>
+  <text x="680" y="534" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  Chronos High（Opus 4.6）在知识更新/偏好/单会话</text>
+  <text x="680" y="556" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    所有类别均取得 100%，展示顶级模型潜力</text>
+  <text x="680" y="578" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  认知框架记忆利用率提升（+9.7% vs Pathfinder）</text>
+  <text x="680" y="600" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    证明性能增益来自有效记忆利用，而非策略偏置</text>
+  <text x="680" y="624" fill="#0066CC" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">→ 两框架共同验证：结构化记忆是突破性能天花板的核心</text>
+
+  <!-- 页脚 -->
+  <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1"/>
+  <text x="40" y="695" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">来源：Chronos §4 (Table 1, 2) | 认知建模 §IV (Table 1)</text>
+  <text x="640" y="695" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">核心实验结果</text>
+  <text x="1240" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">9 / 12</text>
+</svg>

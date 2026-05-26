@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  
+  <rect width="1280" height="720" fill="#003366" />
+
+  
+  <path d="M820 0 L1280 0 L1280 720 L620 720 Z" fill="#004080" fill-opacity="0.3" />
+  <rect x="1200" y="0" width="80" height="720" fill="#002244" fill-opacity="0.2" />
+
+  
+  <path fill="#E87722" d="M2,240 H12 A2,2 0 0 1 14,242 V478 A2,2 0 0 1 12,480 H2 A2,2 0 0 1 0,478 V242 A2,2 0 0 1 2,240 Z" />
+
+  
+  <text x="100" y="500" fill="#FFFFFF" fill-opacity="0.06" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="300" font-weight="bold">04</text>
+
+  
+  <line x1="380" y1="268" x2="520" y2="268" stroke="#E87722" stroke-width="6" />
+
+  
+  <text x="380" y="345" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="56" font-weight="bold">核心实验结果</text>
+
+  
+  <text x="380" y="415" fill="#E8F4FC" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="24">LongMemEvalS 基准（500题）× WebShop 交互评测</text>
+
+  
+  <path fill="#E87722" fill-opacity="0.20" stroke="#E87722" stroke-width="1" d="M388,456 H522 A8,8 0 0 1 530,464 V502 A8,8 0 0 1 522,510 H388 A8,8 0 0 1 380,502 V464 A8,8 0 0 1 388,456 Z" />
+  <text x="455" y="479" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="30" font-weight="bold">95.60%</text>
+  <text x="455" y="499" text-anchor="middle" fill="#E8F4FC" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">Chronos SOTA</text>
+
+  <path fill="#0066CC" fill-opacity="0.20" stroke="#0066CC" stroke-width="1" d="M563,456 H697 A8,8 0 0 1 705,464 V502 A8,8 0 0 1 697,510 H563 A8,8 0 0 1 555,502 V464 A8,8 0 0 1 563,456 Z" />
+  <text x="630" y="479" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="30" font-weight="bold">93.2%</text>
+  <text x="630" y="499" text-anchor="middle" fill="#E8F4FC" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">认知框架 SR</text>
+
+  
+  <text x="1240" y="690" text-anchor="end" fill="#FFFFFF" fill-opacity="0.35" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="18">LLM 长期记忆综述</text>
+</svg>

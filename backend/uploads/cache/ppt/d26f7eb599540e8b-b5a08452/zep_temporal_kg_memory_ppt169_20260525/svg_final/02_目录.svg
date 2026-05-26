@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+
+  
+  <rect x="0" y="0" width="1280" height="70" fill="#003366" />
+  <rect x="0" y="0" width="6" height="70" fill="#F07C00" />
+  <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="28" font-weight="bold">目 录</text>
+  <text x="1220" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">ZEP AI</text>
+
+  
+
+  
+  <g id="toc-01">
+    <path fill="#E8F4FC" d="M88,95 H612 A8,8 0 0 1 620,103 V175 A8,8 0 0 1 612,183 H88 A8,8 0 0 1 80,175 V103 A8,8 0 0 1 88,95 Z" />
+    <path fill="#003366" d="M83,95 H83 A3,3 0 0 1 86,98 V180 A3,3 0 0 1 83,183 H83 A3,3 0 0 1 80,180 V98 A3,3 0 0 1 83,95 Z" />
+    <text x="120" y="143" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="32" font-weight="bold">01</text>
+    <text x="178" y="137" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" font-weight="bold">研究背景与动机</text>
+    <text x="120" y="165" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">LLM 上下文限制、静态 RAG 局限与 Zep 动机</text>
+  </g>
+
+  
+  <g id="toc-02">
+    <path fill="#E8F4FC" d="M668,95 H1192 A8,8 0 0 1 1200,103 V175 A8,8 0 0 1 1192,183 H668 A8,8 0 0 1 660,175 V103 A8,8 0 0 1 668,95 Z" />
+    <path fill="#003366" d="M663,95 H663 A3,3 0 0 1 666,98 V180 A3,3 0 0 1 663,183 H663 A3,3 0 0 1 660,180 V98 A3,3 0 0 1 663,95 Z" />
+    <text x="700" y="143" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="32" font-weight="bold">02</text>
+    <text x="758" y="137" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" font-weight="bold">知识图谱构建</text>
+    <text x="700" y="165" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">三层分级架构：情节、语义实体、社区子图</text>
+  </g>
+
+  
+  <g id="toc-03">
+    <path fill="#E8F4FC" d="M88,210 H612 A8,8 0 0 1 620,218 V290 A8,8 0 0 1 612,298 H88 A8,8 0 0 1 80,290 V218 A8,8 0 0 1 88,210 Z" />
+    <path fill="#0066CC" d="M83,210 H83 A3,3 0 0 1 86,213 V295 A3,3 0 0 1 83,298 H83 A3,3 0 0 1 80,295 V213 A3,3 0 0 1 83,210 Z" />
+    <text x="120" y="258" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="32" font-weight="bold">03</text>
+    <text x="178" y="252" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" font-weight="bold">双时态模型与实体关系</text>
+    <text x="120" y="280" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">双时态建模、实体提取、事实关系与边失效</text>
+  </g>
+
+  
+  <g id="toc-04">
+    <path fill="#E8F4FC" d="M668,210 H1192 A8,8 0 0 1 1200,218 V290 A8,8 0 0 1 1192,298 H668 A8,8 0 0 1 660,290 V218 A8,8 0 0 1 668,210 Z" />
+    <path fill="#0066CC" d="M663,210 H663 A3,3 0 0 1 666,213 V295 A3,3 0 0 1 663,298 H663 A3,3 0 0 1 660,295 V213 A3,3 0 0 1 663,210 Z" />
+    <text x="700" y="258" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="32" font-weight="bold">04</text>
+    <text x="758" y="252" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" font-weight="bold">记忆检索系统</text>
+    <text x="700" y="280" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">搜索-重排-构造三阶段检索管道</text>
+  </g>
+
+  
+  <g id="toc-05">
+    <path fill="#E8F4FC" d="M88,325 H612 A8,8 0 0 1 620,333 V405 A8,8 0 0 1 612,413 H88 A8,8 0 0 1 80,405 V333 A8,8 0 0 1 88,325 Z" />
+    <path fill="#F07C00" d="M83,325 H83 A3,3 0 0 1 86,328 V410 A3,3 0 0 1 83,413 H83 A3,3 0 0 1 80,410 V328 A3,3 0 0 1 83,325 Z" />
+    <text x="120" y="373" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="32" font-weight="bold">05</text>
+    <text x="178" y="367" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" font-weight="bold">实验结果</text>
+    <text x="120" y="395" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">DMR 与 LongMemEval 两大基准评测</text>
+  </g>
+
+  
+  <g id="toc-06">
+    <path fill="#E8F4FC" d="M668,325 H1192 A8,8 0 0 1 1200,333 V405 A8,8 0 0 1 1192,413 H668 A8,8 0 0 1 660,405 V333 A8,8 0 0 1 668,325 Z" />
+    <path fill="#F07C00" d="M663,325 H663 A3,3 0 0 1 666,328 V410 A3,3 0 0 1 663,413 H663 A3,3 0 0 1 660,410 V328 A3,3 0 0 1 663,325 Z" />
+    <text x="700" y="373" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="32" font-weight="bold">06</text>
+    <text x="758" y="367" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" font-weight="bold">结论与贡献</text>
+    <text x="700" y="395" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">三大技术贡献与核心量化成果</text>
+  </g>
+
+  
+  <g id="bottom-note">
+    <rect x="80" y="450" width="1120" height="2" fill="#E8F4FC" />
+    <text x="640" y="490" text-anchor="middle" fill="#AAAAAA" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">arXiv:2501.13956v1 · Zep AI团队 · 2025年1月</text>
+  </g>
+
+  
+  <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1" />
+  <text x="640" y="695" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">ZEP论文汇报</text>
+  <text x="1220" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">2 / 12</text>
+</svg>

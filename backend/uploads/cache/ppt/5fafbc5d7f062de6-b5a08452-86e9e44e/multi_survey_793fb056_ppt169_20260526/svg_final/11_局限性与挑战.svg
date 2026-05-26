@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+
+  
+  <rect x="0" y="0" width="1280" height="70" fill="#003366" />
+  <rect x="0" y="0" width="8" height="70" fill="#E87722" />
+  <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="26" font-weight="bold">06　局限性与挑战</text>
+  <text x="1240" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">LLM 长期记忆综述</text>
+
+  
+  <rect x="0" y="70" width="1280" height="50" fill="#E8F4FC" />
+  <rect x="0" y="70" width="6" height="50" fill="#0066CC" />
+  <text x="30" y="102" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17">两框架面临共同挑战：存储开销、推理计算成本与大规模扩展性——结构与效率的权衡持续存在</text>
+
+  
+  <path fill="#FFFFFF" stroke="#D0D7E0" stroke-width="1" d="M50,135 H620 A10,10 0 0 1 630,145 V515 A10,10 0 0 1 620,525 H50 A10,10 0 0 1 40,515 V145 A10,10 0 0 1 50,135 Z" />
+  <path fill="#003366" d="M50,135 H620 A10,10 0 0 1 630,145 V173 A10,10 0 0 1 620,183 H50 A10,10 0 0 1 40,173 V145 A10,10 0 0 1 50,135 Z" />
+  <rect x="40" y="160" width="590" height="23" fill="#003366" />
+  
+  <g transform="translate(58.0, 148.0)" fill="none" stroke="#E87722">
+    <path d="M12 9v4" />
+    <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0" />
+    <path d="M12 16h.01" />
+  </g>
+  <text x="100" y="167" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="18" font-weight="bold">Chronos 局限性</text>
+  <path fill="#E87722" fill-opacity="0.25" d="M754,148 H866 A4,4 0 0 1 870,152 V168 A4,4 0 0 1 866,172 H754 A4,4 0 0 1 750,168 V152 A4,4 0 0 1 754,148 Z" />
+  <text x="810" y="164" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">arXiv:2603.16862</text>
+
+  
+  <path fill="#F5F7FA" d="M66,198 H604 A6,6 0 0 1 610,204 V260 A6,6 0 0 1 604,266 H66 A6,6 0 0 1 60,260 V204 A6,6 0 0 1 66,198 Z" />
+  <path fill="#E87722" d="M62,198 H62 A2,2 0 0 1 64,200 V264 A2,2 0 0 1 62,266 H62 A2,2 0 0 1 60,264 V200 A2,2 0 0 1 62,198 Z" />
+  <text x="80" y="220" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16" font-weight="bold">① 双索引存储开销</text>
+  <text x="80" y="242" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">对话历法 + 事件历法双存储，空间开销高于纯对话系统</text>
+  <text x="80" y="258" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">缓解：稀疏事件提取，仅索引时序性事件，保持历法紧凑</text>
+
+  
+  <path fill="#F5F7FA" d="M66,278 H604 A6,6 0 0 1 610,284 V340 A6,6 0 0 1 604,346 H66 A6,6 0 0 1 60,340 V284 A6,6 0 0 1 66,278 Z" />
+  <path fill="#E87722" d="M62,278 H62 A2,2 0 0 1 64,280 V344 A2,2 0 0 1 62,346 H62 A2,2 0 0 1 60,344 V280 A2,2 0 0 1 62,278 Z" />
+  <text x="80" y="300" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16" font-weight="bold">② 离线提取计算成本</text>
+  <text x="80" y="322" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">LLM 驱动的事件提取在摄入阶段增加计算开销</text>
+  <text x="80" y="338" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">缓解：批处理（每批25轮，5轮重叠）+ 轻量模型提取</text>
+
+  
+  <path fill="#F5F7FA" d="M66,358 H604 A6,6 0 0 1 610,364 V420 A6,6 0 0 1 604,426 H66 A6,6 0 0 1 60,420 V364 A6,6 0 0 1 66,358 Z" />
+  <path fill="#E87722" d="M62,358 H62 A2,2 0 0 1 64,360 V424 A2,2 0 0 1 62,426 H62 A2,2 0 0 1 60,424 V360 A2,2 0 0 1 62,358 Z" />
+  <text x="80" y="380" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16" font-weight="bold">③ 并行检索推理延迟</text>
+  <text x="80" y="402" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">查询时双路召回增加响应延迟，高吞吐场景受影响</text>
+  <text x="80" y="418" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">缓解：预先完成对话历法初始检索，减少推理中冗余搜索</text>
+
+  
+  <path fill="#F5F7FA" d="M66,438 H604 A6,6 0 0 1 610,444 V484 A6,6 0 0 1 604,490 H66 A6,6 0 0 1 60,484 V444 A6,6 0 0 1 66,438 Z" />
+  <path fill="#E87722" d="M62,438 H62 A2,2 0 0 1 64,440 V488 A2,2 0 0 1 62,490 H62 A2,2 0 0 1 60,488 V440 A2,2 0 0 1 62,438 Z" />
+  <text x="80" y="458" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16" font-weight="bold">④ 偏好召回（SSP）仍弱</text>
+  <text x="80" y="478" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">Low 配置 SSP 80%，落后 Honcho 10pp，偏好类查询需专项优化</text>
+
+  
+  <path fill="#FFFFFF" stroke="#D0D7E0" stroke-width="1" d="M660,135 H1230 A10,10 0 0 1 1240,145 V515 A10,10 0 0 1 1230,525 H660 A10,10 0 0 1 650,515 V145 A10,10 0 0 1 660,135 Z" />
+  <path fill="#003366" d="M660,135 H1230 A10,10 0 0 1 1240,145 V173 A10,10 0 0 1 1230,183 H660 A10,10 0 0 1 650,173 V145 A10,10 0 0 1 660,135 Z" />
+  <rect x="650" y="160" width="590" height="23" fill="#003366" />
+  
+  <g transform="translate(668.0, 148.0)" fill="none" stroke="#E87722">
+    <path d="M12 9v4" />
+    <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0" />
+    <path d="M12 16h.01" />
+  </g>
+  <text x="710" y="167" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="18" font-weight="bold">认知建模框架局限性</text>
+  <path fill="#0066CC" fill-opacity="0.30" d="M1144,148 H1216 A4,4 0 0 1 1220,152 V168 A4,4 0 0 1 1216,172 H1144 A4,4 0 0 1 1140,168 V152 A4,4 0 0 1 1144,148 Z" />
+  <text x="1180" y="164" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">preprints</text>
+
+  
+  <path fill="#F5F7FA" d="M676,198 H1214 A6,6 0 0 1 1220,204 V260 A6,6 0 0 1 1214,266 H676 A6,6 0 0 1 670,260 V204 A6,6 0 0 1 676,198 Z" />
+  <path fill="#0066CC" d="M672,198 H672 A2,2 0 0 1 674,200 V264 A2,2 0 0 1 672,266 H672 A2,2 0 0 1 670,264 V200 A2,2 0 0 1 672,198 Z" />
+  <text x="690" y="220" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16" font-weight="bold">① 记忆容量超参敏感</text>
+  <text x="690" y="242" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">性能对K值非线性，工程部署中超参调优成本高</text>
+  <text x="690" y="258" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">需要任务自适应容量策略，避免"过大引入噪声"陷阱</text>
+
+  
+  <path fill="#F5F7FA" d="M676,278 H1214 A6,6 0 0 1 1220,284 V340 A6,6 0 0 1 1214,346 H676 A6,6 0 0 1 670,340 V284 A6,6 0 0 1 676,278 Z" />
+  <path fill="#0066CC" d="M672,278 H672 A2,2 0 0 1 674,280 V344 A2,2 0 0 1 672,346 H672 A2,2 0 0 1 670,344 V280 A2,2 0 0 1 672,278 Z" />
+  <text x="690" y="300" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16" font-weight="bold">② 注意力机制可解释性低</text>
+  <text x="690" y="322" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">记忆检索过程基于注意力权重，内部机制难以直接解读</text>
+  <text x="690" y="338" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">对安全敏感场景的可审计性构成挑战</text>
+
+  
+  <path fill="#F5F7FA" d="M676,358 H1214 A6,6 0 0 1 1220,364 V420 A6,6 0 0 1 1214,426 H676 A6,6 0 0 1 670,420 V364 A6,6 0 0 1 676,358 Z" />
+  <path fill="#0066CC" d="M672,358 H672 A2,2 0 0 1 674,360 V424 A2,2 0 0 1 672,426 H672 A2,2 0 0 1 670,424 V360 A2,2 0 0 1 672,358 Z" />
+  <text x="690" y="380" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16" font-weight="bold">③ 评测范围受限</text>
+  <text x="690" y="402" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">仅在 WebShop 单一数据集验证，跨领域泛化未评估</text>
+  <text x="690" y="418" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">需在开放世界交互、多领域长期规划场景中进一步验证</text>
+
+  
+  <path fill="#F5F7FA" d="M676,438 H1214 A6,6 0 0 1 1220,444 V484 A6,6 0 0 1 1214,490 H676 A6,6 0 0 1 670,484 V444 A6,6 0 0 1 676,438 Z" />
+  <path fill="#0066CC" d="M672,438 H672 A2,2 0 0 1 674,440 V488 A2,2 0 0 1 672,490 H672 A2,2 0 0 1 670,488 V440 A2,2 0 0 1 672,438 Z" />
+  <text x="690" y="458" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16" font-weight="bold">④ 缺乏安全/资源约束</text>
+  <text x="690" y="478" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">实际部署的安全限制与资源约束未在框架中建模</text>
+
+  
+  <path fill="#003366" fill-opacity="0.05" stroke="#003366" stroke-width="1" d="M48,540 H1232 A8,8 0 0 1 1240,548 V632 A8,8 0 0 1 1232,640 H48 A8,8 0 0 1 40,632 V548 A8,8 0 0 1 48,540 Z" />
+  <text x="640" y="568" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17" font-weight="bold">两框架共同面临的挑战</text>
+  <rect x="60" y="578" width="1160" height="1" fill="#D0D7E0" />
+  <text x="60" y="600" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  记忆精确性 vs 检索效率的根本权衡　■  长期运行中记忆的老化与主动更新策略</text>
+  <text x="60" y="624" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  多用户/多 Agent 场景下的共享记忆架构扩展　■  连续学习环境中的安全可控记忆管理</text>
+
+  
+  <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1" />
+  <text x="40" y="695" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">来源：Chronos §5 Limitations | 认知建模 §V Conclusions</text>
+  <text x="640" y="695" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">局限性与挑战</text>
+  <text x="1240" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">11 / 12</text>
+</svg>

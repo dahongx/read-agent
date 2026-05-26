@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 页眉 -->
+  <rect x="0" y="0" width="1280" height="70" fill="#003366"/>
+  <rect x="0" y="0" width="8" height="70" fill="#E87722"/>
+  <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="26" font-weight="bold">01　研究背景与动机</text>
+  <text x="1240" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">LLM 长期记忆综述</text>
+
+  <!-- 核心观点条 -->
+  <rect x="0" y="70" width="1280" height="50" fill="#E8F4FC"/>
+  <rect x="0" y="70" width="6" height="50" fill="#0066CC"/>
+  <text x="30" y="102" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17">现有 LLM 记忆系统在"时序推理"与"跨时段决策一致性"上存在系统性短板</text>
+
+  <!-- 三栏卡片 -->
+  <!-- 卡片1：会话记忆规模挑战 -->
+  <rect x="40" y="148" width="370" height="490" fill="#F5F7FA" stroke="#D0D7E0" stroke-width="1" rx="10"/>
+  <rect x="40" y="148" width="370" height="8" fill="#003366" rx="5"/>
+
+  <!-- 图标占位 -->
+  <use data-icon="tabler-outline/books" x="195" y="178" width="40" height="40" fill="#003366"/>
+
+  <text x="225" y="254" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="20" font-weight="bold">会话记忆的规模挑战</text>
+  <rect x="120" y="264" width="210" height="3" fill="#E87722" rx="1"/>
+
+  <text x="60" y="300" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16">对话可跨越数周至数月，LLM</text>
+  <text x="60" y="325" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16">上下文窗口无法涵盖全部历史。</text>
+
+  <rect x="60" y="350" width="330" height="1" fill="#D0D7E0"/>
+
+  <text x="60" y="380" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  知识图谱：结构完整但存储</text>
+  <text x="60" y="403" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    开销大、检索噪声高</text>
+  <text x="60" y="430" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  纯向量检索：简单但缺乏结</text>
+  <text x="60" y="453" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    构化时序表示</text>
+  <text x="60" y="480" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  摘要预计算：查询独立导致</text>
+  <text x="60" y="503" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    上下文熵增</text>
+
+  <rect x="60" y="535" width="330" height="60" fill="#E8F4FC" rx="6"/>
+  <text x="225" y="559" text-anchor="middle" fill="#0066CC" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">关键矛盾</text>
+  <text x="225" y="582" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">精确提取 vs 检索简洁性</text>
+
+  <!-- 卡片2：时序信息失真 -->
+  <rect x="455" y="148" width="370" height="490" fill="#F5F7FA" stroke="#D0D7E0" stroke-width="1" rx="10"/>
+  <rect x="455" y="148" width="370" height="8" fill="#0066CC" rx="5"/>
+
+  <use data-icon="tabler-outline/calendar" x="610" y="178" width="40" height="40" fill="#0066CC"/>
+
+  <text x="640" y="254" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="20" font-weight="bold">时序信息的失真</text>
+  <rect x="535" y="264" width="210" height="3" fill="#0066CC" rx="1"/>
+
+  <text x="475" y="300" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16">时间表达式被当作普通字符串</text>
+  <text x="475" y="325" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16">处理，无法精确过滤。</text>
+
+  <rect x="475" y="350" width="330" height="1" fill="#D0D7E0"/>
+
+  <text x="475" y="380" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  无法回答"上个月做了什么"</text>
+  <text x="475" y="403" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    类时间过滤查询</text>
+  <text x="475" y="430" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  跨会话事件聚合准确率低</text>
+  <text x="475" y="453" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    （"今年总共运动几次？"）</text>
+  <text x="475" y="480" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  相对日期推理依赖模型隐式</text>
+  <text x="475" y="503" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    理解，错误率高</text>
+
+  <rect x="475" y="535" width="330" height="60" fill="#E8F4FC" rx="6"/>
+  <text x="640" y="559" text-anchor="middle" fill="#0066CC" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">核心缺失</text>
+  <text x="640" y="582" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">结构化时序 vs 语义语言理解</text>
+
+  <!-- 卡片3：长程决策碎片化 -->
+  <rect x="870" y="148" width="370" height="490" fill="#F5F7FA" stroke="#D0D7E0" stroke-width="1" rx="10"/>
+  <rect x="870" y="148" width="370" height="8" fill="#E87722" rx="5"/>
+
+  <use data-icon="tabler-outline/brain" x="1025" y="178" width="40" height="40" fill="#E87722"/>
+
+  <text x="1055" y="254" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="20" font-weight="bold">长程决策的碎片化</text>
+  <rect x="950" y="264" width="210" height="3" fill="#E87722" rx="1"/>
+
+  <text x="890" y="300" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16">智能体过度依赖短期状态，历</text>
+  <text x="890" y="325" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16">史经验未能显式参与决策。</text>
+
+  <rect x="890" y="350" width="330" height="1" fill="#D0D7E0"/>
+
+  <text x="890" y="380" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  记忆压缩进隐式状态向量，</text>
+  <text x="890" y="403" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    可追踪性与可解释性低</text>
+  <text x="890" y="430" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  长期目标一致性难以维持，</text>
+  <text x="890" y="453" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    策略易退化</text>
+  <text x="890" y="480" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  部分可观测环境下推理链</text>
+  <text x="890" y="503" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    断裂，效率损失显著</text>
+
+  <rect x="890" y="535" width="330" height="60" fill="#E8F4FC" rx="6"/>
+  <text x="1055" y="559" text-anchor="middle" fill="#E87722" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">根本缺口</text>
+  <text x="1055" y="582" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13">记忆管理 vs 推理决策脱耦</text>
+
+  <!-- 页脚 -->
+  <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1"/>
+  <text x="40" y="695" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">来源：Chronos (arXiv:2603.16862) | 认知建模框架 (preprints202602.1990)</text>
+  <text x="640" y="695" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">研究背景与动机</text>
+  <text x="1240" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">3 / 12</text>
+</svg>

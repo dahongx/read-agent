@@ -13,13 +13,51 @@ __pycache__/
 frontend/node_modules/
 frontend/dist/
 
-# Generated runtime data
-backend/uploads/
-backend/models/
-projects/
+# Generated runtime data — backend/uploads/ 下默认全部忽略，但放行 2 个示例 space 用于演示
+# 注意：gitignore 的反白名单（!）只能放行未被父目录 ignore 的文件，
+# 所以这里必须用 backend/uploads/* 通配（而不是 backend/uploads/）才能让 ! 生效
+backend/uploads/*
 output/
 paper/
 paper_text.txt
+
+# 顶层放行 spaces / cache / conversations 这三个目录的"门"，再逐级精确放行
+!backend/uploads/spaces/
+!backend/uploads/cache/
+!backend/uploads/conversations/
+
+# spaces：只放行 2 个示例
+backend/uploads/spaces/*
+!backend/uploads/spaces/d26f7eb599540e8b-b5a08452.json
+!backend/uploads/spaces/5fafbc5d7f062de6-b5a08452-86e9e44e.json
+
+# cache 下面只放行 ppt/ 和 rag/ 两个子树
+backend/uploads/cache/*
+!backend/uploads/cache/ppt/
+!backend/uploads/cache/rag/
+
+# ppt 下只放行 2 个 space
+backend/uploads/cache/ppt/*
+!backend/uploads/cache/ppt/d26f7eb599540e8b-b5a08452/
+!backend/uploads/cache/ppt/5fafbc5d7f062de6-b5a08452-86e9e44e/
+
+# rag 下只放行 2 个对应索引
+backend/uploads/cache/rag/*
+!backend/uploads/cache/rag/d26f7eb599540e8b-v7/
+!backend/uploads/cache/rag/5fafbc5d7f062de6-multi-v2/
+
+# conversations 下只放行用户 123 的 2 个 space
+backend/uploads/conversations/*
+!backend/uploads/conversations/123/
+backend/uploads/conversations/123/*
+!backend/uploads/conversations/123/d26f7eb599540e8b-b5a08452/
+!backend/uploads/conversations/123/5fafbc5d7f062de6-b5a08452-86e9e44e/
+
+# 本地嵌入模型，太大不传
+backend/models/
+
+# 已废弃：早期单篇生成的 PPT 临时项目目录，已统一到 backend/uploads/cache/ppt/
+projects/
 
 # Generated skill artifacts
 .claude/skills/ppt-master/projects/

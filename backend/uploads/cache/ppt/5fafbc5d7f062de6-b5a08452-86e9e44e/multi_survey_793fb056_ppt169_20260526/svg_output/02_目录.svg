@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 页眉 -->
+  <rect x="0" y="0" width="1280" height="70" fill="#003366"/>
+  <rect x="0" y="0" width="8" height="70" fill="#E87722"/>
+  <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="26" font-weight="bold">汇报目录</text>
+  <text x="1240" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16" font-weight="bold">LLM 长期记忆综述</text>
+
+  <!-- 核心观点条 -->
+  <rect x="0" y="70" width="1280" height="50" fill="#E8F4FC"/>
+  <rect x="0" y="70" width="6" height="50" fill="#0066CC"/>
+  <text x="30" y="102" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17">本次汇报涵盖：研究背景 · 问题定义 · 方法脉络 · 实验结果 · 消融分析 · 局限与展望</text>
+
+  <!-- TOC 卡片区域：左列（01-03） -->
+  <!-- Card 01 -->
+  <rect x="40" y="148" width="580" height="100" fill="#F5F7FA" stroke="#D0D7E0" stroke-width="1" rx="8"/>
+  <rect x="40" y="148" width="6" height="100" fill="#E87722" rx="3"/>
+  <text x="80" y="187" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="22" font-weight="bold">01　研究背景与动机</text>
+  <text x="80" y="225" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16">长期记忆的规模挑战、时序失真与决策碎片化</text>
+
+  <!-- Card 02 -->
+  <rect x="40" y="268" width="580" height="100" fill="#F5F7FA" stroke="#D0D7E0" stroke-width="1" rx="8"/>
+  <rect x="40" y="268" width="6" height="100" fill="#E87722" rx="3"/>
+  <text x="80" y="307" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="22" font-weight="bold">02　核心问题定义</text>
+  <text x="80" y="345" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16">时序推理与长程决策的双重困境——两篇论文视角</text>
+
+  <!-- Card 03 -->
+  <rect x="40" y="388" width="580" height="100" fill="#F5F7FA" stroke="#D0D7E0" stroke-width="1" rx="8"/>
+  <rect x="40" y="388" width="6" height="100" fill="#E87722" rx="3"/>
+  <text x="80" y="427" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="22" font-weight="bold">03　方法脉络</text>
+  <text x="80" y="465" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16">Chronos 时序框架 × 认知建模统一架构</text>
+
+  <!-- 右列（04-06） -->
+  <!-- Card 04 -->
+  <rect x="660" y="148" width="580" height="100" fill="#F5F7FA" stroke="#D0D7E0" stroke-width="1" rx="8"/>
+  <rect x="660" y="148" width="6" height="100" fill="#0066CC" rx="3"/>
+  <text x="700" y="187" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="22" font-weight="bold">04　实验结果</text>
+  <text x="700" y="225" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16">LongMemEvalS 与 WebShop 基准评测数据</text>
+
+  <!-- Card 05 -->
+  <rect x="660" y="268" width="580" height="100" fill="#F5F7FA" stroke="#D0D7E0" stroke-width="1" rx="8"/>
+  <rect x="660" y="268" width="6" height="100" fill="#0066CC" rx="3"/>
+  <text x="700" y="307" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="22" font-weight="bold">05　消融分析</text>
+  <text x="700" y="345" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16">各组件贡献度量化分析与设计权衡</text>
+
+  <!-- Card 06 -->
+  <rect x="660" y="388" width="580" height="100" fill="#F5F7FA" stroke="#D0D7E0" stroke-width="1" rx="8"/>
+  <rect x="660" y="388" width="6" height="100" fill="#0066CC" rx="3"/>
+  <text x="700" y="427" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="22" font-weight="bold">06　局限性与展望</text>
+  <text x="700" y="465" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16">两框架的不足、共同挑战与未来研究方向</text>
+
+  <!-- 底部提示条 -->
+  <rect x="40" y="510" width="1200" height="2" fill="#E8F4FC"/>
+  <text x="40" y="540" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">📄 文献一：Chronos: Temporal-Aware Conversational Agents with Structured Event Retrieval for Long-Term Memory</text>
+  <text x="40" y="562" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">📄 文献二：Cognitive Modeling for Long-Horizon Agent Learning via Integrated Long-Term Memory and Reasoning</text>
+
+  <!-- 页脚 -->
+  <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1"/>
+  <text x="40" y="695" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">LLM 长期记忆综述汇报 · 2026-05-26</text>
+  <text x="1240" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">2 / 12</text>
+</svg>

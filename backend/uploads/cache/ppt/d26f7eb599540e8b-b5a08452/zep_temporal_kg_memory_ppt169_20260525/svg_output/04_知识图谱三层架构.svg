@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+      <feOffset dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.10" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 页眉 -->
+  <rect x="0" y="0" width="1280" height="70" fill="#003366"/>
+  <rect x="0" y="0" width="6" height="70" fill="#F07C00"/>
+  <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="26" font-weight="bold">02  知识图谱三层架构</text>
+  <text x="1220" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">ZEP AI</text>
+
+  <!-- 核心观点条 -->
+  <rect x="0" y="70" width="1280" height="50" fill="#E8F4FC"/>
+  <rect x="0" y="70" width="6" height="50" fill="#0066CC"/>
+  <text x="40" y="102" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">从原始对话到高层社区摘要，三层子图实现从细节到全局的记忆组织，类比人类记忆结构</text>
+
+  <!-- ============ 三列卡片 ============ -->
+
+  <!-- === 第一层: 情节子图 Ge === -->
+  <g id="col-episode">
+    <rect x="55" y="145" width="370" height="490" fill="#FFFFFF" rx="10" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1"/>
+    <!-- 顶部标题区 -->
+    <rect x="55" y="145" width="370" height="68" fill="#003366" rx="10"/>
+    <rect x="55" y="183" width="370" height="30" fill="#003366"/>
+    <circle cx="90" cy="181" r="20" fill="#F07C00"/>
+    <text x="90" y="187" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">01</text>
+    <text x="130" y="173" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="17" font-weight="bold">情节子图 Gₑ</text>
+    <text x="130" y="195" fill="#AACCEE" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">Episode Subgraph</text>
+    <!-- 内容 -->
+    <use data-icon="tabler-outline/database" x="80" y="228" width="36" height="36" fill="#0066CC"/>
+    <text x="130" y="246" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">原始数据存储</text>
+    <text x="75" y="278" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">存储原始输入单元（Episode）：</text>
+    <text x="75" y="298" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">消息（Message）</text>
+    <text x="75" y="318" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">文本（Text）</text>
+    <text x="75" y="338" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">结构化 JSON</text>
+    <line x1="75" y1="355" x2="400" y2="355" stroke="#E8F4FC" stroke-width="1.5"/>
+    <text x="75" y="380" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">每条 Episode 携带参考时间戳 tᵣₑf</text>
+    <text x="75" y="400" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">支持相对日期解析（"下周四"等）</text>
+    <line x1="75" y1="418" x2="400" y2="418" stroke="#E8F4FC" stroke-width="1.5"/>
+    <!-- 特性标签 -->
+    <rect x="75" y="430" width="100" height="26" fill="#E8F4FC" rx="4"/>
+    <text x="125" y="448" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">非无损存储</text>
+    <rect x="185" y="430" width="110" height="26" fill="#E8F4FC" rx="4"/>
+    <text x="240" y="448" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">支持溯源引用</text>
+    <!-- 类比 -->
+    <rect x="75" y="478" width="320" height="40" fill="#FFF5E8" rx="6"/>
+    <text x="235" y="504" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">类比：情节记忆（Episodic Memory）</text>
+  </g>
+
+  <!-- === 第二层: 语义实体子图 Gs === -->
+  <g id="col-semantic">
+    <rect x="455" y="145" width="370" height="490" fill="#FFFFFF" rx="10" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1"/>
+    <!-- 顶部标题区 -->
+    <rect x="455" y="145" width="370" height="68" fill="#0066CC" rx="10"/>
+    <rect x="455" y="183" width="370" height="30" fill="#0066CC"/>
+    <circle cx="490" cy="181" r="20" fill="#003366"/>
+    <text x="490" y="187" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">02</text>
+    <text x="530" y="173" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="17" font-weight="bold">语义实体子图 Gₛ</text>
+    <text x="530" y="195" fill="#CCE5FF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">Semantic Entity Subgraph</text>
+    <!-- 内容 -->
+    <use data-icon="tabler-outline/cloud-network" x="480" y="228" width="36" height="36" fill="#0066CC"/>
+    <text x="530" y="246" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">实体与关系提取</text>
+    <text x="475" y="278" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">从情节提取命名实体（节点）</text>
+    <text x="475" y="298" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">提取三元组关系事实（边）</text>
+    <text x="475" y="318" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">1024维向量嵌入 + 混合搜索去重</text>
+    <line x1="475" y1="335" x2="800" y2="335" stroke="#E8F4FC" stroke-width="1.5"/>
+    <text x="475" y="358" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">支持超边（同一事实涉及多实体）</text>
+    <text x="475" y="378" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">Reflexion 反思机制减少幻觉</text>
+    <text x="475" y="398" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">Cypher 预定义查询写入 Neo4j</text>
+    <line x1="475" y1="415" x2="800" y2="415" stroke="#E8F4FC" stroke-width="1.5"/>
+    <!-- 特性标签 -->
+    <rect x="475" y="428" width="88" height="26" fill="#E8F4FC" rx="4"/>
+    <text x="519" y="446" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">向量检索</text>
+    <rect x="573" y="428" width="88" height="26" fill="#E8F4FC" rx="4"/>
+    <text x="617" y="446" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">全文检索</text>
+    <rect x="671" y="428" width="88" height="26" fill="#E8F4FC" rx="4"/>
+    <text x="715" y="446" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">去重解析</text>
+    <!-- 类比 -->
+    <rect x="475" y="478" width="320" height="40" fill="#EEF5FF" rx="6"/>
+    <text x="635" y="504" text-anchor="middle" fill="#0066CC" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">类比：语义记忆（Semantic Memory）</text>
+  </g>
+
+  <!-- === 第三层: 社区子图 Gc === -->
+  <g id="col-community">
+    <rect x="855" y="145" width="370" height="490" fill="#FFFFFF" rx="10" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1"/>
+    <!-- 顶部标题区 -->
+    <rect x="855" y="145" width="370" height="68" fill="#1B5E20" rx="10"/>
+    <rect x="855" y="183" width="370" height="30" fill="#1B5E20"/>
+    <circle cx="890" cy="181" r="20" fill="#28A745"/>
+    <text x="890" y="187" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">03</text>
+    <text x="930" y="173" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="17" font-weight="bold">社区子图 G꜀</text>
+    <text x="930" y="195" fill="#AAEEBB" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">Community Subgraph</text>
+    <!-- 内容 -->
+    <use data-icon="tabler-outline/chart-bar" x="880" y="228" width="36" height="36" fill="#28A745"/>
+    <text x="930" y="246" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">高层聚类与摘要</text>
+    <text x="875" y="278" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">基于标签传播算法聚类实体</text>
+    <text x="875" y="298" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">每个社区节点含摘要+关键词嵌入</text>
+    <text x="875" y="318" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">支持余弦相似度全局检索</text>
+    <line x1="875" y1="335" x2="1200" y2="335" stroke="#E8F4FC" stroke-width="1.5"/>
+    <text x="875" y="358" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">动态单步扩展，延迟完整刷新</text>
+    <text x="875" y="378" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">受 GraphRAG 启发，但检索方式不同</text>
+    <text x="875" y="398" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">同时支持 Map-Reduce 迭代摘要</text>
+    <line x1="875" y1="415" x2="1200" y2="415" stroke="#E8F4FC" stroke-width="1.5"/>
+    <!-- 特性标签 -->
+    <rect x="875" y="428" width="88" height="26" fill="#E8FFF2" rx="4"/>
+    <text x="919" y="446" text-anchor="middle" fill="#1B5E20" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">全局理解</text>
+    <rect x="973" y="428" width="88" height="26" fill="#E8FFF2" rx="4"/>
+    <text x="1017" y="446" text-anchor="middle" fill="#1B5E20" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">动态更新</text>
+    <rect x="1071" y="428" width="88" height="26" fill="#E8FFF2" rx="4"/>
+    <text x="1115" y="446" text-anchor="middle" fill="#1B5E20" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">低成本维护</text>
+    <!-- 类比 -->
+    <rect x="875" y="478" width="320" height="40" fill="#E8FFF2" rx="6"/>
+    <text x="1035" y="504" text-anchor="middle" fill="#1B5E20" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">类比：概念社区（Concept Community）</text>
+  </g>
+
+  <!-- 向下箭头连接 -->
+  <line x1="425" y1="385" x2="453" y2="385" stroke="#D0D7E0" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="453,380 465,385 453,390" fill="#0066CC"/>
+  <line x1="825" y1="385" x2="853" y2="385" stroke="#D0D7E0" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="853,380 865,385 853,390" fill="#28A745"/>
+
+  <!-- 页脚 -->
+  <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1"/>
+  <text x="40" y="695" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">来源：arXiv:2501.13956v1 §2</text>
+  <text x="640" y="695" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">知识图谱构建</text>
+  <text x="1220" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">4 / 12</text>
+</svg>

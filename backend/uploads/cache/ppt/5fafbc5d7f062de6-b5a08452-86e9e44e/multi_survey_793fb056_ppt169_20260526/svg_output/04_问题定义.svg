@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 页眉 -->
+  <rect x="0" y="0" width="1280" height="70" fill="#003366"/>
+  <rect x="0" y="0" width="8" height="70" fill="#E87722"/>
+  <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="26" font-weight="bold">02　核心问题定义</text>
+  <text x="1240" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">LLM 长期记忆综述</text>
+
+  <!-- 核心观点条 -->
+  <rect x="0" y="70" width="1280" height="50" fill="#E8F4FC"/>
+  <rect x="0" y="70" width="6" height="50" fill="#0066CC"/>
+  <text x="30" y="102" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17">两篇论文从互补视角切入：前者聚焦时序记忆精确召回，后者关注记忆驱动的长程策略一致性</text>
+
+  <!-- 左侧：Chronos 问题定义 -->
+  <rect x="40" y="140" width="590" height="500" fill="#FFFFFF" stroke="#0066CC" stroke-width="2" rx="10"/>
+  <!-- 顶部蓝色标题条 -->
+  <rect x="40" y="140" width="590" height="56" fill="#003366" rx="10"/>
+  <rect x="40" y="168" width="590" height="28" fill="#003366"/>
+  <!-- 论文标签 -->
+  <rect x="60" y="152" width="120" height="26" fill="#E87722" rx="4"/>
+  <text x="120" y="170" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13" font-weight="bold">文献一 · Chronos</text>
+  <text x="390" y="172" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="18" font-weight="bold">arXiv:2603.16862</text>
+
+  <!-- 研究问题 -->
+  <text x="60" y="230" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="19" font-weight="bold">研究问题</text>
+  <rect x="60" y="238" width="200" height="3" fill="#E87722" rx="1"/>
+  <text x="60" y="268" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16">对话 AI 系统如何精确回答</text>
+  <text x="60" y="291" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17" font-weight="bold">"时间敏感型"跨会话查询？</text>
+
+  <!-- 分割线 -->
+  <rect x="60" y="310" width="550" height="1" fill="#D0D7E0"/>
+
+  <!-- 具体挑战 -->
+  <text x="60" y="340" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17" font-weight="bold">核心挑战</text>
+
+  <rect x="60" y="358" width="550" height="58" fill="#F5F7FA" rx="6"/>
+  <text x="76" y="381" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  现有系统将"last month"当作普通字符串，无法映射到</text>
+  <text x="76" y="404" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    精确 ISO 8601 时间范围进行过滤</text>
+
+  <rect x="60" y="428" width="550" height="58" fill="#F5F7FA" rx="6"/>
+  <text x="76" y="451" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  多跳时序查询（"度假后那周做了什么？"）需要跨会话</text>
+  <text x="76" y="474" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    事件聚合，纯语义检索无法处理</text>
+
+  <rect x="60" y="498" width="550" height="58" fill="#F5F7FA" rx="6"/>
+  <text x="76" y="521" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  知识更新追踪（"我现在在哪工作？"）要求识别最新事</text>
+  <text x="76" y="544" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    件，而非历史所有提及</text>
+
+  <!-- 本质诊断 -->
+  <rect x="60" y="568" width="550" height="50" fill="#003366" fill-opacity="0.08" rx="6"/>
+  <text x="335" y="589" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">本质缺失</text>
+  <text x="335" y="608" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">结构化时序信息与语义检索无法有效解耦</text>
+
+  <!-- 右侧：认知建模 问题定义 -->
+  <rect x="650" y="140" width="590" height="500" fill="#FFFFFF" stroke="#E87722" stroke-width="2" rx="10"/>
+  <!-- 顶部橙色标题条 -->
+  <rect x="650" y="140" width="590" height="56" fill="#E87722" rx="10"/>
+  <rect x="650" y="168" width="590" height="28" fill="#E87722"/>
+  <!-- 论文标签 -->
+  <rect x="670" y="152" width="148" height="26" fill="#003366" rx="4"/>
+  <text x="744" y="170" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="13" font-weight="bold">文献二 · 认知建模</text>
+  <text x="990" y="172" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="18" font-weight="bold">preprints202602.1990</text>
+
+  <!-- 研究问题 -->
+  <text x="670" y="230" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="19" font-weight="bold">研究问题</text>
+  <rect x="670" y="238" width="200" height="3" fill="#0066CC" rx="1"/>
+  <text x="670" y="268" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="16">长程顺序任务中，智能体如何</text>
+  <text x="670" y="291" fill="#E87722" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17" font-weight="bold">系统性地利用历史经验？</text>
+
+  <!-- 分割线 -->
+  <rect x="670" y="310" width="550" height="1" fill="#D0D7E0"/>
+
+  <!-- 具体挑战 -->
+  <text x="670" y="340" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="17" font-weight="bold">核心挑战</text>
+
+  <rect x="670" y="358" width="550" height="58" fill="#F5F7FA" rx="6"/>
+  <text x="686" y="381" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  现有策略模型仅基于短期状态或隐式历史压缩，缺乏</text>
+  <text x="686" y="404" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    可追踪的跨时间关键信息结构化存储</text>
+
+  <rect x="670" y="428" width="550" height="58" fill="#F5F7FA" rx="6"/>
+  <text x="686" y="451" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  记忆存储与决策生成相互脱节，历史经验无法显式</text>
+  <text x="686" y="474" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    参与当前决策逻辑的形成</text>
+
+  <rect x="670" y="498" width="550" height="58" fill="#F5F7FA" rx="6"/>
+  <text x="686" y="521" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">■  部分可观测环境 + 长程依赖叠加，导致策略不稳定、</text>
+  <text x="686" y="544" fill="#555555" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15">    目标一致性差、无效探索比例高</text>
+
+  <!-- 本质诊断 -->
+  <rect x="670" y="568" width="550" height="50" fill="#E87722" fill-opacity="0.10" rx="6"/>
+  <text x="945" y="589" text-anchor="middle" fill="#E87722" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14" font-weight="bold">本质缺失</text>
+  <text x="945" y="608" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">感知-记忆-推理-决策缺乏统一认知闭环</text>
+
+  <!-- 页脚 -->
+  <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1"/>
+  <text x="40" y="695" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">来源：Chronos §1 Introduction | 认知建模 §I Introduction</text>
+  <text x="640" y="695" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">核心问题定义</text>
+  <text x="1240" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">4 / 12</text>
+</svg>

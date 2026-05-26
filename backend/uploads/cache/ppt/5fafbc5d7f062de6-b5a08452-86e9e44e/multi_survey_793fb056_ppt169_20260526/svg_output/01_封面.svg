@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 顶部深蓝横条 -->
+  <rect x="0" y="0" width="1280" height="100" fill="#003366"/>
+  <!-- 左侧橙色竖条装饰 -->
+  <rect x="0" y="0" width="8" height="100" fill="#E87722"/>
+
+  <!-- 顶部橙色标签：论文综述汇报 -->
+  <rect x="1060" y="28" width="178" height="34" fill="#E87722" rx="4"/>
+  <text x="1149" y="51" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="15" font-weight="bold">论文综述汇报</text>
+
+  <!-- 顶部左侧文字 -->
+  <text x="40" y="58" fill="#FFFFFF" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="18" font-weight="bold">AI 长期记忆 · 综述系列</text>
+
+  <!-- 装饰元素：中部左侧竖线 -->
+  <rect x="200" y="160" width="4" height="360" fill="#E8F4FC"/>
+  <rect x="200" y="160" width="4" height="100" fill="#E87722"/>
+
+  <!-- 主标题 - 第一行 -->
+  <text x="640" y="300" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="52" font-weight="bold">LLM 长期记忆机制综述</text>
+
+  <!-- 主标题 - 橙色下划线装饰 -->
+  <rect x="340" y="318" width="600" height="4" fill="#E87722" rx="2"/>
+
+  <!-- 副标题 -->
+  <text x="640" y="380" text-anchor="middle" fill="#0066CC" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="26">时序感知会话记忆 × 长程认知建模</text>
+
+  <!-- 分割线 -->
+  <line x1="400" y1="420" x2="880" y2="420" stroke="#D0D7E0" stroke-width="1.5"/>
+  <circle cx="640" cy="420" r="5" fill="#0066CC"/>
+
+  <!-- 汇报信息 -->
+  <text x="640" y="480" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="20">汇报人：[汇报者]</text>
+  <text x="640" y="520" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="18">指导老师：[指导教师]　　所在单位：[机构名称]</text>
+
+  <!-- 文献标注 -->
+  <text x="640" y="570" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">涵盖文献：Chronos (arXiv:2603.16862) · 认知建模框架 (preprints202602.1990)</text>
+
+  <!-- 底部灰色信息栏 -->
+  <rect x="0" y="665" width="1280" height="55" fill="#F5F7FA"/>
+  <text x="640" y="698" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="14">2026年5月26日</text>
+  <text x="1240" y="698" text-anchor="end" fill="#999999" font-family="Microsoft YaHei, 微软雅黑, Arial, sans-serif" font-size="12">1 / 12</text>
+</svg>

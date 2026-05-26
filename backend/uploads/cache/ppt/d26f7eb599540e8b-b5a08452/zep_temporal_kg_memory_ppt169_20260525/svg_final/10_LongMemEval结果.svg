@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="7" />
+      <feOffset dx="0" dy="3" result="offsetBlur" />
+      <feFlood flood-color="#000000" flood-opacity="0.10" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="glowOrange" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur" />
+      <feFlood flood-color="#F07C00" flood-opacity="0.40" result="glowColor" />
+      <feComposite in="glowColor" in2="blur" operator="in" result="glow" />
+      <feMerge>
+        <feMergeNode in="glow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+
+  
+  <rect x="0" y="0" width="1280" height="70" fill="#003366" />
+  <rect x="0" y="0" width="6" height="70" fill="#F07C00" />
+  <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="26" font-weight="bold">05  LongMemEval：准确率 ↑，延迟 ↓ 90%</text>
+  <text x="1220" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">ZEP AI</text>
+
+  
+  <rect x="0" y="70" width="1280" height="50" fill="#E8F4FC" />
+  <rect x="0" y="70" width="6" height="50" fill="#0066CC" />
+  <text x="40" y="102" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">Zep 准确率提升 15.2–18.5%，响应延迟降低 90%，上下文 tokens 压缩 99%</text>
+
+  
+
+  <text x="55" y="158" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">LongMemEval-s 准确率对比</text>
+  <line x1="55" y1="164" x2="310" y2="164" stroke="#0066CC" stroke-width="2" />
+
+  
+  <path fill="#FAFAFA" stroke="#E8F4FC" stroke-width="1" d="M61,172 H799 A6,6 0 0 1 805,178 V416 A6,6 0 0 1 799,422 H61 A6,6 0 0 1 55,416 V178 A6,6 0 0 1 61,172 Z" />
+
+  
+  <text x="90" y="205" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">100%</text>
+  <line x1="110" y1="200" x2="780" y2="200" stroke="#E8F4FC" stroke-width="1" stroke-dasharray="3,3" />
+  <text x="90" y="245" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">75%</text>
+  <line x1="110" y1="240" x2="780" y2="240" stroke="#E8F4FC" stroke-width="1" stroke-dasharray="3,3" />
+  <text x="90" y="285" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">50%</text>
+  <line x1="110" y1="280" x2="780" y2="280" stroke="#E8F4FC" stroke-width="1" stroke-dasharray="3,3" />
+  <text x="90" y="325" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">25%</text>
+  <line x1="110" y1="320" x2="780" y2="320" stroke="#E8F4FC" stroke-width="1" stroke-dasharray="3,3" />
+  
+  <line x1="110" y1="395" x2="780" y2="395" stroke="#D0D7E0" stroke-width="1.5" />
+
+  
+
+  
+  
+  <g id="group-mini">
+    
+    <path fill="#668BBB" d="M184,288 H256 A4,4 0 0 1 260,292 V391 A4,4 0 0 1 256,395 H184 A4,4 0 0 1 180,391 V292 A4,4 0 0 1 184,288 Z" />
+    <text x="220" y="280" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">55.4%</text>
+    
+    <path fill="#F07C00" d="M274,271 H346 A4,4 0 0 1 350,275 V391 A4,4 0 0 1 346,395 H274 A4,4 0 0 1 270,391 V275 A4,4 0 0 1 274,271 Z" />
+    <text x="310" y="263" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold" filter="url(#glowOrange)">63.8%</text>
+    
+    <text x="255" y="415" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">gpt-4o-mini</text>
+    
+    <line x1="285" y1="271" x2="265" y2="271" stroke="#F07C00" stroke-width="1.5" />
+    <line x1="285" y1="288" x2="265" y2="288" stroke="#999999" stroke-width="1" stroke-dasharray="3,2" />
+    <path fill="#F07C00" d="M223,230 H287 A3,3 0 0 1 290,233 V251 A3,3 0 0 1 287,254 H223 A3,3 0 0 1 220,251 V233 A3,3 0 0 1 223,230 Z" />
+    <text x="255" y="247" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12" font-weight="bold">+15.2%</text>
+  </g>
+
+  
+  
+  
+  <g id="group-4o">
+    <path fill="#668BBB" d="M474,274 H546 A4,4 0 0 1 550,278 V391 A4,4 0 0 1 546,395 H474 A4,4 0 0 1 470,391 V278 A4,4 0 0 1 474,274 Z" />
+    <text x="510" y="266" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">~62%</text>
+    <path fill="#F07C00" d="M564,253 H636 A4,4 0 0 1 640,257 V391 A4,4 0 0 1 636,395 H564 A4,4 0 0 1 560,391 V257 A4,4 0 0 1 564,253 Z" />
+    <text x="600" y="245" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold" filter="url(#glowOrange)">~73%</text>
+    <text x="545" y="415" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">gpt-4o</text>
+    <path fill="#F07C00" d="M503,220 H567 A3,3 0 0 1 570,223 V241 A3,3 0 0 1 567,244 H503 A3,3 0 0 1 500,241 V223 A3,3 0 0 1 503,220 Z" />
+    <text x="535" y="237" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12" font-weight="bold">+18.5%</text>
+  </g>
+
+  
+  <path fill="#668BBB" d="M117,428 H129 A2,2 0 0 1 131,430 V440 A2,2 0 0 1 129,442 H117 A2,2 0 0 1 115,440 V430 A2,2 0 0 1 117,428 Z" />
+  <text x="138" y="440" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">Full-context 基线</text>
+  <path fill="#F07C00" d="M267,428 H279 A2,2 0 0 1 281,430 V440 A2,2 0 0 1 279,442 H267 A2,2 0 0 1 265,440 V430 A2,2 0 0 1 267,428 Z" />
+  <text x="288" y="440" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">Zep（本文方法）</text>
+
+  
+
+  <text x="55" y="488" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">关键效率指标（gpt-4o-mini）</text>
+  <line x1="55" y1="494" x2="340" y2="494" stroke="#F07C00" stroke-width="2" />
+
+  
+  <g id="kpi-acc">
+    <path fill="#FFFFFF" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1" d="M63,504 H217 A8,8 0 0 1 225,512 V606 A8,8 0 0 1 217,614 H63 A8,8 0 0 1 55,606 V512 A8,8 0 0 1 63,504 Z" />
+    <text x="140" y="543" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="36" font-weight="bold" filter="url(#glowOrange)">+15.2%</text>
+    <text x="140" y="567" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">准确率提升</text>
+    <text x="140" y="585" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">55.4% → 63.8%</text>
+    <text x="140" y="602" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">gpt-4o-mini</text>
+  </g>
+
+  
+  <g id="kpi-latency">
+    <path fill="#FFFFFF" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1" d="M248,504 H402 A8,8 0 0 1 410,512 V606 A8,8 0 0 1 402,614 H248 A8,8 0 0 1 240,606 V512 A8,8 0 0 1 248,504 Z" />
+    <text x="325" y="543" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="36" font-weight="bold" filter="url(#glowOrange)">-90%</text>
+    <text x="325" y="567" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">响应延迟降低</text>
+    <text x="325" y="585" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">31.3s → 3.20s</text>
+    <text x="325" y="602" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">中位响应时间</text>
+  </g>
+
+  
+  <g id="kpi-tokens">
+    <path fill="#FFFFFF" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1" d="M433,504 H587 A8,8 0 0 1 595,512 V606 A8,8 0 0 1 587,614 H433 A8,8 0 0 1 425,606 V512 A8,8 0 0 1 433,504 Z" />
+    <text x="510" y="543" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="36" font-weight="bold" filter="url(#glowOrange)">-99%</text>
+    <text x="510" y="567" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">上下文压缩</text>
+    <text x="510" y="585" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">115k → 1.6k tokens</text>
+    <text x="510" y="602" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">平均上下文长度</text>
+  </g>
+
+  
+  <g id="kpi-iqr">
+    <path fill="#FFFFFF" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1" d="M618,504 H797 A8,8 0 0 1 805,512 V606 A8,8 0 0 1 797,614 H618 A8,8 0 0 1 610,606 V512 A8,8 0 0 1 618,504 Z" />
+    <text x="707" y="543" text-anchor="middle" fill="#0066CC" font-family="Microsoft YaHei, Arial, sans-serif" font-size="36" font-weight="bold">3.20s</text>
+    <text x="707" y="567" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">Zep 平均延迟</text>
+    <text x="707" y="585" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">IQR: 1.6s（稳定）</text>
+    <text x="707" y="602" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">vs 基线 IQR: 8.76s</text>
+  </g>
+
+  
+  <g id="right-table">
+    <text x="830" y="158" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">详细结果（LongMemEval-s）</text>
+    <line x1="830" y1="164" x2="1100" y2="164" stroke="#0066CC" stroke-width="2" />
+
+    <path fill="#FFFFFF" filter="url(#cardShadow)" stroke="#D0D7E0" stroke-width="1" d="M838,172 H1227 A8,8 0 0 1 1235,180 V644 A8,8 0 0 1 1227,652 H838 A8,8 0 0 1 830,644 V180 A8,8 0 0 1 838,172 Z" />
+
+    
+    <path fill="#003366" d="M838,172 H1227 A8,8 0 0 1 1235,180 V200 A8,8 0 0 1 1227,208 H838 A8,8 0 0 1 830,200 V180 A8,8 0 0 1 838,172 Z" />
+    <rect x="830" y="196" width="405" height="12" fill="#003366" />
+    <text x="900" y="196" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">方法</text>
+    <text x="1005" y="196" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">准确率</text>
+    <text x="1100" y="196" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">延迟(s)</text>
+    <text x="1200" y="196" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">Ctx Tokens</text>
+    <line x1="950" y1="208" x2="950" y2="622" stroke="#E8F4FC" stroke-width="1" />
+    <line x1="1060" y1="208" x2="1060" y2="622" stroke="#E8F4FC" stroke-width="1" />
+    <line x1="1150" y1="208" x2="1150" y2="622" stroke="#E8F4FC" stroke-width="1" />
+
+    
+    <rect x="830" y="208" width="405" height="38" fill="#F5F7FA" />
+    <text x="840" y="232" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">Full-ctx</text>
+    <text x="840" y="244" fill="#888888" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">gpt-4o-mini</text>
+    <text x="1005" y="232" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">55.4%</text>
+    <text x="1100" y="232" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">31.3</text>
+    <text x="1200" y="232" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">115k</text>
+
+    
+    <rect x="830" y="246" width="405" height="38" fill="#FFF5E8" />
+    <rect x="830" y="246" width="4" height="38" fill="#F07C00" />
+    <text x="840" y="270" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12" font-weight="bold">Zep</text>
+    <text x="840" y="282" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">gpt-4o-mini ★</text>
+    <text x="1005" y="270" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">63.8%</text>
+    <text x="1100" y="270" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">3.20</text>
+    <text x="1200" y="270" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">1.6k</text>
+
+    
+    <line x1="840" y1="291" x2="1220" y2="291" stroke="#D0D7E0" stroke-width="1" stroke-dasharray="4,3" />
+
+    
+    <rect x="830" y="296" width="405" height="38" fill="#F5F7FA" />
+    <text x="840" y="320" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">Full-ctx</text>
+    <text x="840" y="332" fill="#888888" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">gpt-4o</text>
+    <text x="1005" y="320" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">~62%</text>
+    <text x="1100" y="320" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">~35</text>
+    <text x="1200" y="320" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">115k</text>
+
+    
+    <rect x="830" y="334" width="405" height="38" fill="#FFF5E8" />
+    <rect x="830" y="334" width="4" height="38" fill="#F07C00" />
+    <text x="840" y="358" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12" font-weight="bold">Zep</text>
+    <text x="840" y="370" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="11">gpt-4o ★</text>
+    <text x="1005" y="358" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">~73%</text>
+    <text x="1100" y="358" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">~3.5</text>
+    <text x="1200" y="358" text-anchor="middle" fill="#F07C00" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">1.6k</text>
+
+    
+    <path fill="#E8F4FC" d="M846,390 H1212 A6,6 0 0 1 1218,396 V460 A6,6 0 0 1 1212,466 H846 A6,6 0 0 1 840,460 V396 A6,6 0 0 1 846,390 Z" />
+    <text x="1029" y="412" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">两大核心优势</text>
+    <text x="855" y="432" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">✓ 更高准确率（+15~18.5%）</text>
+    <text x="855" y="452" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">✓ 更低延迟 + 大幅节省推理 token 成本</text>
+
+    
+    <path fill="#FFFFFF" stroke="#0066CC" stroke-width="1" d="M846,478 H1212 A6,6 0 0 1 1218,484 V568 A6,6 0 0 1 1212,574 H846 A6,6 0 0 1 840,568 V484 A6,6 0 0 1 846,478 Z" />
+    <text x="1029" y="500" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="bold">企业部署价值</text>
+    <text x="855" y="522" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">↓ tokens: 显著降低 API 调用成本</text>
+    <text x="855" y="542" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">↓ 延迟: 改善用户交互体验</text>
+    <text x="855" y="562" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">↑ 准确率: 减少幻觉与错误应答</text>
+  </g>
+
+  
+  <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1" />
+  <text x="40" y="695" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">来源：arXiv:2501.13956v1 Table 2 §4.3</text>
+  <text x="640" y="695" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">实验结果</text>
+  <text x="1220" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">10 / 12</text>
+</svg>

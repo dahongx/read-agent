@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+      <feOffset dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.12" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="topBarGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#003366"/>
+      <stop offset="100%" stop-color="#0055AA"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 白色背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 顶部深蓝横条 + 橙色左竖条 -->
+  <rect x="0" y="0" width="1280" height="110" fill="url(#topBarGrad)"/>
+  <rect x="0" y="0" width="6" height="110" fill="#F07C00"/>
+
+  <!-- 右上角 Logo -->
+  <text x="1200" y="62" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="bold">ZEP AI</text>
+
+  <!-- 装饰背景圆 -->
+  <circle cx="1150" cy="450" r="200" fill="#003366" fill-opacity="0.04"/>
+  <circle cx="80" cy="600" r="150" fill="#E8F4FC" fill-opacity="0.5"/>
+
+  <!-- 感谢语 -->
+  <text x="640" y="270" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="56" font-weight="bold">感谢聆听！欢迎提问</text>
+
+  <!-- 副标语 -->
+  <text x="640" y="330" text-anchor="middle" fill="#0066CC" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22">Zep: Empowering AI Agents with Temporal Memory</text>
+
+  <!-- 装饰分割线 -->
+  <line x1="420" y1="368" x2="860" y2="368" stroke="#0066CC" stroke-width="2"/>
+  <circle cx="640" cy="368" r="5" fill="#F07C00"/>
+  <circle cx="420" cy="368" r="3" fill="#0066CC"/>
+  <circle cx="860" cy="368" r="3" fill="#0066CC"/>
+
+  <!-- 联系信息卡片 -->
+  <rect x="340" y="392" width="600" height="148" fill="#F5F7FA" rx="10" filter="url(#cardShadow)"/>
+  <rect x="340" y="392" width="6" height="148" fill="#0066CC" rx="3"/>
+
+  <text x="640" y="430" text-anchor="middle" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="bold">论文信息</text>
+  <text x="640" y="460" text-anchor="middle" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">arXiv:2501.13956v1 · 2025年1月20日</text>
+  <text x="640" y="488" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15">Rasmussen, Paliychuk, Beauvais, Ryan, Chalef · Zep AI</text>
+  <text x="640" y="516" text-anchor="middle" fill="#0066CC" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" text-decoration="underline">getzep.com | github.com/getzep</text>
+
+  <!-- Q&A 提示 -->
+  <rect x="520" y="555" width="240" height="48" fill="#003366" rx="24"/>
+  <text x="640" y="585" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" font-weight="bold">Q &amp; A</text>
+
+  <!-- 底部信息区域 -->
+  <rect x="0" y="665" width="1280" height="55" fill="#F5F7FA"/>
+  <text x="640" y="698" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">2026年5月 | 论文汇报</text>
+  <text x="1220" y="698" text-anchor="end" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">12 / 12</text>
+</svg>

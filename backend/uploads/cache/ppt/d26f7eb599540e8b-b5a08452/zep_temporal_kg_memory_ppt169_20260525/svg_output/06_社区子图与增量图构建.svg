@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="7"/>
+      <feOffset dx="0" dy="3" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.10" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 页眉 -->
+  <rect x="0" y="0" width="1280" height="70" fill="#003366"/>
+  <rect x="0" y="0" width="6" height="70" fill="#F07C00"/>
+  <text x="40" y="46" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="26" font-weight="bold">02  社区子图与增量图构建</text>
+  <text x="1220" y="46" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">ZEP AI</text>
+
+  <!-- 核心观点条 -->
+  <rect x="0" y="70" width="1280" height="50" fill="#E8F4FC"/>
+  <rect x="0" y="70" width="6" height="50" fill="#0066CC"/>
+  <text x="40" y="102" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">标签传播动态单步扩展，支持流数据持续摄入，同时显著控制 LLM 推理成本</text>
+
+  <!-- ====== 左侧：社区检测 vs GraphRAG (5列) ====== -->
+  <g id="left-community">
+    <text x="55" y="160" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">社区检测：Zep vs GraphRAG</text>
+    <line x1="55" y1="166" x2="340" y2="166" stroke="#F07C00" stroke-width="2"/>
+
+    <!-- GraphRAG 方案卡片 -->
+    <rect x="55" y="178" width="565" height="115" fill="#F5F7FA" rx="8" stroke="#D0D7E0" stroke-width="1"/>
+    <rect x="55" y="178" width="6" height="115" fill="#999999" rx="3"/>
+    <text x="88" y="206" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">GraphRAG（对比方法）</text>
+    <text x="75" y="232" fill="#888888" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">使用 Leiden 算法全批量聚类</text>
+    <text x="75" y="254" fill="#888888" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">每次更新需完整重跑聚类 → 高延迟、高成本</text>
+    <text x="75" y="276" fill="#888888" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">不适合实时流数据场景</text>
+
+    <!-- Zep 方案卡片 -->
+    <rect x="55" y="305" width="565" height="140" fill="#E8F4FC" rx="8" stroke="#0066CC" stroke-width="1.5"/>
+    <rect x="55" y="305" width="6" height="140" fill="#0066CC" rx="3"/>
+    <text x="88" y="333" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">Zep 动态标签传播</text>
+    <text x="75" y="357" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">单步递归扩展：新节点加入时仅更新邻居社区</text>
+    <text x="75" y="379" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">社区摘要经迭代 map-reduce 方式生成</text>
+    <text x="75" y="401" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">社区名嵌入关键词，支持余弦相似检索</text>
+    <text x="75" y="423" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">定期完整刷新仍有必要，但显著减少频率</text>
+
+    <!-- 对比优势 -->
+    <rect x="55" y="460" width="565" height="70" fill="#FFFFFF" rx="8" stroke="#D0D7E0" stroke-width="1" filter="url(#cardShadow)"/>
+    <text x="75" y="488" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">Zep 优势</text>
+    <g id="advantages">
+      <circle cx="90" cy="508" r="5" fill="#F07C00"/>
+      <text x="104" y="513" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">降低 LLM 推理调用频率</text>
+      <circle cx="310" cy="508" r="5" fill="#F07C00"/>
+      <text x="324" y="513" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">支持增量流式摄入</text>
+    </g>
+
+    <!-- 与 LightRAG 关联 -->
+    <rect x="55" y="545" width="565" height="50" fill="#FFF5E8" rx="6"/>
+    <rect x="55" y="545" width="4" height="50" fill="#F07C00" rx="2"/>
+    <text x="72" y="567" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">社区名关键词检索方式与 LightRAG 高层键值检索相似</text>
+    <text x="72" y="585" fill="#888888" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">（LightRAG + Graphiti 混合方向是未来工作）</text>
+  </g>
+
+  <!-- 中间分割线 -->
+  <line x1="640" y1="140" x2="640" y2="640" stroke="#E8F4FC" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+  <!-- ====== 右侧：完整图构建流程 (5列) ====== -->
+  <g id="right-pipeline">
+    <text x="660" y="160" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">完整图构建流程（端到端）</text>
+    <line x1="660" y1="166" x2="920" y2="166" stroke="#0066CC" stroke-width="2"/>
+
+    <!-- 步骤1 -->
+    <g id="pipe-1">
+      <rect x="660" y="178" width="565" height="72" fill="#FFFFFF" rx="6" stroke="#D0D7E0" stroke-width="1"/>
+      <rect x="660" y="178" width="6" height="72" fill="#003366" rx="3"/>
+      <circle cx="695" cy="214" r="16" fill="#003366"/>
+      <text x="695" y="220" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">1</text>
+      <text x="723" y="207" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">摄入 Episode</text>
+      <text x="723" y="231" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">消息/文本/JSON 输入 → 携带 tᵣₑf 时间戳</text>
+    </g>
+    <!-- 箭头 -->
+    <line x1="942" y1="250" x2="942" y2="268" stroke="#D0D7E0" stroke-width="1.5"/>
+    <polygon points="937,268 942,280 947,268" fill="#0066CC"/>
+
+    <!-- 步骤2 -->
+    <g id="pipe-2">
+      <rect x="660" y="285" width="565" height="72" fill="#FFFFFF" rx="6" stroke="#D0D7E0" stroke-width="1"/>
+      <rect x="660" y="285" width="6" height="72" fill="#0066CC" rx="3"/>
+      <circle cx="695" cy="321" r="16" fill="#0066CC"/>
+      <text x="695" y="327" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">2</text>
+      <text x="723" y="314" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">实体提取 + 向量化 + 解析去重</text>
+      <text x="723" y="338" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">NER + Reflexion → 1024维嵌入 → cosine+BM25去重</text>
+    </g>
+    <line x1="942" y1="357" x2="942" y2="375" stroke="#D0D7E0" stroke-width="1.5"/>
+    <polygon points="937,375 942,387 947,375" fill="#0066CC"/>
+
+    <!-- 步骤3 -->
+    <g id="pipe-3">
+      <rect x="660" y="392" width="565" height="72" fill="#FFFFFF" rx="6" stroke="#D0D7E0" stroke-width="1"/>
+      <rect x="660" y="392" width="6" height="72" fill="#F07C00" rx="3"/>
+      <circle cx="695" cy="428" r="16" fill="#F07C00"/>
+      <text x="695" y="434" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">3</text>
+      <text x="723" y="421" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">事实提取 + 时间抽取 + 边失效</text>
+      <text x="723" y="445" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">三元组提取 → 设置 tᵥₐₗᵢ_d/tᵢₙᵥₐₗᵢ_d → LLM判断矛盾失效</text>
+    </g>
+    <line x1="942" y1="464" x2="942" y2="482" stroke="#D0D7E0" stroke-width="1.5"/>
+    <polygon points="937,482 942,494 947,482" fill="#0066CC"/>
+
+    <!-- 步骤4 -->
+    <g id="pipe-4">
+      <rect x="660" y="499" width="565" height="72" fill="#FFFFFF" rx="6" stroke="#D0D7E0" stroke-width="1"/>
+      <rect x="660" y="499" width="6" height="72" fill="#28A745" rx="3"/>
+      <circle cx="695" cy="535" r="16" fill="#28A745"/>
+      <text x="695" y="541" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">4</text>
+      <text x="723" y="528" fill="#003366" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">社区检测（标签传播动态扩展）</text>
+      <text x="723" y="552" fill="#555555" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">新节点 → 邻居社区多数投票 → 更新社区摘要</text>
+    </g>
+    <line x1="942" y1="571" x2="942" y2="589" stroke="#D0D7E0" stroke-width="1.5"/>
+    <polygon points="937,589 942,601 947,589" fill="#28A745"/>
+
+    <!-- 步骤5 -->
+    <g id="pipe-5">
+      <rect x="660" y="606" width="565" height="48" fill="#003366" rx="6"/>
+      <circle cx="695" cy="630" r="16" fill="#F07C00"/>
+      <text x="695" y="636" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="bold">5</text>
+      <text x="723" y="623" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">写入 Neo4j 知识图谱</text>
+      <text x="723" y="644" fill="#AACCEE" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">Cypher 预定义查询，schema 一致性保证</text>
+    </g>
+  </g>
+
+  <!-- 页脚 -->
+  <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1"/>
+  <text x="40" y="695" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">来源：arXiv:2501.13956v1 §2.3</text>
+  <text x="640" y="695" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">知识图谱构建</text>
+  <text x="1220" y="695" text-anchor="end" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">6 / 12</text>
+</svg>
