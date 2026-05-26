@@ -3,19 +3,22 @@ import { useParams } from 'react-router-dom'
 import ChatPanel from '../components/ChatPanel'
 import { preprocessForTts } from '../utils/tts'
 
+interface ScriptItem {
+  filename: string
+  content: string
+}
+
 export default function PptViewerPage() {
-  const { id } = useParams<{ id: string }>()
+  const { spaceId } = useParams<{ spaceId: string }>()
   const [slides, setSlides] = useState<string[]>([])
   const [current, setCurrent] = useState(0)
   const [loading, setLoading] = useState(true)
   const [noSlides, setNoSlides] = useState(false)
 
-  // Narration
   const [script, setScript] = useState<string[]>([])
   const [scriptLoading, setScriptLoading] = useState(false)
   const [scriptOpen, setScriptOpen] = useState(false)
 
-  // TTS / auto-play — fix 1 & 4
   const ttsSupported = typeof window !== 'undefined' && 'speechSynthesis' in window
   const [autoPlaying, setAutoPlaying] = useState(false)
   const autoPlayingRef = useRef(false)
@@ -27,12 +30,13 @@ export default function PptViewerPage() {
   scriptRef.current = script
   slidesRef.current = slides
 
-  const downloadUrl = `/api/sessions/${id}/ppt`
+  const downloadUrl = `/api/spaces/${spaceId}/ppt`
 
   useEffect(() => {
+    if (!spaceId) return
     async function loadSlides() {
       try {
-        const res = await fetch(`/api/sessions/${id}/slides`)
+        const res = await fetch(`/api/spaces/${spaceId}/slides`)
         if (!res.ok) throw new Error()
         const data = await res.json()
         if (data.slides?.length > 0) {
@@ -47,20 +51,24 @@ export default function PptViewerPage() {
       }
     }
     loadSlides()
-  }, [id])
+  }, [spaceId])
 
   useEffect(() => {
-    if (loading || noSlides || slides.length === 0) return
+    if (loading || noSlides || slides.length === 0 || !spaceId) return
     async function fetchScript() {
       setScriptLoading(true)
       try {
-        const res = await fetch(`/api/sessions/${id}/script`, { method: 'POST' })
-        if (res.ok) setScript((await res.json()).script ?? [])
+        const res = await fetch(`/api/spaces/${spaceId}/script`)
+        if (res.ok) {
+          const data = await res.json()
+          const items = (data.slides || []) as ScriptItem[]
+          setScript(items.map(item => item.content))
+        }
       } catch { /* silent */ }
       finally { setScriptLoading(false) }
     }
     fetchScript()
-  }, [id, loading, noSlides, slides.length])
+  }, [spaceId, loading, noSlides, slides.length])
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -71,13 +79,11 @@ export default function PptViewerPage() {
     return () => window.removeEventListener('keydown', onKey)
   }, [slides.length])
 
-  // Fix 1: auto-advance — speak slide, on end advance
   function speakSlideAt(index: number) {
     if (!autoPlayingRef.current || !ttsSupported) return
     const narration = scriptRef.current[index]
     window.speechSynthesis.cancel()
     if (!narration) {
-      // skip empty, advance
       const next = index + 1
       if (next < slidesRef.current.length) {
         setCurrent(next)
@@ -116,14 +122,13 @@ export default function PptViewerPage() {
     window.speechSynthesis.cancel()
   }
 
-  // Stop auto-play when user manually changes slide
   function goToSlide(index: number) {
     if (autoPlaying) stopAutoPlay()
     setCurrent(index)
   }
 
   const slideUrl = slides.length > 0
-    ? `/api/sessions/${id}/slides/${encodeURIComponent(slides[current])}`
+    ? `/api/spaces/${spaceId}/slides/${encodeURIComponent(slides[current])}`
     : ''
   const currentNarration = script[current] ?? ''
 
@@ -154,7 +159,6 @@ export default function PptViewerPage() {
               />
             </div>
 
-            {/* Narration panel */}
             {(script.length > 0 || scriptLoading) && (
               <div className="border-t border-gray-200 bg-gray-50">
                 <button
@@ -172,7 +176,6 @@ export default function PptViewerPage() {
               </div>
             )}
 
-            {/* Controls */}
             <div className="flex items-center justify-center gap-2 px-4 py-3 border-t border-gray-200 bg-gray-50 flex-wrap">
               <button onClick={() => goToSlide(Math.max(current - 1, 0))} disabled={current === 0}
                 className="px-3 py-1.5 rounded border border-gray-300 text-gray-700 text-sm disabled:opacity-40 hover:bg-gray-100">
@@ -184,7 +187,6 @@ export default function PptViewerPage() {
                 下一页 →
               </button>
 
-              {/* Fix 1: auto-play button */}
               {ttsSupported && script.length > 0 && (
                 autoPlaying ? (
                   <button onClick={stopAutoPlay}
@@ -206,7 +208,7 @@ export default function PptViewerPage() {
       </div>
 
       <ChatPanel
-        sessionId={id!}
+        spaceId={spaceId!}
         onJumpToSlide={(page) => goToSlide(Math.min(page - 1, slides.length - 1))}
       />
     </div>

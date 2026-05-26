@@ -13,3 +13,4 @@ llama-index-embeddings-openai>=0.6.0
 pypdf>=4.0.0
 python-pptx>=0.6.23
 sentence-transformers>=3.0.0
+rank-bm25>=0.2.2

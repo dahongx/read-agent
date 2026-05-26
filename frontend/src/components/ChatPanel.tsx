@@ -1,27 +1,30 @@
 import React, { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import PdfViewer from './PdfViewer'
 import { preprocessForTts } from '../utils/tts'
+import {
+  createConversation,
+  deleteConversation,
+  getConversation,
+  listConversations,
+  type ConversationItem,
+} from '../utils/api'
+import { getUserId } from '../utils/user'
 
 interface SpeechRecognitionAlternative {
   transcript: string
 }
-
 interface SpeechRecognitionResult {
   0: SpeechRecognitionAlternative
 }
-
 interface SpeechRecognitionResultList {
   0: SpeechRecognitionResult
 }
-
 interface SpeechRecognitionEvent extends Event {
   results: SpeechRecognitionResultList
 }
-
 interface SpeechRecognitionErrorEvent extends Event {
   error: string
 }
-
 interface SpeechRecognition extends EventTarget {
   lang: string
   interimResults: boolean
@@ -32,7 +35,6 @@ interface SpeechRecognition extends EventTarget {
   start(): void
   abort(): void
 }
-
 type SpeechRecognitionConstructor = new () => SpeechRecognition
 
 declare global {
@@ -49,6 +51,8 @@ interface Source {
   doc_id?: string | null
   doc_order?: number | null
   source_file_name?: string | null
+  quote?: string | null
+  chunk_id?: number | null
 }
 
 interface Message {
@@ -58,7 +62,7 @@ interface Message {
 }
 
 interface Props {
-  sessionId: string
+  spaceId: string
   onJumpToSlide?: (page: number) => void
 }
 
@@ -66,6 +70,7 @@ interface PdfTarget {
   page: number
   docId?: string | null
   fileLabel?: string | null
+  quote?: string | null
 }
 
 const INLINE_CITATION_SPLIT_REGEX = /(\(\s*第\s*\d{1,3}\s*页\s*\)|（\s*第\s*\d{1,3}\s*页\s*）)/u
@@ -93,31 +98,12 @@ function renderPageLink(
   )
 }
 
-function getFallbackSources(sources?: Source[]): Source[] {
-  if (!sources?.length) return []
-
-  const seen = new Set<string>()
-  const items: Source[] = []
-
-  for (const source of sources) {
-    if (typeof source.page !== 'number') continue
-    const key = `${source.doc_id ?? 'session'}:${source.page}`
-    if (seen.has(key)) continue
-    seen.add(key)
-    items.push(source)
-    if (items.length >= 4) break
-  }
-
-  return items
-}
-
-
 function findSourceForPage(sources: Source[] | undefined, page: number): Source | null {
   if (!sources?.length) return null
-
+  const withQuote = sources.find(source => source.page === page && !!source.quote)
+  if (withQuote) return withQuote
   const exactDocSource = sources.find(source => source.page === page && !!source.doc_id)
   if (exactDocSource) return exactDocSource
-
   return sources.find(source => source.page === page) ?? null
 }
 
@@ -138,6 +124,7 @@ function renderWithCitations(
         page,
         docId: source?.doc_id,
         fileLabel: source ? sourceLabel(source) : null,
+        quote: source?.quote ?? null,
       }, index, onPageClick))
       return
     }
@@ -160,37 +147,21 @@ function AssistantMessage({
   msg: Message
   onViewPdf: (target: PdfTarget) => void
 }) {
-  const fallbackSources = getFallbackSources(msg.sources)
-
   return (
     <div className="max-w-[90%] self-start rounded-2xl rounded-tl-sm border border-gray-200 bg-white px-3 py-2 text-sm leading-relaxed text-gray-800">
       {renderWithCitations(msg.content, msg.sources, onViewPdf)}
-      {fallbackSources.length > 0 && (
-        <div className="mt-2 flex flex-col gap-1 text-xs text-gray-500">
-          <span>参考出处：</span>
-          <div className="flex flex-wrap gap-1">
-            {fallbackSources.map((source, index) => renderPageLink(
-              {
-                page: source.page!,
-                docId: source.doc_id,
-                fileLabel: sourceLabel(source),
-              },
-              `fallback-${source.doc_id ?? 'session'}-${source.page}-${index}`,
-              onViewPdf,
-              `${sourceLabel(source)} 第${source.page}页↗`,
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   )
 }
 
-export default function ChatPanel({ sessionId }: Props) {
+export default function ChatPanel({ spaceId }: Props) {
+  const [conversations, setConversations] = useState<ConversationItem[]>([])
+  const [activeConvId, setActiveConvId] = useState<string | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [pdfTarget, setPdfTarget] = useState<PdfTarget | null>(null)
+  const [convMenuOpen, setConvMenuOpen] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   const SR = typeof window !== 'undefined'
@@ -203,6 +174,56 @@ export default function ChatPanel({ sessionId }: Props) {
   const ttsSupported = typeof window !== 'undefined' && 'speechSynthesis' in window
   const [ttsEnabled, setTtsEnabled] = useState(false)
   const [ttsSpeaking, setTtsSpeaking] = useState(false)
+
+  // 进入空间时加载会话列表 + 自动选最近一个 / 新建一个
+  useEffect(() => {
+    if (!spaceId) return
+    let cancelled = false
+    async function init() {
+      try {
+        const items = await listConversations(spaceId)
+        if (cancelled) return
+        if (items.length > 0) {
+          setConversations(items)
+          setActiveConvId(items[0].id)
+        } else {
+          const conv = await createConversation(spaceId)
+          if (cancelled) return
+          setConversations([{
+            id: conv.id, title: conv.title, msg_count: 0,
+            created_at: conv.created_at, updated_at: conv.updated_at,
+          }])
+          setActiveConvId(conv.id)
+        }
+      } catch (err) {
+        console.error('init conversations failed', err)
+      }
+    }
+    init()
+    return () => { cancelled = true }
+  }, [spaceId])
+
+  // 切换会话时拉取消息
+  useEffect(() => {
+    if (!spaceId || !activeConvId) return
+    let cancelled = false
+    async function loadMessages() {
+      try {
+        const conv = await getConversation(spaceId, activeConvId!)
+        if (cancelled) return
+        setMessages((conv.messages || []).map(m => ({
+          role: m.role,
+          content: m.content,
+          sources: (m.sources as Source[] | undefined) || undefined,
+        })))
+      } catch (err) {
+        console.error('load conversation failed', err)
+        setMessages([])
+      }
+    }
+    loadMessages()
+    return () => { cancelled = true }
+  }, [spaceId, activeConvId])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -220,9 +241,54 @@ export default function ChatPanel({ sessionId }: Props) {
     setTtsSpeaking(false)
   }
 
+  async function refreshConversations(preferConvId?: string) {
+    try {
+      const items = await listConversations(spaceId)
+      setConversations(items)
+      if (preferConvId && items.some(i => i.id === preferConvId)) {
+        setActiveConvId(preferConvId)
+      } else if (items.length > 0 && !items.some(i => i.id === activeConvId)) {
+        setActiveConvId(items[0].id)
+      } else if (items.length === 0) {
+        setActiveConvId(null)
+      }
+    } catch (err) {
+      console.error('refresh conversations failed', err)
+    }
+  }
+
+  async function handleNewConversation() {
+    try {
+      const conv = await createConversation(spaceId)
+      await refreshConversations(conv.id)
+      setMessages([])
+      setConvMenuOpen(false)
+    } catch (err) {
+      alert(`新建会话失败：${(err as Error).message}`)
+    }
+  }
+
+  async function handleDeleteConversation(convId: string) {
+    if (!confirm('确认删除这个会话吗？')) return
+    try {
+      await deleteConversation(spaceId, convId)
+      // 若删的是当前会话，列表里没了就自动切换或新建
+      const remaining = conversations.filter(c => c.id !== convId)
+      if (remaining.length > 0) {
+        await refreshConversations(remaining[0].id)
+      } else {
+        const conv = await createConversation(spaceId)
+        await refreshConversations(conv.id)
+        setMessages([])
+      }
+    } catch (err) {
+      alert(`删除失败：${(err as Error).message}`)
+    }
+  }
+
   async function sendText(text: string) {
     const question = text.trim()
-    if (!question || loading) return
+    if (!question || loading || !activeConvId) return
 
     setInput('')
     setMessages(prev => [...prev, { role: 'user', content: question }])
@@ -232,7 +298,12 @@ export default function ChatPanel({ sessionId }: Props) {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ session_id: sessionId, question }),
+        body: JSON.stringify({
+          space_id: spaceId,
+          conversation_id: activeConvId,
+          user_id: getUserId() || 'anonymous',
+          question,
+        }),
       })
 
       const data = await res.json()
@@ -244,6 +315,11 @@ export default function ChatPanel({ sessionId }: Props) {
       } else {
         const answer: string = data.answer
         setMessages(prev => [...prev, { role: 'assistant', content: answer, sources: data.sources }])
+
+        if (data.conversation_title) {
+          // 后端首条问答自动起标题，刷新列表显示
+          refreshConversations(activeConvId)
+        }
 
         if (ttsEnabled && ttsSupported && answer) {
           window.speechSynthesis.cancel()
@@ -317,37 +393,97 @@ export default function ChatPanel({ sessionId }: Props) {
     setListening(false)
   }
 
+  // PdfViewer：把目标的 pdfPath 改成 spaces API
+  const pdfBaseUrl = pdfTarget
+    ? (pdfTarget.docId
+        ? `/api/spaces/${spaceId}/pdf/${encodeURIComponent(pdfTarget.docId)}`
+        : `/api/spaces/${spaceId}/pdf`)
+    : ''
+
+  const activeConv = conversations.find(c => c.id === activeConvId)
+
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden border-l border-gray-200 bg-gray-50">
       {pdfTarget !== null && (
         <PdfViewer
-          sessionId={sessionId}
+          pdfUrl={pdfBaseUrl}
           page={pdfTarget.page}
-          docId={pdfTarget.docId}
           fileLabel={pdfTarget.fileLabel}
+          quote={pdfTarget.quote ?? null}
           onClose={() => setPdfTarget(null)}
         />
       )}
 
-      <div className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
-        <div>
-          <h3 className="text-sm font-semibold text-gray-700">论文问答</h3>
-          <p className="text-xs text-gray-400">可以针对论文内容提问</p>
+      {/* 顶部：标题 + 会话切换条 */}
+      <div className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-2">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
+          <h3 className="text-sm font-semibold text-gray-700 shrink-0">论文问答</h3>
+          <div className="relative min-w-0">
+            <button
+              onClick={() => setConvMenuOpen(o => !o)}
+              className="flex items-center gap-1 max-w-[200px] truncate rounded border border-gray-200 bg-gray-50 px-2 py-1 text-xs text-gray-700 hover:border-blue-300"
+              title={activeConv?.title}
+            >
+              <span className="truncate">{activeConv?.title || '加载中...'}</span>
+              <span className="text-gray-400">▾</span>
+            </button>
+            {convMenuOpen && (
+              <div className="absolute left-0 top-full mt-1 w-72 max-h-80 overflow-auto rounded-lg border border-gray-200 bg-white shadow-lg z-30">
+                <div className="sticky top-0 flex items-center justify-between border-b border-gray-200 bg-white px-3 py-2">
+                  <span className="text-xs text-gray-500">会话列表（{conversations.length}/50）</span>
+                  <button
+                    onClick={handleNewConversation}
+                    className="text-xs text-blue-600 hover:underline"
+                  >
+                    + 新建
+                  </button>
+                </div>
+                {conversations.length === 0 ? (
+                  <p className="px-3 py-4 text-xs text-gray-400">暂无会话</p>
+                ) : (
+                  <ul className="py-1">
+                    {conversations.map(conv => (
+                      <li key={conv.id} className="group flex items-center justify-between px-3 py-1.5 text-xs hover:bg-blue-50">
+                        <button
+                          onClick={() => {
+                            setActiveConvId(conv.id)
+                            setConvMenuOpen(false)
+                          }}
+                          className={`flex-1 truncate text-left ${conv.id === activeConvId ? 'text-blue-700 font-medium' : 'text-gray-700'}`}
+                          title={conv.title}
+                        >
+                          {conv.title}
+                          <span className="ml-1 text-gray-400">·{conv.msg_count}</span>
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleDeleteConversation(conv.id) }}
+                          className="ml-2 text-gray-300 opacity-0 transition-opacity group-hover:opacity-100 hover:text-red-500"
+                          title="删除"
+                        >
+                          ✕
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 shrink-0">
           {ttsSupported && ttsSpeaking && (
             <button
               onClick={stopTts}
               className="rounded border border-red-300 px-2 py-1 text-xs text-red-600 hover:bg-red-50"
             >
-              ⏹ 停止朗读
+              ⏹
             </button>
           )}
           {ttsSupported && (
             <button
               onClick={() => setTtsEnabled(enabled => !enabled)}
               title={ttsEnabled ? '关闭自动朗读' : '开启自动朗读'}
-              className={`rounded px-2 py-1 text-lg transition-colors ${ttsEnabled ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:text-gray-600'}`}
+              className={`rounded px-2 py-1 text-base transition-colors ${ttsEnabled ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:text-gray-600'}`}
             >
               {ttsEnabled ? '🔊' : '🔈'}
             </button>
@@ -401,14 +537,14 @@ export default function ChatPanel({ sessionId }: Props) {
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={onKeyDown}
-          disabled={loading}
-          placeholder="输入问题，Enter 发送，Shift+Enter 换行"
+          disabled={loading || !activeConvId}
+          placeholder={activeConvId ? '输入问题，Enter 发送，Shift+Enter 换行' : '正在加载会话...'}
           className="flex-1 resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
         />
         {SR ? (
           <button
             onClick={listening ? stopListening : startListening}
-            disabled={loading}
+            disabled={loading || !activeConvId}
             title={listening ? '点击停止' : '点击后说话（需允许麦克风）'}
             className={`self-end whitespace-nowrap rounded-lg border px-3 py-2 text-sm ${
               listening
@@ -428,7 +564,7 @@ export default function ChatPanel({ sessionId }: Props) {
         )}
         <button
           onClick={() => void send()}
-          disabled={loading || !input.trim()}
+          disabled={loading || !input.trim() || !activeConvId}
           className="self-end rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40"
         >
           发送

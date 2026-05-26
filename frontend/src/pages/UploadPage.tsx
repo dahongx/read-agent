@@ -1,6 +1,8 @@
-import { useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { DragEvent, ChangeEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useUserId } from '../utils/user'
+import { deleteSpace, listSpaces, type SpaceSummary } from '../utils/api'
 
 type UploadMode = 'single' | 'multi'
 
@@ -83,8 +85,57 @@ export default function UploadPage() {
   const [uploadMode, setUploadMode] = useState<UploadMode>('single')
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+  const [userId, setUserId] = useUserId()
+  const [userInput, setUserInput] = useState(userId)
+  const [history, setHistory] = useState<SpaceSummary[]>([])
+  const [historyLoading, setHistoryLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    setUserInput(userId)
+  }, [userId])
+
+  useEffect(() => {
+    if (!userId) {
+      setHistory([])
+      return
+    }
+    let cancelled = false
+    setHistoryLoading(true)
+    listSpaces()
+      .then(spaces => { if (!cancelled) setHistory(spaces) })
+      .catch(() => { if (!cancelled) setHistory([]) })
+      .finally(() => { if (!cancelled) setHistoryLoading(false) })
+    return () => { cancelled = true }
+  }, [userId])
+
+  function commitUserId() {
+    const trimmed = userInput.trim()
+    if (trimmed && trimmed !== userId) {
+      setUserId(trimmed)
+    }
+  }
+
+  async function refreshHistory() {
+    if (!userId) return
+    try {
+      const spaces = await listSpaces()
+      setHistory(spaces)
+    } catch {
+      // ignore
+    }
+  }
+
+  async function handleDeleteSpace(spaceId: string, label: string) {
+    if (!confirm(`确认删除空间「${label}」？该用户在此空间下的所有会话也会一起删除（PPT/RAG 缓存保留）。`)) return
+    try {
+      await deleteSpace(spaceId)
+      await refreshHistory()
+    } catch (err) {
+      alert(`删除失败：${(err as Error).message}`)
+    }
+  }
 
   function setField<K extends keyof PptConfig>(key: K, value: PptConfig[K]) {
     setConfig(prev => ({ ...prev, [key]: value }))
@@ -137,11 +188,17 @@ export default function UploadPage() {
     const hasValidSelection = uploadMode === 'single' ? !!selectedFile : selectedFiles.length >= 2
     if (!hasValidSelection) return
 
+    if (!userId.trim()) {
+      setError('请先在右上角输入用户名')
+      return
+    }
+
     setLoading(true)
     setError(null)
     try {
       const form = new FormData()
       form.append('ppt_config', JSON.stringify(config))
+      form.append('user_id', userId.trim())
 
       let endpoint = '/api/upload'
       if (uploadMode === 'single' && selectedFile) {
@@ -157,7 +214,7 @@ export default function UploadPage() {
         setError(formatUploadError(data.detail))
         return
       }
-      navigate(`/session/${data.session_id}`)
+      navigate(`/tasks/${data.session_id}?space=${encodeURIComponent(data.space_id || '')}`)
     } catch {
       setError('网络错误，请重试')
     } finally {
@@ -188,6 +245,21 @@ export default function UploadPage() {
 
   return (
     <div className="flex flex-col items-center justify-center flex-1 p-8 gap-6">
+      <div className="w-full max-w-xl flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm">
+        <span className="text-gray-500 shrink-0">用户名</span>
+        <input
+          value={userInput}
+          onChange={e => setUserInput(e.target.value)}
+          onBlur={commitUserId}
+          onKeyDown={e => { if (e.key === 'Enter') commitUserId() }}
+          placeholder="输入一个名字以保存历史与会话"
+          className="flex-1 px-2 py-1 outline-none focus:ring-2 focus:ring-blue-500 rounded"
+        />
+        {userId && (
+          <span className="text-xs text-gray-400 shrink-0">当前：{userId}</span>
+        )}
+      </div>
+
       <div className="text-center">
         <h1 className="text-2xl font-semibold text-gray-800 mb-1">{title}</h1>
         <p className="text-gray-500 text-sm">{subtitle}</p>
@@ -362,6 +434,82 @@ export default function UploadPage() {
           </>
         ) : uploadMode === 'single' ? '上传并生成 PPT' : '上传并生成综述 PPT'}
       </button>
+
+      {userId && (
+        <div className="w-full max-w-xl mt-4">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-sm font-semibold text-gray-700">我的历史空间</h3>
+            <span className="text-xs text-gray-400">
+              {historyLoading ? '加载中...' : `${history.length} 条`}
+            </span>
+          </div>
+          {history.length === 0 && !historyLoading && (
+            <p className="text-xs text-gray-400 bg-gray-50 border border-dashed border-gray-200 rounded-lg px-4 py-6 text-center">
+              暂无生成历史。上传一篇论文后会出现在这里。
+            </p>
+          )}
+          <div className="flex flex-col gap-2">
+            {history.map(space => {
+              const state = space.state || (space.ready ? 'ready' : 'pending')
+              const stateClass =
+                state === 'ready'
+                  ? 'bg-green-50 text-green-700 border-green-200'
+                  : state === 'failed'
+                  ? 'bg-red-50 text-red-700 border-red-200'
+                  : 'bg-amber-50 text-amber-700 border-amber-200'
+              const stateLabel = state === 'ready' ? '可阅读' : state === 'failed' ? '已失败' : '处理中'
+              const label = space.paper_title || space.pdf_filename
+              const inner = (
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-800 truncate">{label}</p>
+                    <p className="text-xs text-gray-500 mt-0.5 truncate">
+                      {space.session_type === 'multi' ? '多篇综述' : '单篇'}
+                      {' · '}
+                      {space.config?.template || ''}
+                      {' · '}
+                      {space.config?.page_count || ''} 页
+                      {' · '}
+                      {space.config?.style || ''}
+                    </p>
+                    {state === 'failed' && space.error_message && (
+                      <p className="text-xs text-red-500 mt-0.5 truncate" title={space.error_message}>
+                        {space.error_message}
+                      </p>
+                    )}
+                  </div>
+                  <span className={`text-xs shrink-0 px-2 py-0.5 rounded-full border ${stateClass}`}>
+                    {stateLabel}
+                  </span>
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDeleteSpace(space.space_id, label) }}
+                    className="text-xs text-gray-300 hover:text-red-500 px-1"
+                    title="删除空间"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )
+              return state === 'ready' ? (
+                <Link
+                  key={space.space_id}
+                  to={`/space/${space.space_id}`}
+                  className="block bg-white border border-gray-200 rounded-lg px-4 py-3 hover:border-blue-300 hover:bg-blue-50/40 transition-colors"
+                >
+                  {inner}
+                </Link>
+              ) : (
+                <div
+                  key={space.space_id}
+                  className="block bg-white border border-gray-200 rounded-lg px-4 py-3 cursor-not-allowed opacity-80"
+                >
+                  {inner}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

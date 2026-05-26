@@ -151,6 +151,8 @@ class SessionError(BaseModel):
 
 class SessionState(BaseModel):
     session_id: str
+    space_id: Optional[str] = None
+    user_id: Optional[str] = None
     status: SessionStatus = SessionStatus.pending
     progress: ProgressState = ProgressState()
     error: Optional[str] = None
@@ -173,3 +175,5 @@ class SessionState(BaseModel):
 class UploadResponse(BaseModel):
     session_id: str
     status: SessionStatus
+    space_id: Optional[str] = None
+    cache_hit: bool = False

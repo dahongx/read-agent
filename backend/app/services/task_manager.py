@@ -5,12 +5,19 @@ import logging
 from pathlib import Path
 
 from app.models import PptConfig, SessionError, SessionStatus
-from app.services import session_store
+from app.services import session_store, space_store
 from app.services.connection_manager import manager as ws_manager
 from app.services.session_logs import SessionLogRecorder
 from app.services.session_paths import get_ppt_cache_dir, get_rag_cache_dir
 
 logger = logging.getLogger(__name__)
+
+
+def _sync_space_state(session_id: str, state: str, *, error_message: str | None = None) -> None:
+    """根据 session 的 space_id 同步空间状态到 space_store。"""
+    session = session_store.get_session(session_id)
+    if session and session.space_id:
+        space_store.mark_state(session.space_id, state, error_message=error_message)
 
 
 async def _broadcast_progress(
@@ -67,6 +74,8 @@ async def _ppt_task(session_id: str, pdf_path: str, config: PptConfig) -> str:
         load_cached_project_outputs,
         run_ppt_generation,
         save_cached_project_outputs,
+        _project_artifact_state,
+        _find_latest_project,
     )
 
     recorder = SessionLogRecorder(session_id)
@@ -102,14 +111,34 @@ async def _ppt_task(session_id: str, pdf_path: str, config: PptConfig) -> str:
 
     await _log(recorder, source="ppt", level="INFO", stage="cache_check", message="PPT 缓存未命中，准备调用 Claude CLI", details={"cache_key": cache_key})
 
-    project_dir = await run_ppt_generation(
-        session_id,
-        pdf_path,
-        config,
-        cache_dir,
-        progress_cb=_broadcast_progress,
-        log_recorder=recorder,
-    )
+    try:
+        project_dir = await run_ppt_generation(
+            session_id,
+            pdf_path,
+            config,
+            cache_dir,
+            progress_cb=_broadcast_progress,
+            log_recorder=recorder,
+        )
+    except Exception as exc:
+        # Claude CLI 在收尾阶段失败但产物已完整时按成功处理
+        recovered = _find_latest_project(cache_dir) or _find_latest_project(cache_dir.parent)
+        if recovered is not None and _project_artifact_state(recovered).get("state") == "final":
+            logger.warning(
+                "[PPT_TASK][%s] run_ppt_generation raised %r but artifacts are final, recovering project_dir=%s",
+                session_id, exc, recovered,
+            )
+            await _log(
+                recorder,
+                source="ppt",
+                level="WARNING",
+                stage="recover_after_error",
+                message="生成阶段报错但产物已完整，按成功处理",
+                details={"error": str(exc), "project_dir": str(recovered)},
+            )
+            project_dir = recovered
+        else:
+            raise
 
     pptx_files = [p for p in project_dir.glob("*.pptx") if not p.name.endswith("_svg.pptx")]
     if not pptx_files:
@@ -150,7 +179,7 @@ async def _rag_task(session_id: str, pdf_path: str) -> str:
     from app.services.rag_index import build_index
 
     recorder = SessionLogRecorder(session_id)
-    cache_version = "v6"
+    cache_version = "v7"  # v7: 引入 BM25 corpus + page_number metadata
 
     await _broadcast_progress(session_id, "rag", "检查索引缓存", 5, stage="cache_check")
     await _log(recorder, source="rag", level="INFO", stage="cache_check", message="检查 RAG 缓存")
@@ -233,6 +262,8 @@ async def _multi_ppt_task(session_id: str, pdf_paths: list[str], config: PptConf
         load_cached_project_outputs,
         run_multi_ppt_generation,
         save_cached_project_outputs,
+        _project_artifact_state,
+        _find_latest_project,
     )
 
     recorder = SessionLogRecorder(session_id)
@@ -272,14 +303,38 @@ async def _multi_ppt_task(session_id: str, pdf_paths: list[str], config: PptConf
 
     await _log(recorder, source="ppt", level="INFO", stage="cache_check", message="多篇综述 PPT 缓存未命中，准备调用 Claude CLI", details={"cache_key": cache_key, "source_count": len(pdf_paths)})
 
-    project_dir = await run_multi_ppt_generation(
-        session_id,
-        pdf_paths,
-        config,
-        cache_dir,
-        progress_cb=_broadcast_progress,
-        log_recorder=recorder,
-    )
+    try:
+        project_dir = await run_multi_ppt_generation(
+            session_id,
+            pdf_paths,
+            config,
+            cache_dir,
+            progress_cb=_broadcast_progress,
+            log_recorder=recorder,
+        )
+    except Exception as exc:
+        # 即使 Claude CLI 在收尾阶段（如模板拷贝）报错，只要产物完整也认为成功
+        recovered = _find_latest_project(cache_dir) or _find_latest_project(cache_dir.parent)
+        if recovered is not None:
+            state = _project_artifact_state(recovered)
+            if state.get("state") == "final":
+                logger.warning(
+                    "[MULTI_PPT_TASK][%s] run_multi_ppt_generation raised %r but artifacts are final, recovering project_dir=%s",
+                    session_id, exc, recovered,
+                )
+                await _log(
+                    recorder,
+                    source="ppt",
+                    level="WARNING",
+                    stage="recover_after_error",
+                    message="生成阶段报错但产物已完整，按成功处理",
+                    details={"error": str(exc), "project_dir": str(recovered)},
+                )
+                project_dir = recovered
+            else:
+                raise
+        else:
+            raise
 
     pptx_files = [p for p in project_dir.glob("*.pptx") if not p.name.endswith("_svg.pptx")]
     if not pptx_files:
@@ -309,7 +364,7 @@ async def _multi_rag_task(session_id: str, pdf_paths: list[str]) -> str:
     from app.services.rag_index import build_multi_index
 
     recorder = SessionLogRecorder(session_id)
-    cache_version = "multi-v1"
+    cache_version = "multi-v2"  # multi-v2: 引入 BM25 corpus + page_number metadata
     session = session_store.get_session(session_id)
     if session is None:
         raise RuntimeError(f"Session not found: {session_id}")
@@ -420,6 +475,7 @@ async def run_multi_tasks(session_id: str, pdf_paths: list[str], config: PptConf
         )
         session_store.set_output_paths(session_id, ppt_path=ppt_path, rag_index_path=rag_index_path)
         session_store.update_status(session_id, SessionStatus.ready)
+        _sync_space_state(session_id, "ready")
         conns = len(ws_manager._connections.get(session_id, []))
         logger.info("[TASK][%s] Broadcasting DONE event  ws_clients=%d", session_id, conns)
         await _log(recorder, source="system", level="INFO", stage="complete", message="多篇综述会话处理完成")
@@ -438,6 +494,7 @@ async def run_multi_tasks(session_id: str, pdf_paths: list[str], config: PptConf
         )
         session_store.set_error_detail(session_id, detail)
         session_store.update_status(session_id, SessionStatus.error, error=str(exc))
+        _sync_space_state(session_id, "failed", error_message=str(exc))
         if detail.source in {"ppt", "rag"}:
             failed_task = detail.source
             failed_label = "处理失败"
@@ -489,6 +546,7 @@ async def run_tasks(session_id: str, pdf_path: str, config: PptConfig | None = N
         )
         session_store.set_output_paths(session_id, ppt_path=ppt_path, rag_index_path=rag_index_path)
         session_store.update_status(session_id, SessionStatus.ready)
+        _sync_space_state(session_id, "ready")
         conns = len(ws_manager._connections.get(session_id, []))
         logger.info("[TASK][%s] Broadcasting DONE event  ws_clients=%d", session_id, conns)
         await _log(recorder, source="system", level="INFO", stage="complete", message="会话处理完成")
@@ -507,6 +565,7 @@ async def run_tasks(session_id: str, pdf_path: str, config: PptConfig | None = N
         )
         session_store.set_error_detail(session_id, detail)
         session_store.update_status(session_id, SessionStatus.error, error=str(exc))
+        _sync_space_state(session_id, "failed", error_message=str(exc))
         if detail.source in {"ppt", "rag"}:
             failed_task = detail.source
             failed_label = "处理失败"

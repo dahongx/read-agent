@@ -25,11 +25,17 @@ class Settings(BaseSettings):
     CLAUDE_CLI_PATH: str = ""
     GIT_BASH_PATH: str = ""
     LLM_API_KEY: str = ""
-    LLM_BASE_URL: str = "https://open.bigmodel.cn/api/paas/v4/"
-    LLM_MODEL: str = "glm-4-flash"
+    LLM_BASE_URL: str = "https://aigc.zhengmi.org/v1"
+    LLM_MODEL: str = "claude-sonnet-4-6"
+    LLM_PLANNER_MODEL: str = "claude-haiku-4-5-20251001"
     EMBED_MODEL_NAME: str = "BAAI/bge-m3"
     EMBED_MODEL_DIR: str = "backend/models/bge-m3"
     EMBED_CACHE_DIR: str = "backend/models/cache"
+    RERANKER_MODEL_NAME: str = "BAAI/bge-reranker-base"
+    RERANKER_ENABLED: bool = False
+    RAG_TOP_K_DENSE: int = 15
+    RAG_TOP_K_BM25: int = 15
+    RAG_TOP_K_FINAL: int = 6
 
     @property
     def project_root(self) -> Path:
@@ -64,6 +70,14 @@ class Settings(BaseSettings):
     @property
     def rag_cache_path(self) -> Path:
         return self.cache_path / "rag"
+
+    @property
+    def spaces_path(self) -> Path:
+        return self.upload_path / "spaces"
+
+    @property
+    def conversations_path(self) -> Path:
+        return self.upload_path / "conversations"
 
     @property
     def skill_path(self) -> Path:

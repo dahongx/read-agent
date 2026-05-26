@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { useWebSocket } from '../hooks/useWebSocket'
 
 interface Progress {
@@ -40,6 +40,7 @@ interface LogItem {
 
 interface SessionSnapshot {
   status?: string
+  space_id?: string | null
   error?: string | null
   error_detail?: {
     message?: string
@@ -136,6 +137,7 @@ function formatPathTail(path?: string) {
 export default function ProgressPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { lastMessage, readyState } = useWebSocket(id!)
   const [progress, setProgress] = useState<Progress>({ ppt_step: '', ppt_pct: 0, rag_step: '', rag_pct: 0 })
   const [stages, setStages] = useState<SessionStages | null>(null)
@@ -146,6 +148,16 @@ export default function ProgressPage() {
   const [done, setDone] = useState(false)
   const [connectionHint, setConnectionHint] = useState<string | null>(null)
   const [, setPollFailures] = useState(0)
+  const [spaceId, setSpaceId] = useState<string | null>(searchParams.get('space'))
+
+  function gotoSpace(target: string | null | undefined) {
+    if (target) {
+      navigate(`/space/${target}`)
+    } else {
+      // 兜底：回首页
+      navigate('/')
+    }
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -193,6 +205,9 @@ export default function ProgressPage() {
         setPollFailures(0)
         setConnectionHint(null)
         const data = await res.json() as SessionSnapshot
+        if (data.space_id && !spaceId) {
+          setSpaceId(data.space_id)
+        }
         if (data.progress) {
           const p = data.progress
           setProgress({
@@ -214,7 +229,8 @@ export default function ProgressPage() {
         if (data.status === 'ready') {
           setProgress({ ppt_step: '完成', ppt_pct: 100, rag_step: '完成', rag_pct: 100 })
           setDone(true)
-          setTimeout(() => navigate(`/session/${id}/ppt`), 800)
+          const target = data.space_id || spaceId
+          setTimeout(() => gotoSpace(target), 800)
         } else if (data.status === 'error') {
           setErrorMsg(data.error || data.error_detail?.message || '处理失败')
           setErrorDetail(data.error_detail || null)
@@ -270,7 +286,7 @@ export default function ProgressPage() {
     } else if (lastMessage.event === 'done') {
       setProgress(prev => ({ ...prev, ppt_pct: 100, rag_pct: 100 }))
       setDone(true)
-      setTimeout(() => navigate(`/session/${id}/ppt`), 1200)
+      setTimeout(() => gotoSpace(spaceId), 1200)
     } else if (lastMessage.event === 'error') {
       setErrorMsg((lastMessage.message as string) || '处理失败')
       setErrorDetail({
@@ -283,6 +299,10 @@ export default function ProgressPage() {
     } else if ('status' in lastMessage) {
       const snap = lastMessage as SessionSnapshot
       const status = snap.status as string
+
+      if (snap.space_id && !spaceId) {
+        setSpaceId(snap.space_id)
+      }
 
       if (Array.isArray(snap.recent_logs) && snap.recent_logs.length > 0) {
         setLogs(snap.recent_logs)
@@ -299,7 +319,8 @@ export default function ProgressPage() {
       if (status === 'ready') {
         setProgress({ ppt_step: '完成', ppt_pct: 100, rag_step: '完成', rag_pct: 100 })
         setDone(true)
-        setTimeout(() => navigate(`/session/${id}/ppt`), 1200)
+        const target = snap.space_id || spaceId
+        setTimeout(() => gotoSpace(target), 1200)
         return
       }
 
@@ -325,11 +346,9 @@ export default function ProgressPage() {
 
   const pptStage = stages?.ppt
   const ragStage = stages?.rag
-  const latestPptLog = useMemo(() => [...logs].reverse().find(log => log.source === 'ppt'), [logs])
-  const latestRagLog = useMemo(() => [...logs].reverse().find(log => log.source === 'rag'), [logs])
   const latestImportantLog = useMemo(
-    () => [...logs].reverse().find(log => log.level !== 'INFO' || log.stage !== 'claude_output') ?? latestPptLog ?? latestRagLog ?? null,
-    [logs, latestPptLog, latestRagLog],
+    () => [...logs].reverse().find(log => log.level !== 'INFO' || log.stage !== 'claude_output') ?? null,
+    [logs],
   )
 
   const artifactState = useMemo(() => {
@@ -376,13 +395,9 @@ export default function ProgressPage() {
                 />
                 <p className="text-sm text-blue-900">{pptHint}</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-blue-950">
-                  <div className="rounded bg-white/70 px-3 py-2 border border-blue-100">
+                  <div className="rounded bg-white/70 px-3 py-2 border border-blue-100 md:col-span-2">
                     <span className="font-medium">项目目录：</span>
                     {paths?.project_dir ? paths.project_dir : '尚未定位到最终项目目录'}
-                  </div>
-                  <div className="rounded bg-white/70 px-3 py-2 border border-blue-100">
-                    <span className="font-medium">最近 PPT 日志：</span>
-                    {latestPptLog ? `${formatTime(latestPptLog.ts)} ${latestPptLog.message}` : '等待第一条日志...'}
                   </div>
                   <div className="rounded bg-white/70 px-3 py-2 border border-blue-100 md:col-span-2">
                     <span className="font-medium">产物状态：</span>
@@ -406,10 +421,6 @@ export default function ProgressPage() {
                   status={ragStage?.status}
                 />
                 <p className="text-sm text-emerald-900">{ragHint}</p>
-                <div className="rounded bg-white/70 px-3 py-2 border border-emerald-100 text-xs text-emerald-950">
-                  <span className="font-medium">最近 RAG 日志：</span>
-                  {latestRagLog ? `${formatTime(latestRagLog.ts)} ${latestRagLog.message}` : '等待第一条日志...'}
-                </div>
               </div>
 
               {latestImportantLog && !errorMsg && (

@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app.api import chat, script, sessions, upload, ws
+from app.api import chat, script, sessions, spaces, upload, ws
 from app.core.startup import lifespan
 
 logging.basicConfig(level=logging.INFO)
@@ -21,6 +21,7 @@ app.add_middleware(
 
 app.include_router(upload.router)
 app.include_router(sessions.router)
+app.include_router(spaces.router)
 app.include_router(ws.router)
 app.include_router(chat.router)
 app.include_router(script.router)

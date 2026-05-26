@@ -88,7 +88,7 @@ html, body { height: 100%; background: #404040; font-family: system-ui, sans-ser
 
 <script type="module">
 import * as pdfjsLib from './pdf.min.mjs';
-import { EventBus, PDFViewer, PDFLinkService, PDFHistory } from './pdf_viewer.mjs';
+import { EventBus, PDFViewer, PDFLinkService, PDFHistory, PDFFindController } from './pdf_viewer.mjs';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = './pdf.worker.min.mjs';
 
@@ -96,9 +96,20 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = './pdf.worker.min.mjs';
 const CMAP_URL = './cmaps/';
 const STANDARD_FONT_DATA_URL = './standard_fonts/';
 
-const params = new URLSearchParams(location.search);
+function readParams() {
+  const query = new URLSearchParams(location.search);
+  let hashStr = location.hash || '';
+  if (hashStr.startsWith('#')) hashStr = hashStr.slice(1);
+  const hash = new URLSearchParams(hashStr);
+  const get = (key) => query.get(key) ?? hash.get(key);
+  return { get };
+}
+
+const params = readParams();
 const fileUrl = params.get('file');
 const startPage = parseInt(params.get('page') || '1', 10);
+const searchQuery = params.get('search') || '';
+const phraseSearch = params.get('phrase') !== 'false';
 
 if (!fileUrl) { document.getElementById('loadingMsg').textContent = '缺少 file 参数'; throw new Error(); }
 
@@ -109,11 +120,13 @@ const pageInfoEl = document.getElementById('pageInfo');
 // ── Setup PDFViewer ──
 const eventBus = new EventBus();
 const pdfLinkService = new PDFLinkService({ eventBus });
+const pdfFindController = new PDFFindController({ linkService: pdfLinkService, eventBus });
 const pdfViewer = new PDFViewer({
   container,
   viewer: document.getElementById('viewer'),
   eventBus,
   linkService: pdfLinkService,
+  findController: pdfFindController,
   textLayerMode: 2,       // ENABLE — allows text selection
   annotationMode: 2,      // ENABLE — shows annotations
 });
@@ -149,6 +162,33 @@ eventBus.on('pagesinit', () => {
   pdfViewer.currentPageNumber = startPage;
   pageNumInput.value = startPage;
   updateButtons();
+});
+
+// ── Trigger phrase search AFTER the target page's text layer is rendered ──
+// 否则 PDFFindController 会按"渲染未完成"的坐标画高亮，常见症状是高亮压到上一行
+let _searchTriggered = false;
+function triggerSearch() {
+  if (_searchTriggered || !searchQuery) return;
+  _searchTriggered = true;
+  eventBus.dispatch('find', {
+    source: window,
+    type: '',
+    query: searchQuery,
+    phraseSearch,
+    highlightAll: true,
+    caseSensitive: false,
+    entireWord: false,
+    findPrevious: false,
+  });
+}
+
+eventBus.on('textlayerrendered', (evt) => {
+  if (!searchQuery) return;
+  if (evt && typeof evt.pageNumber === 'number' && evt.pageNumber !== startPage) {
+    return;
+  }
+  // 再延一帧让样式稳定
+  requestAnimationFrame(() => requestAnimationFrame(triggerSearch));
 });
 
 // ── Sync page input with viewer ──

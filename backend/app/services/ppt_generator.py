@@ -516,6 +516,25 @@ def prepare_multi_project_sources(
     for source_doc in sorted(session.source_documents, key=lambda doc: doc.order):
         markdown_path = _find_markdown_for_source(sources_dir, source_doc)
         if markdown_path is None:
+            # import-sources 偶发会因为 PDF 编码崩溃没生成 md（错误被 skill 内部吞掉），兜底直接调 pdf_to_md.py
+            archived_pdf = sources_dir / source_doc.source_file_name
+            if not archived_pdf.exists():
+                archived_pdf = Path(source_doc.pdf_path)
+            if archived_pdf.exists():
+                fallback_md = sources_dir / f"{archived_pdf.stem}.md"
+                logger.warning(
+                    "Markdown missing for %s after import-sources, falling back to pdf_to_md.py",
+                    source_doc.source_file_name,
+                )
+                try:
+                    run_skill_script("pdf_to_md.py", str(archived_pdf), "-o", str(fallback_md))
+                except RuntimeError as exc:
+                    raise RuntimeError(
+                        f"Fallback PDF conversion failed for {source_doc.source_file_name}: {exc}"
+                    ) from exc
+                if fallback_md.exists():
+                    markdown_path = fallback_md
+        if markdown_path is None:
             raise RuntimeError(f"Markdown not found for source document: {source_doc.source_file_name}")
         sections.append((source_doc, markdown_path))
         updated_docs.append(source_doc.model_copy(update={"markdown_path": str(markdown_path)}))

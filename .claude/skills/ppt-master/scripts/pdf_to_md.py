@@ -10,8 +10,17 @@ import argparse
 import hashlib
 import os
 import re
+import sys
 from pathlib import Path
 from collections import Counter
+
+# Windows 控制台默认 GBK，遇到 © 等字符直接崩溃；强制 stdout/stderr 用 UTF-8
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[attr-defined]
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[attr-defined]
+    except Exception:
+        pass
 
 FONT_BODY_SIZE = 12
 FONT_H1_SIZE = 24

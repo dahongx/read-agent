@@ -26,10 +26,31 @@ _TRANSITIONS: Dict[SessionStatus, set] = {
 _sessions: Dict[str, SessionState] = {}
 
 
-def create_session(pdf_path: str, *, session_type: SessionType = "single") -> SessionState:
+def create_session(
+    pdf_path: str,
+    *,
+    session_type: SessionType = "single",
+    user_id: Optional[str] = None,
+    space_id: Optional[str] = None,
+) -> SessionState:
     session_id = str(uuid.uuid4())
-    session = SessionState(session_id=session_id, pdf_path=pdf_path, session_type=session_type)
+    session = SessionState(
+        session_id=session_id,
+        pdf_path=pdf_path,
+        session_type=session_type,
+        user_id=user_id,
+        space_id=space_id,
+    )
     _sessions[session_id] = session
+    return session
+
+
+def set_user_and_space(session_id: str, user_id: Optional[str], space_id: Optional[str]) -> SessionState:
+    session = _sessions[session_id]
+    if user_id is not None:
+        session.user_id = user_id
+    if space_id is not None:
+        session.space_id = space_id
     return session
 
 
