@@ -76,6 +76,7 @@ async def _ppt_task(session_id: str, pdf_path: str, config: PptConfig) -> str:
         save_cached_project_outputs,
         _project_artifact_state,
         _find_latest_project,
+        _build_resume_prompt,
     )
 
     recorder = SessionLogRecorder(session_id)
@@ -111,6 +112,23 @@ async def _ppt_task(session_id: str, pdf_path: str, config: PptConfig) -> str:
 
     await _log(recorder, source="ppt", level="INFO", stage="cache_check", message="PPT 缓存未命中，准备调用 Claude CLI", details={"cache_key": cache_key})
 
+    existing_partial = _find_latest_project(cache_dir)
+    resume_prompt = None
+    project_search_dir = None
+    if existing_partial is not None:
+        partial_state = _project_artifact_state(existing_partial)
+        if partial_state.get("state") == "partial":
+            await _log(
+                recorder,
+                source="ppt",
+                level="WARNING",
+                stage="resume_partial",
+                message="检测到上次未完成的项目，尝试断点续跑",
+                details={"project_dir": str(existing_partial), "artifacts": partial_state},
+            )
+            resume_prompt = _build_resume_prompt(existing_partial, pdf_path, config)
+            project_search_dir = existing_partial.parent
+
     try:
         project_dir = await run_ppt_generation(
             session_id,
@@ -119,6 +137,8 @@ async def _ppt_task(session_id: str, pdf_path: str, config: PptConfig) -> str:
             cache_dir,
             progress_cb=_broadcast_progress,
             log_recorder=recorder,
+            prompt_override=resume_prompt,
+            project_search_dir=project_search_dir,
         )
     except Exception as exc:
         # Claude CLI 在收尾阶段失败但产物已完整时按成功处理

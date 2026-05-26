@@ -183,6 +183,34 @@ def _build_multi_batch_prompt(merged_md_path: str, config: PptConfig) -> str:
     )
 
 
+def _build_resume_prompt(project_dir: Path, pdf_path: str, config: PptConfig) -> str:
+    return (
+        f"[BATCH_MODE]\n"
+        f"/{SKILL_NAME}\n\n"
+        f"请继续处理一个已经初始化但未完整完成的单篇 PPT 项目，不要重新新建项目，不要调用其他 skill。\n"
+        f"当前项目目录：{project_dir}\n"
+        f"论文PDF：{pdf_path}\n"
+        f"模板：{config.template_prompt_value}\n"
+        f"语言：{config.language}\n"
+        f"受众：{config.audience}\n\n"
+        f"当前问题：项目已有部分产物，但讲稿、SVG 或最终导出可能不完整。\n"
+        f"请在该项目目录内继续 Step 5/Step 6/Step 7，补齐缺失产物，而不是从头再做一遍。\n"
+        f"若 design_spec.md 已存在，复用它，不要重新生成；若 svg_output/ 中已有页面 SVG，不要覆盖。\n\n"
+        f"必须完成：\n"
+        f"1. 若 svg_output/ 缺页或不存在，按 design_spec.md 的页面规划补齐缺失的页面 SVG\n"
+        f"2. 若 notes/total.md 不存在，先补生成完整 speaker notes 到 notes/total.md\n"
+        f"3. 若 notes/*.md 缺失，执行 total_md_split.py <project_path>\n"
+        f"4. 若 svg_final/ 缺失或不完整，执行 finalize_svg.py <project_path>\n"
+        f"5. 若 *.pptx 缺失，执行 svg_to_pptx.py <project_path> -s final\n"
+        f"6. 完成前必须自检 notes/total.md、notes/*.md、svg_final/*.svg、*.pptx 均存在\n\n"
+        f"执行约束：\n"
+        f"- 当前是后端任务（可能跑在 Windows 或 Linux），请不要假设 `python3` 命令存在\n"
+        f"- 如需运行 Python 脚本，请优先使用这个解释器：{PYTHON}\n"
+        f"- 使用绝对路径，不要询问用户，不要调用 AskUserQuestion\n"
+        f"- 不要只输出说明或总结；缺什么就补什么，补齐后再结束\n"
+    )
+
+
 def _build_multi_resume_prompt(project_dir: Path, merged_md_path: str, config: PptConfig) -> str:
     return (
         f"[BATCH_MODE]\n"
@@ -628,6 +656,533 @@ def _project_artifact_state(project_dir: Path) -> dict[str, Any]:
     newest_artifact_mtime = max(
         [project_dir.stat().st_mtime]
         + ([design_spec.stat().st_mtime] if design_spec.exists() else [])
+        + ([p.stat().st_mtime for p in notes] if notes else [])
+        + ([p.stat().st_mtime for p in svg_output] if svg_output else [])
+        + ([p.stat().st_mtime for p in svg_final] if svg_final else [])
+        + ([p.stat().st_mtime for p in pptx_files] if pptx_files else [])
+    )
+
+    return {
+        "state": state,
+        "design_spec": str(design_spec) if design_spec.exists() else "",
+        "notes_count": len(notes),
+        "split_notes_count": len(split_notes),
+        "has_total_md": has_total_md,
+        "svg_output_count": len(svg_output),
+        "svg_final_count": len(svg_final),
+        "pptx_count": len(pptx_files),
+        "pptx_files": [str(p) for p in pptx_files],
+        "source_files": [p.name for p in source_files],
+        "is_complete": is_complete,
+        "newest_artifact_mtime": newest_artifact_mtime,
+    }
+
+
+async def _emit_project_artifacts(
+    session_id: str,
+    project_dir: Path,
+    progress_cb,
+    log_recorder,
+    emitted: set[str],
+) -> None:
+    notes = list((project_dir / "notes").glob("*.md")) if (project_dir / "notes").exists() else []
+    svg_output = list((project_dir / "svg_output").glob("*.svg")) if (project_dir / "svg_output").exists() else []
+    svg_final = list((project_dir / "svg_final").glob("*.svg")) if (project_dir / "svg_final").exists() else []
+    pptx_files = [p for p in project_dir.glob("*.pptx") if not p.name.endswith("_svg.pptx")]
+    if not pptx_files:
+        pptx_files = list(project_dir.glob("*.pptx"))
+
+    if notes:
+        await _emit_stage_once(
+            session_id,
+            progress_cb,
+            log_recorder,
+            emitted,
+            stage="notes_ready",
+            label="生成讲稿...",
+            pct=30,
+            message="讲稿已就绪",
+            details={"count": len(notes), "sample": str(notes[0])},
+        )
+    if svg_output:
+        await _emit_stage_once(
+            session_id,
+            progress_cb,
+            log_recorder,
+            emitted,
+            stage="svg_output_ready",
+            label="SVG 排版中...",
+            pct=55,
+            message="svg_output 已就绪",
+            details={"count": len(svg_output), "sample": str(svg_output[0])},
+        )
+    if svg_final:
+        await _emit_stage_once(
+            session_id,
+            progress_cb,
+            log_recorder,
+            emitted,
+            stage="svg_final_ready",
+            label="SVG 最终化...",
+            pct=75,
+            message="svg_final 已就绪",
+            details={"count": len(svg_final), "sample": str(svg_final[0])},
+        )
+    if pptx_files:
+        await _emit_stage_once(
+            session_id,
+            progress_cb,
+            log_recorder,
+            emitted,
+            stage="pptx_ready",
+            label="导出 PPTX...",
+            pct=95,
+            message="PPTX 已导出",
+            details={"count": len(pptx_files), "sample": str(pptx_files[0])},
+        )
+
+
+async def run_ppt_generation(
+    session_id: str,
+    pdf_path: str,
+    config: PptConfig,
+    output_dir: Path,
+    progress_cb,
+    log_recorder,
+    *,
+    prompt_override: str | None = None,
+    project_search_dir: Path | None = None,
+) -> Path:
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    skill_file = _find_skill_file(settings.skill_path)
+    claude_exe = CLAUDE_CLI
+    logger.info(
+        "[PPT][%s] PRE-FLIGHT\n"
+        "  REPO_ROOT       : %s  (exists=%s)\n"
+        "  CLAUDE_CLI      : %s  (exists=%s)\n"
+        "  skill directory : %s  (exists=%s)\n"
+        "  skill file      : %s  (exists=%s)\n"
+        "  pdf_path        : %s  (exists=%s)\n"
+        "  output_dir      : %s",
+        session_id,
+        REPO_ROOT,
+        Path(REPO_ROOT).exists(),
+        claude_exe,
+        claude_exe.exists() if claude_exe else False,
+        settings.skill_path,
+        settings.skill_path.exists(),
+        skill_file,
+        skill_file.exists() if skill_file else False,
+        pdf_path,
+        Path(pdf_path).exists(),
+        output_dir,
+    )
+    if not claude_exe or not claude_exe.exists():
+        raise GenerationError("Claude CLI not found. Set CLAUDE_CLI_PATH or add `claude` to PATH.", stage="preflight")
+    if not skill_file:
+        raise GenerationError(f"Skill file not found under: {settings.skill_path}", stage="preflight")
+
+    prompt = prompt_override or _build_batch_prompt(pdf_path, config, output_dir)
+    cmd = [
+        str(claude_exe),
+        "--print",
+        "--verbose",
+        "--output-format",
+        "stream-json",
+        "--dangerously-skip-permissions",
+        "--no-session-persistence",
+        "--session-id",
+        session_id,
+        "--add-dir",
+        str(output_dir),
+        "--add-dir",
+        str(Path(pdf_path).parent),
+        "--add-dir",
+        REPO_ROOT,
+        "--model",
+        "sonnet",
+        prompt,
+    ]
+
+    env = dict(os.environ)
+    if GIT_BASH and GIT_BASH.exists():
+        env["CLAUDE_CODE_GIT_BASH_PATH"] = str(GIT_BASH)
+
+    logger.info(
+        "[PPT][%s] INVOKING SKILL  /%s  [BATCH_MODE]\n"
+        "  cmd flags: %s\n"
+        "  cwd: %s",
+        session_id,
+        SKILL_NAME,
+        " ".join(str(c) for c in cmd),
+        REPO_ROOT,
+    )
+    await log_recorder.record(
+        source="ppt",
+        level="INFO",
+        stage="skill_invocation",
+        message=f"已调用 /{SKILL_NAME} skill",
+        details={"model": "sonnet", "output_dir": str(output_dir), "pdf_path": pdf_path},
+    )
+    await progress_cb(session_id, "ppt", "Claude 正在分析论文...", 10, stage="claude_started")
+    await log_recorder.record(source="ppt", level="INFO", stage="claude_started", message="Claude CLI 已启动", details={"output_dir": str(output_dir)})
+
+    loop = asyncio.get_running_loop()
+    process_result: dict[str, Any] = {}
+    proc_holder: dict[str, Any] = {"proc": None}
+    started_at = time.time()
+    emitted_stages: set[str] = {"claude_started"}
+    last_output_at = {"ts": started_at}
+    idle_warning_sent = {"value": False}
+
+    import threading
+
+    def _schedule_log(level: str, stage: str, message: str) -> None:
+        if not message.strip():
+            return
+        try:
+            asyncio.run_coroutine_threadsafe(
+                log_recorder.record(source="ppt", level=level, stage=stage, message=message),
+                loop,
+            )
+        except RuntimeError:
+            logger.exception("Failed to schedule Claude log forwarding for session %s", session_id)
+
+    def _run() -> None:
+        logger.info("[PPT][%s] ── Claude CLI process START ──", session_id)
+        proc = _sp.Popen(
+            cmd,
+            stdout=_sp.PIPE,
+            stderr=_sp.PIPE,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            cwd=REPO_ROOT,
+            env=env,
+        )
+        proc_holder["proc"] = proc
+
+        _schedule_log("INFO", "claude_started", f"Claude 进程已创建 pid={proc.pid}")
+
+        stdout_lines: list[str] = []
+        stderr_lines: list[str] = []
+
+        def _read_stdout() -> None:
+            assert proc.stdout
+            for line in proc.stdout:
+                line = line.rstrip("\n")
+                stdout_lines.append(line)
+                if line.strip():
+                    last_output_at["ts"] = time.time()
+                    idle_warning_sent["value"] = False
+                    logger.info("[CLAUDE-OUT][%s] %s", session_id, line)
+                    _schedule_log("INFO", "claude_output", line)
+
+        def _read_stderr() -> None:
+            assert proc.stderr
+            for line in proc.stderr:
+                line = line.rstrip("\n")
+                stderr_lines.append(line)
+                if line.strip():
+                    last_output_at["ts"] = time.time()
+                    idle_warning_sent["value"] = False
+                    logger.warning("[CLAUDE-ERR][%s] %s", session_id, line)
+                    _schedule_log("WARNING", "claude_error", line)
+
+        t1 = threading.Thread(target=_read_stdout, daemon=True)
+        t2 = threading.Thread(target=_read_stderr, daemon=True)
+        t1.start()
+        t2.start()
+
+        try:
+            proc.wait()
+        finally:
+            t1.join(30)
+            t2.join(30)
+
+        rc = proc.returncode
+        stdout = "\n".join(stdout_lines)
+        stderr = "\n".join(stderr_lines)
+        logger.info(
+            "[PPT][%s] ── Claude CLI process END ──  exit=%d  stdout_lines=%d  stderr_lines=%d",
+            session_id,
+            rc,
+            len(stdout_lines),
+            len(stderr_lines),
+        )
+        process_result["returncode"] = rc
+        process_result["stdout"] = stdout
+        process_result["stderr"] = stderr
+        proc_holder["proc"] = None
+
+    async def _run_with_monitoring() -> None:
+        run_future = loop.run_in_executor(None, _run)
+        while not run_future.done():
+            idle_for = time.time() - last_output_at["ts"]
+            if idle_for >= CLAUDE_IDLE_WARN_SECONDS and not idle_warning_sent["value"]:
+                idle_warning_sent["value"] = True
+                await log_recorder.record(
+                    source="ppt",
+                    level="WARNING",
+                    stage="claude_idle",
+                    message=f"Claude 进程仍在运行，但 {CLAUDE_IDLE_WARN_SECONDS} 秒内没有新的 stdout/stderr 输出；未终止，继续等待生成完成",
+                )
+                current_session = session_store.get_session(session_id)
+                current_pct = current_session.progress.ppt_pct if current_session else 0
+                await progress_cb(
+                    session_id,
+                    "ppt",
+                    "仍在生成中，暂未收到新输出，继续等待...",
+                    max(current_pct, 12),
+                    stage="claude_idle",
+                )
+
+            await _emit_detected_artifacts(session_id, output_dir, progress_cb, log_recorder, started_at, emitted_stages)
+            await asyncio.sleep(2)
+        await run_future
+
+    await _run_with_monitoring()
+
+    rc = process_result.get("returncode", 1)
+    stdout = process_result.get("stdout", "")
+    stderr = process_result.get("stderr", "")
+
+    if rc != 0 and not stdout.strip():
+        raise GenerationError(
+            f"Claude CLI exited {rc} with no output.",
+            stage="claude_started",
+            stdout=stdout,
+            stderr=stderr,
+        )
+
+    await progress_cb(session_id, "ppt", "查找生成的项目...", 88, stage="artifact_discovery")
+    await log_recorder.record(source="ppt", level="INFO", stage="artifact_discovery", message="查找生成的项目")
+
+    # 单篇 prompt 现在强制把项目建到 output_dir 下，所以优先在 output_dir 找；
+    # fallback <repo>/projects/ 是为了兼容历史数据（早期单篇默认建到 projects/）
+    primary_search = project_search_dir or output_dir
+    logger.info("[PPT][%s] Searching for generated project under %s", session_id, primary_search)
+    project_dir = _find_latest_project(primary_search)
+    if not project_dir:
+        legacy_projects = Path(REPO_ROOT) / "projects"
+        if legacy_projects != primary_search:
+            logger.info("[PPT][%s] Not in %s, trying legacy projects/: %s", session_id, primary_search, legacy_projects)
+            project_dir = _find_latest_project(legacy_projects)
+    if not project_dir:
+        raise GenerationError(
+            "Claude CLI completed but no project directory was found under output_dir or projects/.",
+            stage="artifact_discovery",
+            stdout=stdout,
+            stderr=stderr,
+        )
+
+    artifact_state = _project_artifact_state(project_dir)
+    logger.info(
+        "[PPT][%s] ✅ Project found: %s  state=%s\n%s",
+        session_id,
+        project_dir,
+        artifact_state["state"],
+        _list_dir(project_dir),
+    )
+
+    if artifact_state["state"] != "final":
+        finalizer = settings.skill_path / "scripts" / "finalize_svg.py"
+        splitter = settings.skill_path / "scripts" / "total_md_split.py"
+        exporter = settings.skill_path / "scripts" / "svg_to_pptx.py"
+        total_md = project_dir / "notes" / "total.md"
+        notes_dir = project_dir / "notes"
+        split_notes = [p for p in notes_dir.glob("*.md") if p.name != "total.md"] if notes_dir.exists() else []
+        if total_md.exists() and not split_notes:
+            _sp.run([PYTHON, str(splitter), str(project_dir)], cwd=REPO_ROOT, check=False, capture_output=True, text=True, encoding="utf-8", errors="replace")
+        if (project_dir / "svg_output").exists() and not (project_dir / "svg_final").exists():
+            _sp.run([PYTHON, str(finalizer), str(project_dir)], cwd=REPO_ROOT, check=False, capture_output=True, text=True, encoding="utf-8", errors="replace")
+        if (project_dir / "svg_final").exists() and not any(p for p in project_dir.glob("*.pptx") if not p.name.endswith("_svg.pptx")):
+            _sp.run([PYTHON, str(exporter), str(project_dir), "-s", "final"], cwd=REPO_ROOT, check=False, capture_output=True, text=True, encoding="utf-8", errors="replace")
+        artifact_state = _project_artifact_state(project_dir)
+
+    outputs = describe_project_outputs(project_dir)
+    outputs["project_dir"] = str(project_dir)
+    session_store.update_path_fields(
+        session_id,
+        project_dir=outputs["project_dir"],
+        merged_markdown_path=outputs.get("merged_markdown_path") or None,
+        ppt_path=outputs["ppt_path"],
+        slides_dir=outputs["slides_dir"],
+        notes_dir=outputs["notes_dir"],
+    )
+    await _emit_project_artifacts(session_id, project_dir, progress_cb, log_recorder, emitted_stages)
+
+    if artifact_state["state"] != "final":
+        raise GenerationError(
+            "Claude CLI completed and project directory was found, but only partial artifacts were generated (missing svg_final or PPTX export).",
+            stage="artifact_discovery",
+            stdout=stdout,
+            stderr=stderr,
+        )
+
+    svg_final = project_dir / "svg_final"
+    notes_dir = project_dir / "notes"
+    pptx_files = list(project_dir.glob("*.pptx"))
+    logger.info(
+        "[PPT][%s] Artifacts summary:\n"
+        "  svg_final/ : %d SVGs\n"
+        "  notes/     : %d .md files\n"
+        "  *.pptx     : %s",
+        session_id,
+        len(list(svg_final.glob("*.svg"))) if svg_final.exists() else 0,
+        len(list(notes_dir.glob("*.md"))) if notes_dir.exists() else 0,
+        [p.name for p in pptx_files],
+    )
+
+    logger.info("[PPT][%s] Project is kept at canonical location: %s", session_id, project_dir)
+
+    await progress_cb(session_id, "ppt", "PPT 生成完成", 100, stage="complete", status="completed")
+    await log_recorder.record(
+        source="ppt",
+        level="INFO",
+        stage="complete",
+        message="PPT 生成完成",
+        details=outputs,
+    )
+    logger.info("[PPT][%s] Final project location:\n%s", session_id, _list_dir(project_dir))
+    return project_dir
+
+
+async def _resume_incomplete_multi_project(
+    session_id: str,
+    project_dir: Path,
+    merged_md_path: Path,
+    config: PptConfig,
+    progress_cb,
+    log_recorder,
+) -> None:
+    await progress_cb(session_id, "ppt", "继续补全讲稿与导出", 90, stage="resume_generation")
+    await log_recorder.record(
+        source="ppt",
+        level="WARNING",
+        stage="resume_generation",
+        message="检测到多篇项目产物不完整，尝试继续补全讲稿与导出",
+        details={"project_dir": str(project_dir)},
+    )
+    resume_prompt = _build_multi_resume_prompt(project_dir, str(merged_md_path), config)
+    await run_ppt_generation(
+        session_id,
+        str(merged_md_path),
+        config,
+        project_dir.parent,
+        progress_cb,
+        log_recorder,
+        prompt_override=resume_prompt,
+        project_search_dir=project_dir.parent,
+    )
+
+
+async def run_multi_ppt_generation(
+    session_id: str,
+    pdf_paths: list[str],
+    config: PptConfig,
+    output_dir: Path,
+    progress_cb,
+    log_recorder,
+) -> Path:
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    session = session_store.get_session(session_id)
+    if session is None:
+        raise GenerationError(f"Session not found: {session_id}", stage="preflight")
+
+    await progress_cb(session_id, "ppt", "初始化综述项目", 10, stage="project_init")
+    await log_recorder.record(source="ppt", level="INFO", stage="project_init", message="初始化多篇综述项目")
+
+    project_name = f"multi_survey_{session_id[:8]}"
+    project_dir_raw = run_skill_script(
+        "project_manager.py",
+        "init",
+        project_name,
+        "--format",
+        "ppt169",
+        "--dir",
+        str(output_dir),
+    )
+    project_dir_line = next((line for line in reversed(project_dir_raw.splitlines()) if line.startswith("Project created:")), "")
+    if project_dir_line:
+        project_dir = Path(project_dir_line.split(":", 1)[1].strip())
+    else:
+        project_dir = _find_latest_project(output_dir)
+    if not project_dir:
+        raise GenerationError("Failed to initialize multi-source project directory", stage="project_init")
+
+    session_store.update_path_fields(session_id, project_dir=str(project_dir))
+
+    await progress_cb(session_id, "ppt", "导入多篇 PDF", 20, stage="import_sources")
+    await log_recorder.record(
+        source="ppt",
+        level="INFO",
+        stage="import_sources",
+        message="开始导入多篇 PDF 到 sources",
+        details={"count": len(pdf_paths)},
+    )
+    _, merged_md_path = prepare_multi_project_sources(session_id, pdf_paths, project_dir)
+    session_store.update_path_fields(session_id, merged_markdown_path=str(merged_md_path))
+    await log_recorder.record(
+        source="ppt",
+        level="INFO",
+        stage="merge_markdown",
+        message="已生成 merged markdown",
+        details={"merged_markdown_path": str(merged_md_path)},
+    )
+    await progress_cb(session_id, "ppt", "整理综述资料", 28, stage="merge_markdown")
+
+    multi_prompt = _build_multi_batch_prompt(str(merged_md_path), config)
+    final_project_dir = await run_ppt_generation(
+        session_id,
+        str(merged_md_path),
+        config,
+        project_dir.parent,
+        progress_cb,
+        log_recorder,
+        prompt_override=multi_prompt,
+        project_search_dir=project_dir.parent,
+    )
+
+    artifact_state = _project_artifact_state(final_project_dir)
+    if artifact_state["state"] != "final":
+        await _resume_incomplete_multi_project(
+            session_id,
+            final_project_dir,
+            merged_md_path,
+            config,
+            progress_cb,
+            log_recorder,
+        )
+        artifact_state = _project_artifact_state(final_project_dir)
+        if artifact_state["state"] != "final":
+            raise GenerationError(
+                "Multi-source PPT generation finished with incomplete artifacts (speaker notes or final export still missing).",
+                stage="resume_generation",
+            )
+
+    return final_project_dir
+
+
+def _find_latest_project(search_dir: Path) -> Path | None:
+    if not search_dir or not search_dir.exists():
+        return None
+
+    ranked: list[tuple[int, float, Path]] = []
+    for d in search_dir.iterdir():
+        if not d.is_dir():
+            continue
+        artifact_state = _project_artifact_state(d)
+        if artifact_state["state"] == "empty":
+            continue
+        score = 2 if artifact_state["state"] == "final" else 1
+        ranked.append((score, d.stat().st_mtime, d))
+
+    ranked.sort(key=lambda item: (item[0], item[1]), reverse=True)
+    return ranked[0][2] if ranked else None
+ if design_spec.exists() else [])
         + ([p.stat().st_mtime for p in notes] if notes else [])
         + ([p.stat().st_mtime for p in svg_output] if svg_output else [])
         + ([p.stat().st_mtime for p in svg_final] if svg_final else [])
