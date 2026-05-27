@@ -1,0 +1,92 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#DE3545"/>
+      <stop offset="100%" stop-color="#E8834A"/>
+    </linearGradient>
+    <linearGradient id="cardBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EEF6FF"/>
+      <stop offset="100%" stop-color="#E0F0FA"/>
+    </linearGradient>
+    <linearGradient id="cardGreen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EDFAF3"/>
+      <stop offset="100%" stop-color="#DFF5EA"/>
+    </linearGradient>
+    <linearGradient id="cardOrange" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF4EC"/>
+      <stop offset="100%" stop-color="#FEEADB"/>
+    </linearGradient>
+    <linearGradient id="cardRed" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF0F1"/>
+      <stop offset="100%" stop-color="#FFE4E6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="#FDFAF5"/>
+
+  <!-- Header bar -->
+  <rect x="0" y="0" width="1280" height="80" fill="#FFFFFF"/>
+  <rect x="0" y="78" width="1280" height="3" fill="url(#headerGrad)"/>
+
+  <!-- Header top-right red cutout decoration -->
+  <path d="M1180 0 L1280 0 L1280 80 Z" fill="#DE3545" fill-opacity="0.12"/>
+
+  <!-- Title decoration: two triangles -->
+  <polygon points="60,20 72,50 60,50" fill="#DE3545"/>
+  <polygon points="78,20 90,50 78,50" fill="#E8834A" fill-opacity="0.6"/>
+
+  <!-- Page title -->
+  <text x="100" y="52" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="30" font-weight="bold" fill="#3D3530">本讲学习目标</text>
+
+  <!-- Target icon -->
+  <use data-icon="tabler-outline/target" x="1200" y="18" width="44" height="44" fill="#DE3545" fill-opacity="0.5"/>
+
+  <!-- Intro text -->
+  <text x="60" y="110" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#7A6E68">学完本讲，你应该能够做到以下四点：</text>
+
+  <!-- Card 1: Top-left (Blue) -->
+  <rect x="60" y="130" width="560" height="240" rx="10" fill="url(#cardBlue)" stroke="#2E86AB" stroke-width="1.5" stroke-opacity="0.4"/>
+  <rect x="60" y="130" width="8" height="240" rx="4" fill="#2E86AB"/>
+  <use data-icon="tabler-outline/target" x="88" y="155" width="36" height="36" fill="#2E86AB"/>
+  <text x="138" y="178" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" font-weight="bold" fill="#2E86AB">能说出</text>
+  <text x="88" y="220" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#3D3530">
+    <tspan x="88" dy="0">定态的定义，以及定态的</tspan>
+    <tspan x="88" dy="32">三个核心特征</tspan>
+  </text>
+
+  <!-- Card 2: Top-right (Green) -->
+  <rect x="660" y="130" width="560" height="240" rx="10" fill="url(#cardGreen)" stroke="#4CAF7D" stroke-width="1.5" stroke-opacity="0.4"/>
+  <rect x="660" y="130" width="8" height="240" rx="4" fill="#4CAF7D"/>
+  <use data-icon="tabler-outline/brain" x="688" y="155" width="36" height="36" fill="#4CAF7D"/>
+  <text x="738" y="178" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" font-weight="bold" fill="#4CAF7D">能解释</text>
+  <text x="688" y="220" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#3D3530">
+    <tspan x="688" dy="0">为什么定态的概率密度</tspan>
+    <tspan x="688" dy="32">不随时间变化</tspan>
+  </text>
+
+  <!-- Card 3: Bottom-left (Orange) -->
+  <rect x="60" y="390" width="560" height="240" rx="10" fill="url(#cardOrange)" stroke="#E8834A" stroke-width="1.5" stroke-opacity="0.4"/>
+  <rect x="60" y="390" width="8" height="240" rx="4" fill="#E8834A"/>
+  <use data-icon="tabler-outline/math-function" x="88" y="415" width="36" height="36" fill="#E8834A"/>
+  <text x="138" y="438" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E8834A">会运用</text>
+  <text x="88" y="480" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#3D3530">
+    <tspan x="88" dy="0">分离变量法推导</tspan>
+    <tspan x="88" dy="32">定态薛定谔方程</tspan>
+  </text>
+
+  <!-- Card 4: Bottom-right (Red) -->
+  <rect x="660" y="390" width="560" height="240" rx="10" fill="url(#cardRed)" stroke="#DE3545" stroke-width="1.5" stroke-opacity="0.4"/>
+  <rect x="660" y="390" width="8" height="240" rx="4" fill="#DE3545"/>
+  <use data-icon="tabler-outline/wave-sine" x="688" y="415" width="36" height="36" fill="#DE3545"/>
+  <text x="738" y="438" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" font-weight="bold" fill="#DE3545">会判断</text>
+  <text x="688" y="480" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#3D3530">
+    <tspan x="688" dy="0">无限深方势阱中粒子的</tspan>
+    <tspan x="688" dy="32">允许能级与波函数形式</tspan>
+  </text>
+
+  <!-- Footer -->
+  <rect x="0" y="690" width="1280" height="30" fill="#3D3530" fill-opacity="0.06"/>
+  <text x="60" y="709" font-family="Arial, sans-serif" font-size="13" fill="#A89E98">量子力学基础 · 定态与一维无限深方势阱</text>
+  <text x="1220" y="709" font-family="Arial, sans-serif" font-size="13" fill="#A89E98" text-anchor="end">02</text>
+</svg>

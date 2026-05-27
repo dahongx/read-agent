@@ -18,6 +18,32 @@ logger = logging.getLogger(__name__)
 
 _LOCK = threading.RLock()
 
+_REPO_ROOT = settings.project_root
+
+
+def _to_repo_relative(value: str | None) -> str:
+    """把绝对路径转成相对 REPO_ROOT 的 POSIX 风格路径，用于跨机器共享 space.json。"""
+    if not value:
+        return value or ""
+    p = Path(value)
+    if not p.is_absolute():
+        return p.as_posix()
+    try:
+        return p.resolve().relative_to(_REPO_ROOT.resolve()).as_posix()
+    except (ValueError, OSError):
+        # 路径不在 repo 下（极少见，比如挂载盘）：原样保留绝对，至少不破坏数据
+        return p.as_posix()
+
+
+def _normalize_source_doc(doc: SessionSourceDoc | dict[str, Any]) -> dict[str, Any]:
+    """把 SessionSourceDoc 序列化成 dict，并把里面的绝对路径字段转相对。"""
+    raw = doc.model_dump() if isinstance(doc, SessionSourceDoc) else dict(doc)
+    if raw.get("pdf_path"):
+        raw["pdf_path"] = _to_repo_relative(raw["pdf_path"])
+    if raw.get("markdown_path"):
+        raw["markdown_path"] = _to_repo_relative(raw["markdown_path"])
+    return raw
+
 
 def _space_file(space_id: str) -> Path:
     return settings.spaces_path / f"{space_id}.json"
@@ -73,12 +99,12 @@ def upsert(
         data = {
             "space_id": space_id,
             "pdf_filename": pdf_filename,
-            "pdf_path": pdf_path,
+            "pdf_path": _to_repo_relative(pdf_path),
             "pdf_hash": pdf_hash,
             "config": config.model_dump(),
             "paper_title": paper_title or existing.get("paper_title") or pdf_filename,
             "session_type": session_type,
-            "source_documents": [doc.model_dump() for doc in (source_documents or [])],
+            "source_documents": [_normalize_source_doc(doc) for doc in (source_documents or [])],
             "contributors": sorted(contributors),
             "state": new_state,
             "error_message": existing.get("error_message") if new_state != "pending" else None,

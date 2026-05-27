@@ -26,32 +26,45 @@ paper_text.txt
 !backend/uploads/cache/
 !backend/uploads/conversations/
 
-# spaces：只放行 2 个示例
+# spaces：只放行示例
 backend/uploads/spaces/*
 !backend/uploads/spaces/d26f7eb599540e8b-b5a08452.json
 !backend/uploads/spaces/5fafbc5d7f062de6-b5a08452-86e9e44e.json
+!backend/uploads/spaces/fd3d2aa62172006d-5c0e76b6.json
 
 # cache 下面只放行 ppt/ 和 rag/ 两个子树
 backend/uploads/cache/*
 !backend/uploads/cache/ppt/
 !backend/uploads/cache/rag/
 
-# ppt 下只放行 2 个 space
+# ppt 下只放行示例 space
 backend/uploads/cache/ppt/*
 !backend/uploads/cache/ppt/d26f7eb599540e8b-b5a08452/
 !backend/uploads/cache/ppt/5fafbc5d7f062de6-b5a08452-86e9e44e/
+!backend/uploads/cache/ppt/fd3d2aa62172006d-5c0e76b6/
 
-# rag 下只放行 2 个对应索引
+# rag 下只放行示例对应索引
 backend/uploads/cache/rag/*
 !backend/uploads/cache/rag/d26f7eb599540e8b-v7/
 !backend/uploads/cache/rag/5fafbc5d7f062de6-multi-v2/
+!backend/uploads/cache/rag/fd3d2aa62172006d-v7/
 
-# conversations 下只放行用户 123 的 2 个 space
+# conversations 下只放行用户 123 的示例 space
 backend/uploads/conversations/*
 !backend/uploads/conversations/123/
 backend/uploads/conversations/123/*
 !backend/uploads/conversations/123/d26f7eb599540e8b-b5a08452/
 !backend/uploads/conversations/123/5fafbc5d7f062de6-b5a08452-86e9e44e/
+!backend/uploads/conversations/123/fd3d2aa62172006d-5c0e76b6/
+
+# sessions 默认忽略，但放行 lect4 demo 的 PDF（教学讲义示例）
+!backend/uploads/sessions/
+backend/uploads/sessions/*
+!backend/uploads/sessions/f1f94b78-0dc1-40ce-af12-cea72bb061b6/
+backend/uploads/sessions/f1f94b78-0dc1-40ce-af12-cea72bb061b6/*
+!backend/uploads/sessions/f1f94b78-0dc1-40ce-af12-cea72bb061b6/input/
+backend/uploads/sessions/f1f94b78-0dc1-40ce-af12-cea72bb061b6/input/*
+!backend/uploads/sessions/f1f94b78-0dc1-40ce-af12-cea72bb061b6/input/lect4.pdf
 
 # 本地嵌入模型，太大不传
 backend/models/

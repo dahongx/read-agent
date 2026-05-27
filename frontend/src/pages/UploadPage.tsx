@@ -20,6 +20,7 @@ const TEMPLATES = [
   { value: 'google_style', label: 'Google 风格', desc: '简洁现代，适合技术分享' },
   { value: 'mckinsey', label: '麦肯锡风格', desc: '咨询风，数据驱动' },
   { value: 'exhibit', label: 'Exhibit 风格', desc: '结论优先，适合战略汇报' },
+  { value: 'smart_red', label: '活力红橙', desc: '红橙暖色，适合教育/科技产品介绍' },
   { value: '重庆大学', label: '重庆大学', desc: '高校专属，学术答辩场景' },
   { value: 'no_template', label: '自由设计', desc: '不使用模板，AI自由发挥' },
 ]
@@ -167,7 +168,7 @@ export default function UploadPage() {
       return
     }
     if (files.length < 2) {
-      setError('多篇综述模式至少需要选择 2 个 PDF 文件')
+      setError('多文件模式至少需要选择 2 个 PDF 文件')
       return
     }
     setError(null)
@@ -238,10 +239,10 @@ export default function UploadPage() {
     ? selectedFile?.name ?? ''
     : formatFileSummary(selectedFiles)
   const hasSelection = uploadMode === 'single' ? !!selectedFile : selectedFiles.length >= 2
-  const title = uploadMode === 'single' ? '上传单篇论文' : '上传多篇论文综述'
+  const title = uploadMode === 'single' ? '上传单个文件生成 PPT' : '上传多个文件融合生成 PPT'
   const subtitle = uploadMode === 'single'
-    ? '上传单篇 PDF，配置 PPT 参数，自动生成演示文稿并建立问答知识库'
-    : '上传多篇 PDF，自动生成综述 PPT，并建立联合问答知识库'
+    ? '上传一个 PDF 文档，配置参数后自动生成演示文稿并建立问答知识库'
+    : '上传多个 PDF 文档，自动融合生成综合 PPT，并建立联合问答知识库'
 
   return (
     <div className="flex flex-col items-center justify-center flex-1 p-8 gap-6">
@@ -275,8 +276,8 @@ export default function UploadPage() {
               : 'border border-transparent text-gray-700 hover:bg-gray-50'
           }`}
         >
-          <div className="font-medium">单篇</div>
-          <div className="text-xs text-gray-400 mt-1">生成单篇 PPT + RAG</div>
+          <div className="font-medium">单个文件</div>
+          <div className="text-xs text-gray-400 mt-1">生成 PPT + RAG 知识库</div>
         </button>
         <button
           onClick={() => switchMode('multi')}
@@ -287,8 +288,8 @@ export default function UploadPage() {
               : 'border border-transparent text-gray-700 hover:bg-gray-50'
           }`}
         >
-          <div className="font-medium">多篇综述</div>
-          <div className="text-xs text-gray-400 mt-1">生成综述 PPT + 联合 RAG</div>
+          <div className="font-medium">多个文件</div>
+          <div className="text-xs text-gray-400 mt-1">融合生成 PPT + 联合知识库</div>
         </button>
       </div>
 
@@ -396,6 +397,7 @@ export default function UploadPage() {
               <option>学术汇报</option>
               <option>商务简报</option>
               <option>技术分享</option>
+              <option>教学讲义</option>
             </select>
           </div>
           <div>
@@ -432,7 +434,7 @@ export default function UploadPage() {
             </svg>
             上传中...
           </>
-        ) : uploadMode === 'single' ? '上传并生成 PPT' : '上传并生成综述 PPT'}
+        ) : uploadMode === 'single' ? '上传并生成 PPT' : '上传并融合生成 PPT'}
       </button>
 
       {userId && (
@@ -445,7 +447,7 @@ export default function UploadPage() {
           </div>
           {history.length === 0 && !historyLoading && (
             <p className="text-xs text-gray-400 bg-gray-50 border border-dashed border-gray-200 rounded-lg px-4 py-6 text-center">
-              暂无生成历史。上传一篇论文后会出现在这里。
+              暂无生成历史。上传文件后会出现在这里。
             </p>
           )}
           <div className="flex flex-col gap-2">
@@ -464,7 +466,7 @@ export default function UploadPage() {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-800 truncate">{label}</p>
                     <p className="text-xs text-gray-500 mt-0.5 truncate">
-                      {space.session_type === 'multi' ? '多篇综述' : '单篇'}
+                      {space.session_type === 'multi' ? '多文件' : '单文件'}
                       {' · '}
                       {space.config?.template || ''}
                       {' · '}

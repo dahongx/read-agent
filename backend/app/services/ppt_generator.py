@@ -98,7 +98,93 @@ def run_skill_script(script_name: str, *args: str, allow_partial_failure: bool =
     return stdout
 
 
+def _teaching_content_block(*, is_multi: bool = False) -> str:
+    """教学讲义场景的内容组织指令块。
+
+    与论文/汇报场景的关键区别：
+    - 内容按教学环节组织（导入/讲解/例题/练习/小结）而非论文章节
+    - 每页信息密度低，必须配概念图/类比/示例
+    - 必须设计互动节点（思考题、课堂练习）
+    """
+    source_hint = (
+        "- 多份来源应统一融合为一节课的教学逻辑，不要为每份来源单独开辟章节\n"
+        if is_multi
+        else ""
+    )
+    return (
+        f"内容要求（教学讲义场景）：\n"
+        f"- 这是教师上课用的教学课件 PPT，请按教学环节组织内容，不要按论文/汇报章节组织\n"
+        f"{source_hint}"
+        f"- 教学环节比例（按总页数自动拉伸，不绑定具体页号）：\n"
+        f"  · 封面 + 学习目标：约 10-15%\n"
+        f"  · 课堂导入（用问题/案例/现象引入兴趣）：约 5-10%\n"
+        f"  · 新知讲解（每页 1 个知识点 + 概念图/类比/举例）：约 50-60%\n"
+        f"  · 例题精讲（题目 → 解题步骤 → 易错点）：约 15-20%\n"
+        f"  · 课堂练习 + 总结回扣 + 作业布置：约 10-15%\n"
+        f"- 学习目标用动词：\"能说出/能解释/会运用/会判断\"，避免\"了解、掌握\"\n"
+        f"- 新知讲解每页正文 ≤ 80 字，必须配概念图、类比或简短示例\n"
+        f"- 例题至少 1 道，结构必须清晰：题目 → 解题步骤 → 易错点提醒\n"
+        f"- 至少 1 道课堂练习/思考题，鼓励学生当场回答\n"
+        f"- 总结页用关键词或对照学习目标\n"
+        f"- 不要照搬教材原文段落，用教学语言重组\n\n"
+    )
+
+
+def _speaker_notes_directive(config: PptConfig, *, is_multi: bool = False) -> str:
+    """根据 style 决定 speaker notes 风格指令（覆盖默认）。"""
+    if config.style == "教学讲义":
+        return (
+            "Speaker notes（教学版，每页 200-350 字第一人称课堂口吻中文，给老师上课直接念用）：\n"
+            "- 用「同学们」「我们一起来看」「请大家想想」这类口吻\n"
+            "- 必须用节奏标记，**统一用半角方括号**：[提问] [停顿] [板书] [举例] [强调]\n"
+            "  示例：\"这个概念有点抽象。[提问]谁能用自己的话说说？[停顿 10 秒]"
+            "如果想不出来也没关系，我来举个例子……[板书]y = kx + b\"\n"
+            "- 严禁使用中文方括号【】（TTS 朗读时会被读出来）\n"
+            "- 易错点必须显式提示：\"这里学生很容易混淆 X 和 Y，可以强调……\"\n"
+            "- 每页要有上下页的衔接语\n"
+            "- 不要讲排版规范\n\n"
+        )
+    # 默认：单文件场景的 speaker notes 一行式要求；多文件场景按 style 决定主题词
+    if is_multi:
+        topic_label = "综述内容" if config.style == "学术汇报" else "整合后的内容"
+    else:
+        topic_label = "论文内容" if config.style == "学术汇报" else "讲解内容"
+    return f"Speaker notes：每页100-200字口语化中文，讲{topic_label}，不要讲排版规范\n\n"
+
+
+def _scene_content_block(config: PptConfig, *, is_multi: bool) -> str:
+    """根据 style 注入"内容要求"段。
+
+    - style == "教学讲义"：注入教学环节比例 + 内容硬性要求
+    - style == "学术汇报" 且 is_multi：注入论文综述/Survey 组织方式（论文场景专属）
+    - 其他多文件场景：注入通用的多源资料融合组织要求
+    - 其他单文件场景：返回空，保持 prompt 简洁
+    """
+    if config.style == "教学讲义":
+        return _teaching_content_block(is_multi=is_multi)
+    if is_multi:
+        if config.style == "学术汇报":
+            return (
+                "内容要求：\n"
+                "- 以多篇论文综述/Survey 汇报方式组织内容\n"
+                "- 重点围绕研究背景、问题定义、方法脉络、核心结果、局限性、综合结论来编排\n"
+                "- 明确区分不同论文的贡献与证据来源，但不要做僵硬的逐篇流水账\n"
+                "- 若源资料中包含图片、图表或实验结果，尽量保留并合理排版\n"
+            )
+        # 通用多源融合（商务简报、技术分享等）
+        return (
+            "内容要求：\n"
+            "- 多个来源资料请融合为一份连贯的演示文稿，不要做逐文件流水账\n"
+            "- 提炼共同主题或对比维度，按主题/章节组织内容，而非按文件来源切段\n"
+            "- 关键论点或数据请明确指明来源（在脚注或文中标注）\n"
+            "- 若源资料中包含图片、图表或可视化，尽量保留并合理排版\n"
+        )
+    return ""
+
+
 def _build_batch_prompt(pdf_path: str, config: PptConfig, output_dir: Path) -> str:
+    scene_block = _scene_content_block(config, is_multi=False)
+    notes_block = _speaker_notes_directive(config, is_multi=False)
     return (
         f"[BATCH_MODE]\n"
         f"/{SKILL_NAME}\n\n"
@@ -117,7 +203,7 @@ def _build_batch_prompt(pdf_path: str, config: PptConfig, output_dir: Path) -> s
         f"- 即生成的项目必须落在：{output_dir}/<project_name>_ppt169_YYYYMMDD/\n"
         f"- 所有产物（design_spec.md / sources/ / svg_output/ / svg_final/ / notes/ / *.pptx）都在该项目目录下\n"
         f"- 不允许把项目建到 <repo>/projects/，只允许在上面指定的输出目录\n\n"
-        f"论文PDF：{pdf_path}\n"
+        f"源文件：{pdf_path}\n"
         f"模板：{config.template_prompt_value}\n"
         f"语言：{config.language}\n"
         f"受众：{config.audience}\n\n"
@@ -130,13 +216,22 @@ def _build_batch_prompt(pdf_path: str, config: PptConfig, output_dir: Path) -> s
         f"6. 图标：适量线条图标\n"
         f"7. 字体：标题大字加粗，正文14-16pt\n"
         f"8. 图片：不生成AI图片，使用文字+图表+数据可视化\n\n"
-        f"Speaker notes：每页100-200字口语化中文，讲论文内容，不要讲排版规范\n\n"
+        f"{scene_block}"
+        f"{notes_block}"
         f"以上配置已由用户在 Web 前端收集并确认，其余确认项已由系统按默认规则解析。"
         f"请直接完成到 svg_final 和 pptx 导出，不要调用 AskUserQuestion，也不要再询问任何问题。"
     )
 
 
 def _build_multi_batch_prompt(merged_md_path: str, config: PptConfig) -> str:
+    scene_block = _scene_content_block(config, is_multi=True)
+    notes_block = _speaker_notes_directive(config, is_multi=True)
+    if config.style == "教学讲义":
+        multi_task_hint = "- 本次任务是教学讲义场景，多份来源融合为一节课的教学课件\n"
+    elif config.style == "学术汇报":
+        multi_task_hint = "- 本次任务是多篇论文综述汇报，不是单篇论文复述\n"
+    else:
+        multi_task_hint = "- 本次任务是多源资料融合，把多个来源整合为一份连贯的演示文稿\n"
     return (
         f"[BATCH_MODE]\n"
         f"/{SKILL_NAME}\n\n"
@@ -146,7 +241,7 @@ def _build_multi_batch_prompt(merged_md_path: str, config: PptConfig) -> str:
         f"- 直接使用下列已确认参数；未显式提供的确认项按默认学术汇报规则补全\n"
         f"- 若模板为自由设计，则不要查询模板选项，直接继续\n"
         f"- 连续执行到 svg_final 和 pptx 导出后再结束\n"
-        f"- 本次任务是多篇论文综述汇报，不是单篇论文复述\n\n"
+        f"{multi_task_hint}\n"
         f"运行环境补充约束：\n"
         f"- 当前是 Windows 后端任务，请不要假设 `python3` 命令存在\n"
         f"- 如需运行 Python 脚本，请优先使用这个解释器：{PYTHON}\n"
@@ -164,12 +259,8 @@ def _build_multi_batch_prompt(merged_md_path: str, config: PptConfig) -> str:
         f"6. 图标：适量线条图标\n"
         f"7. 字体：标题大字加粗，正文14-16pt\n"
         f"8. 图片：不生成AI图片，优先复用源资料中的图表、插图与数据可视化\n\n"
-        f"内容要求：\n"
-        f"- 以多篇论文综述/Survey 汇报方式组织内容\n"
-        f"- 重点围绕研究背景、问题定义、方法脉络、核心结果、局限性、综合结论来编排\n"
-        f"- 明确区分不同论文的贡献与证据来源，但不要做僵硬的逐篇流水账\n"
-        f"- 若源资料中包含图片、图表或实验结果，尽量保留并合理排版\n"
-        f"- Speaker notes：每页100-200字口语化中文，讲综述内容，不要讲排版规范\n\n"
+        f"{scene_block}"
+        f"{notes_block}"
         f"完成标准（必须全部满足后才能结束）：\n"
         f"- 先完整执行 Step 6，再执行 Step 7，不要提前结束\n"
         f"- 必须生成完整讲稿文件 <project_path>/notes/total.md\n"
@@ -187,9 +278,9 @@ def _build_resume_prompt(project_dir: Path, pdf_path: str, config: PptConfig) ->
     return (
         f"[BATCH_MODE]\n"
         f"/{SKILL_NAME}\n\n"
-        f"请继续处理一个已经初始化但未完整完成的单篇 PPT 项目，不要重新新建项目，不要调用其他 skill。\n"
+        f"请继续处理一个已经初始化但未完整完成的单文件 PPT 项目，不要重新新建项目，不要调用其他 skill。\n"
         f"当前项目目录：{project_dir}\n"
-        f"论文PDF：{pdf_path}\n"
+        f"源文件：{pdf_path}\n"
         f"模板：{config.template_prompt_value}\n"
         f"语言：{config.language}\n"
         f"受众：{config.audience}\n\n"
@@ -215,7 +306,7 @@ def _build_multi_resume_prompt(project_dir: Path, merged_md_path: str, config: P
     return (
         f"[BATCH_MODE]\n"
         f"/{SKILL_NAME}\n\n"
-        f"请继续处理一个已经初始化但未完整完成的多篇综述 PPT 项目，不要重新新建项目，不要调用其他 skill。\n"
+        f"请继续处理一个已经初始化但未完整完成的多文件 PPT 项目，不要重新新建项目，不要调用其他 skill。\n"
         f"当前项目目录：{project_dir}\n"
         f"主资料 Markdown：{merged_md_path}\n"
         f"模板：{config.template_prompt_value}\n"
@@ -556,12 +647,12 @@ def _find_markdown_for_source(sources_dir: Path, source_doc: SessionSourceDoc) -
 
 
 def _build_merged_markdown(sections: list[tuple[SessionSourceDoc, Path]]) -> str:
-    blocks = ["# 多篇论文综述资料"]
+    blocks = ["# 多源资料融合"]
     for source_doc, markdown_path in sections:
         body = _read_text_source(markdown_path)
         blocks.append(
             "\n".join([
-                f"## 文献 {source_doc.order}：{Path(source_doc.source_file_name).stem}",
+                f"## 来源 {source_doc.order}：{Path(source_doc.source_file_name).stem}",
                 f"- 来源文件：{source_doc.source_file_name}",
                 f"- 文档编号：{source_doc.doc_id}",
                 f"- 排序序号：{source_doc.order}",
@@ -825,7 +916,7 @@ async def run_ppt_generation(
         message=f"已调用 /{SKILL_NAME} skill",
         details={"model": "sonnet", "output_dir": str(output_dir), "pdf_path": pdf_path},
     )
-    await progress_cb(session_id, "ppt", "Claude 正在分析论文...", 10, stage="claude_started")
+    await progress_cb(session_id, "ppt", "Claude 正在分析内容...", 10, stage="claude_started")
     await log_recorder.record(source="ppt", level="INFO", stage="claude_started", message="Claude CLI 已启动", details={"output_dir": str(output_dir)})
 
     loop = asyncio.get_running_loop()
@@ -1062,7 +1153,7 @@ async def _resume_incomplete_multi_project(
         source="ppt",
         level="WARNING",
         stage="resume_generation",
-        message="检测到多篇项目产物不完整，尝试继续补全讲稿与导出",
+        message="检测到多文件项目产物不完整，尝试继续补全讲稿与导出",
         details={"project_dir": str(project_dir)},
     )
     resume_prompt = _build_multi_resume_prompt(project_dir, str(merged_md_path), config)
@@ -1092,8 +1183,8 @@ async def run_multi_ppt_generation(
     if session is None:
         raise GenerationError(f"Session not found: {session_id}", stage="preflight")
 
-    await progress_cb(session_id, "ppt", "初始化综述项目", 10, stage="project_init")
-    await log_recorder.record(source="ppt", level="INFO", stage="project_init", message="初始化多篇综述项目")
+    await progress_cb(session_id, "ppt", "初始化多文件项目", 10, stage="project_init")
+    await log_recorder.record(source="ppt", level="INFO", stage="project_init", message="初始化多文件项目")
 
     project_name = f"multi_survey_{session_id[:8]}"
     project_dir_raw = run_skill_script(
@@ -1115,7 +1206,7 @@ async def run_multi_ppt_generation(
 
     session_store.update_path_fields(session_id, project_dir=str(project_dir))
 
-    await progress_cb(session_id, "ppt", "导入多篇 PDF", 20, stage="import_sources")
+    await progress_cb(session_id, "ppt", "导入多个 PDF", 20, stage="import_sources")
     await log_recorder.record(
         source="ppt",
         level="INFO",
@@ -1132,7 +1223,7 @@ async def run_multi_ppt_generation(
         message="已生成 merged markdown",
         details={"merged_markdown_path": str(merged_md_path)},
     )
-    await progress_cb(session_id, "ppt", "整理综述资料", 28, stage="merge_markdown")
+    await progress_cb(session_id, "ppt", "整理融合资料", 28, stage="merge_markdown")
 
     multi_prompt = _build_multi_batch_prompt(str(merged_md_path), config)
     final_project_dir = await run_ppt_generation(
@@ -1182,27 +1273,6 @@ def _find_latest_project(search_dir: Path) -> Path | None:
 
     ranked.sort(key=lambda item: (item[0], item[1]), reverse=True)
     return ranked[0][2] if ranked else None
- if design_spec.exists() else [])
-        + ([p.stat().st_mtime for p in notes] if notes else [])
-        + ([p.stat().st_mtime for p in svg_output] if svg_output else [])
-        + ([p.stat().st_mtime for p in svg_final] if svg_final else [])
-        + ([p.stat().st_mtime for p in pptx_files] if pptx_files else [])
-    )
-
-    return {
-        "state": state,
-        "design_spec": str(design_spec) if design_spec.exists() else "",
-        "notes_count": len(notes),
-        "split_notes_count": len(split_notes),
-        "has_total_md": has_total_md,
-        "svg_output_count": len(svg_output),
-        "svg_final_count": len(svg_final),
-        "pptx_count": len(pptx_files),
-        "pptx_files": [str(p) for p in pptx_files],
-        "source_files": [p.name for p in source_files],
-        "is_complete": is_complete,
-        "newest_artifact_mtime": newest_artifact_mtime,
-    }
 
 
 async def _emit_project_artifacts(
@@ -1349,7 +1419,7 @@ async def run_ppt_generation(
         message=f"已调用 /{SKILL_NAME} skill",
         details={"model": "sonnet", "output_dir": str(output_dir), "pdf_path": pdf_path},
     )
-    await progress_cb(session_id, "ppt", "Claude 正在分析论文...", 10, stage="claude_started")
+    await progress_cb(session_id, "ppt", "Claude 正在分析内容...", 10, stage="claude_started")
     await log_recorder.record(source="ppt", level="INFO", stage="claude_started", message="Claude CLI 已启动", details={"output_dir": str(output_dir)})
 
     loop = asyncio.get_running_loop()
@@ -1586,7 +1656,7 @@ async def _resume_incomplete_multi_project(
         source="ppt",
         level="WARNING",
         stage="resume_generation",
-        message="检测到多篇项目产物不完整，尝试继续补全讲稿与导出",
+        message="检测到多文件项目产物不完整，尝试继续补全讲稿与导出",
         details={"project_dir": str(project_dir)},
     )
     resume_prompt = _build_multi_resume_prompt(project_dir, str(merged_md_path), config)
@@ -1616,8 +1686,8 @@ async def run_multi_ppt_generation(
     if session is None:
         raise GenerationError(f"Session not found: {session_id}", stage="preflight")
 
-    await progress_cb(session_id, "ppt", "初始化综述项目", 10, stage="project_init")
-    await log_recorder.record(source="ppt", level="INFO", stage="project_init", message="初始化多篇综述项目")
+    await progress_cb(session_id, "ppt", "初始化多文件项目", 10, stage="project_init")
+    await log_recorder.record(source="ppt", level="INFO", stage="project_init", message="初始化多文件项目")
 
     project_name = f"multi_survey_{session_id[:8]}"
     project_dir_raw = run_skill_script(
@@ -1639,7 +1709,7 @@ async def run_multi_ppt_generation(
 
     session_store.update_path_fields(session_id, project_dir=str(project_dir))
 
-    await progress_cb(session_id, "ppt", "导入多篇 PDF", 20, stage="import_sources")
+    await progress_cb(session_id, "ppt", "导入多个 PDF", 20, stage="import_sources")
     await log_recorder.record(
         source="ppt",
         level="INFO",
@@ -1656,7 +1726,7 @@ async def run_multi_ppt_generation(
         message="已生成 merged markdown",
         details={"merged_markdown_path": str(merged_md_path)},
     )
-    await progress_cb(session_id, "ppt", "整理综述资料", 28, stage="merge_markdown")
+    await progress_cb(session_id, "ppt", "整理融合资料", 28, stage="merge_markdown")
 
     multi_prompt = _build_multi_batch_prompt(str(merged_md_path), config)
     final_project_dir = await run_ppt_generation(

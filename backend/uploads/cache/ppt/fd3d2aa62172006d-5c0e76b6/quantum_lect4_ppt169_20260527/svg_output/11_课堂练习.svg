@@ -1,0 +1,99 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#DE3545"/>
+      <stop offset="100%" stop-color="#E8834A"/>
+    </linearGradient>
+    <linearGradient id="q1Bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EDFAF3"/>
+      <stop offset="100%" stop-color="#F5FDF8"/>
+    </linearGradient>
+    <linearGradient id="q2Bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EEF6FF"/>
+      <stop offset="100%" stop-color="#F5FAFF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="#FDFAF5"/>
+
+  <!-- Header bar -->
+  <rect x="0" y="0" width="1280" height="80" fill="#FFFFFF"/>
+  <rect x="0" y="78" width="1280" height="3" fill="url(#headerGrad)"/>
+  <path d="M1180 0 L1280 0 L1280 80 Z" fill="#DE3545" fill-opacity="0.12"/>
+
+  <!-- Title decoration -->
+  <polygon points="60,20 72,50 60,50" fill="#DE3545"/>
+  <polygon points="78,20 90,50 78,50" fill="#E8834A" fill-opacity="0.6"/>
+
+  <!-- Page title -->
+  <text x="100" y="52" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="30" font-weight="bold" fill="#3D3530">课堂练习：请同学们思考</text>
+  <use data-icon="tabler-outline/question-mark" x="1190" y="18" width="44" height="44" fill="#4CAF7D" fill-opacity="0.6"/>
+
+  <!-- Instruction banner -->
+  <rect x="60" y="92" width="1160" height="48" rx="8" fill="#4CAF7D" fill-opacity="0.12" stroke="#4CAF7D" stroke-width="1.5" stroke-opacity="0.4"/>
+  <text x="640" y="122" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" fill="#4CAF7D" text-anchor="middle" font-weight="bold">请先独立思考 2 分钟，再与同桌讨论，最后我们一起来看答案</text>
+
+  <!-- Question 1 -->
+  <rect x="60" y="154" width="1160" height="240" rx="10" fill="url(#q1Bg)" stroke="#4CAF7D" stroke-width="2"/>
+  <rect x="60" y="154" width="8" height="240" rx="4" fill="#4CAF7D"/>
+
+  <!-- Q1 label -->
+  <circle cx="100" cy="190" r="22" fill="#4CAF7D"/>
+  <text x="100" y="197" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Q1</text>
+
+  <text x="140" y="185" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" font-weight="bold" fill="#3D3530">叠加态的能量测量</text>
+
+  <rect x="80" y="202" width="1120" height="72" rx="6" fill="#FFFFFF" fill-opacity="0.7"/>
+  <text x="640" y="228" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" fill="#3D3530" text-anchor="middle">若粒子处于叠加态：</text>
+  <text x="640" y="258" font-family="Consolas, monospace" font-size="20" fill="#2E86AB" text-anchor="middle" font-weight="bold">Ψ = (1/√2)ψ₁ + (1/√2)ψ₂</text>
+
+  <text x="80" y="302" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" fill="#3D3530">
+    <tspan>① 测量能量可能得到哪些值？</tspan>
+  </text>
+  <text x="80" y="332" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" fill="#3D3530">
+    <tspan>② 得到 E₁ 和 E₂ 的概率各是多少？</tspan>
+  </text>
+  <text x="80" y="362" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="17" fill="#7A6E68">
+    <tspan>（提示：回顾 |c_n|² 的物理意义）</tspan>
+  </text>
+
+  <!-- Q1 answer hint (collapsed) -->
+  <rect x="900" y="300" width="300" height="72" rx="6" fill="#4CAF7D" fill-opacity="0.1" stroke="#4CAF7D" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="1050" y="328" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#4CAF7D" text-anchor="middle">答案提示：</text>
+  <text x="1050" y="352" font-family="Consolas, monospace" font-size="16" fill="#4CAF7D" text-anchor="middle">P(E₁) = |1/√2|² = 1/2</text>
+  <text x="1050" y="372" font-family="Consolas, monospace" font-size="16" fill="#4CAF7D" text-anchor="middle">P(E₂) = |1/√2|² = 1/2</text>
+
+  <!-- Question 2 -->
+  <rect x="60" y="408" width="1160" height="230" rx="10" fill="url(#q2Bg)" stroke="#2E86AB" stroke-width="2"/>
+  <rect x="60" y="408" width="8" height="230" rx="4" fill="#2E86AB"/>
+
+  <!-- Q2 label -->
+  <circle cx="100" cy="444" r="22" fill="#2E86AB"/>
+  <text x="100" y="451" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Q2</text>
+
+  <text x="140" y="439" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" font-weight="bold" fill="#3D3530">势阱宽度与能量的关系</text>
+
+  <rect x="80" y="456" width="1120" height="48" rx="6" fill="#FFFFFF" fill-opacity="0.7"/>
+  <text x="640" y="486" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" fill="#3D3530" text-anchor="middle">无限深方势阱中，基态能量 E₁ = π²ℏ²/(2ma²)</text>
+
+  <text x="80" y="530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" fill="#3D3530">
+    <tspan>① 若势阱宽度 a 减小为原来的一半，E₁ 如何变化？</tspan>
+  </text>
+  <text x="80" y="560" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" fill="#3D3530">
+    <tspan>② 这说明了什么物理规律？（联系不确定性原理思考）</tspan>
+  </text>
+  <text x="80" y="590" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="17" fill="#7A6E68">
+    <tspan>（提示：a → a/2，E₁ 变为原来的几倍？）</tspan>
+  </text>
+
+  <!-- Q2 answer hint -->
+  <rect x="900" y="530" width="300" height="56" rx="6" fill="#2E86AB" fill-opacity="0.1" stroke="#2E86AB" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="1050" y="554" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#2E86AB" text-anchor="middle">答案提示：</text>
+  <text x="1050" y="576" font-family="Consolas, monospace" font-size="16" fill="#2E86AB" text-anchor="middle">E₁ 变为原来的 4 倍</text>
+
+  <!-- Footer -->
+  <rect x="0" y="690" width="1280" height="30" fill="#3D3530" fill-opacity="0.06"/>
+  <text x="60" y="709" font-family="Arial, sans-serif" font-size="13" fill="#A89E98">量子力学基础 · 定态与一维无限深方势阱</text>
+  <text x="1220" y="709" font-family="Arial, sans-serif" font-size="13" fill="#A89E98" text-anchor="end">11</text>
+</svg>

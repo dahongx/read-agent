@@ -1,0 +1,75 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="coverAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#DE3545"/>
+      <stop offset="100%" stop-color="#E8834A"/>
+    </linearGradient>
+    <linearGradient id="triGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DE3545"/>
+      <stop offset="100%" stop-color="#C42535"/>
+    </linearGradient>
+    <linearGradient id="warmTriGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E8834A"/>
+      <stop offset="100%" stop-color="#D4703A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background: warm off-white -->
+  <rect x="0" y="0" width="1280" height="720" fill="#FDFAF5"/>
+
+  <!-- Subtle texture overlay -->
+  <rect x="0" y="0" width="1280" height="720" fill="#E8834A" fill-opacity="0.03"/>
+
+  <!-- Top Left: Red Triangle (Primary) -->
+  <path d="M0 0 L380 0 L0 380 Z" fill="url(#triGrad)"/>
+  <!-- Top Left: Small accent triangle -->
+  <path d="M0 0 L180 0 L0 180 Z" fill="#E86A76" fill-opacity="0.6"/>
+
+  <!-- Bottom Left: Warm Orange Triangle (replaces dark gray) -->
+  <path d="M0 720 L320 720 L0 400 Z" fill="url(#warmTriGrad)"/>
+  <!-- Bottom Left: Small accent -->
+  <path d="M0 720 L120 720 L0 600 Z" fill="#F0A070" fill-opacity="0.7"/>
+
+  <!-- Bottom Right: Red Triangle -->
+  <path d="M1280 720 L1280 300 L860 720 Z" fill="url(#triGrad)"/>
+  <!-- Bottom Right: Small accent -->
+  <path d="M1280 720 L1280 520 L1080 720 Z" fill="#E86A76" fill-opacity="0.6"/>
+  <!-- Top Right: Small decorative triangle -->
+  <path d="M1280 0 L1200 0 L1280 80 Z" fill="#E8834A" fill-opacity="0.4"/>
+
+  <!-- Decorative dot pattern (top right area) -->
+  <circle cx="900" cy="80" r="4" fill="#DE3545" fill-opacity="0.2"/>
+  <circle cx="930" cy="80" r="4" fill="#DE3545" fill-opacity="0.2"/>
+  <circle cx="960" cy="80" r="4" fill="#DE3545" fill-opacity="0.2"/>
+  <circle cx="900" cy="110" r="4" fill="#DE3545" fill-opacity="0.2"/>
+  <circle cx="930" cy="110" r="4" fill="#DE3545" fill-opacity="0.2"/>
+  <circle cx="960" cy="110" r="4" fill="#DE3545" fill-opacity="0.2"/>
+
+  <!-- Content Area -->
+  <!-- Course label -->
+  <text x="440" y="240" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="18" fill="#E8834A" font-weight="bold" letter-spacing="4">大学量子力学 · 第四讲</text>
+
+  <!-- Main Title -->
+  <text x="440" y="320" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="66" font-weight="bold" fill="#3D3530" letter-spacing="2">量子力学基础</text>
+
+  <!-- Accent line under title -->
+  <rect x="440" y="338" width="320" height="5" fill="url(#coverAccent)" rx="2"/>
+
+  <!-- Subtitle -->
+  <text x="444" y="400" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="32" fill="#7A6E68" letter-spacing="1">定态与一维无限深方势阱</text>
+
+  <!-- Divider -->
+  <line x1="444" y1="440" x2="700" y2="440" stroke="#E8DDD5" stroke-width="1.5"/>
+
+  <!-- Info block -->
+  <text x="444" y="480" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#7A6E68">
+    <tspan>薛定谔方程 · 定态 · 能量量子化 · 波函数</tspan>
+  </text>
+
+  <!-- Atom icon placeholder -->
+  <use data-icon="tabler-outline/atom" x="1100" y="300" width="80" height="80" fill="#DE3545" fill-opacity="0.15"/>
+
+  <!-- Footer -->
+  <rect x="0" y="690" width="1280" height="30" fill="#3D3530" fill-opacity="0.06"/>
+  <text x="640" y="709" font-family="Arial, sans-serif" font-size="13" fill="#A89E98" text-anchor="middle">量子力学基础 · 定态与一维无限深方势阱</text>
+</svg>

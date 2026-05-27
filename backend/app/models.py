@@ -11,12 +11,13 @@ TemplateValue = Literal[
     "google_style",
     "mckinsey",
     "exhibit",
+    "smart_red",
     "重庆大学",
     "no_template",
 ]
 PageCountValue = Literal[8, 10, 12, 15, 20]
 LanguageValue = Literal["中文", "英文", "中英双语"]
-StyleValue = Literal["学术汇报", "商务简报", "技术分享"]
+StyleValue = Literal["学术汇报", "商务简报", "技术分享", "教学讲义"]
 AudienceValue = Literal["高校师生", "企业团队", "通用"]
 SessionType = Literal["single", "multi"]
 
@@ -37,6 +38,7 @@ class PptConfig(BaseModel):
         "google_style": "google_style",
         "mckinsey": "mckinsey",
         "exhibit": "exhibit",
+        "smart_red": "smart_red",
         "重庆大学": "重庆大学",
         "no_template": "自由设计",
     }
@@ -46,12 +48,14 @@ class PptConfig(BaseModel):
         "google_style": "简洁白底，蓝红黄绿少量强调",
         "mckinsey": "蓝灰商务风，数据导向",
         "exhibit": "黑白灰为主，单一强调色突出结论",
+        "smart_red": "红橙活力色为主，几何现代风",
         "重庆大学": "校色体系，学术答辩风格",
     }
     COLOR_SCHEMES_BY_STYLE: ClassVar[dict[str, str]] = {
         "学术汇报": "蓝白为主，橙色强调",
         "商务简报": "蓝灰商务风",
         "技术分享": "高对比科技风",
+        "教学讲义": "米白底暖色调，避免黑底，配以蓝/绿/橙等亲和色彩强调，标题正文字号比商务汇报放大一档",
     }
 
     template: TemplateValue = "academic_defense"
@@ -75,6 +79,10 @@ class PptConfig(BaseModel):
 
     @property
     def color_scheme_prompt_value(self) -> str:
+        # 教学讲义场景下 style 的配色（暖色调、大字号）应该优先于 template 的视觉配色，
+        # 因为模板大多是商务/学术冷色，会跟教学场景的视觉需求冲突。
+        if self.style in self.COLOR_SCHEMES_BY_STYLE and self.style == "教学讲义":
+            return self.COLOR_SCHEMES_BY_STYLE[self.style]
         if self.template != "no_template":
             return self.COLOR_SCHEMES_BY_TEMPLATE.get(
                 self.template,

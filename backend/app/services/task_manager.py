@@ -287,12 +287,12 @@ async def _multi_ppt_task(session_id: str, pdf_paths: list[str], config: PptConf
     )
 
     recorder = SessionLogRecorder(session_id)
-    await _broadcast_progress(session_id, "ppt", "检查综述缓存", 5, stage="cache_check")
+    await _broadcast_progress(session_id, "ppt", "检查多文件 PPT 缓存", 5, stage="cache_check")
 
     cache_key = compute_multi_cache_key(pdf_paths, config)
     cache_dir = get_ppt_cache_dir(cache_key)
     logger.info("[MULTI_PPT_TASK][%s] cache_key=%s  cache_dir=%s", session_id, cache_key, cache_dir)
-    await _log(recorder, source="ppt", level="INFO", stage="cache_check", message="检查多篇综述 PPT 缓存", details={"cache_key": cache_key, "source_count": len(pdf_paths)})
+    await _log(recorder, source="ppt", level="INFO", stage="cache_check", message="检查多文件 PPT 缓存", details={"cache_key": cache_key, "source_count": len(pdf_paths)})
 
     cached_outputs = load_cached_project_outputs(cache_dir)
     logger.info("[MULTI_PPT_TASK][%s] cache manifest lookup result: %s", session_id, cached_outputs)
@@ -310,18 +310,18 @@ async def _multi_ppt_task(session_id: str, pdf_paths: list[str], config: PptConf
             source="ppt",
             level="INFO",
             stage="cache_check",
-            message="多篇综述 PPT 缓存命中",
+            message="多文件 PPT 缓存命中",
             details={
                 "pptx": cached_outputs["ppt_path"],
                 "project_dir": cached_outputs.get("project_dir", ""),
                 "merged_markdown_path": cached_outputs.get("merged_markdown_path", ""),
             },
         )
-        await _broadcast_progress(session_id, "ppt", "使用已有综述 PPT（配置未变更）", 100, stage="complete", status="completed")
+        await _broadcast_progress(session_id, "ppt", "使用已有 PPT（配置未变更）", 100, stage="complete", status="completed")
         await _broadcast_session_snapshot(session_id)
         return cached_outputs["ppt_path"]
 
-    await _log(recorder, source="ppt", level="INFO", stage="cache_check", message="多篇综述 PPT 缓存未命中，准备调用 Claude CLI", details={"cache_key": cache_key, "source_count": len(pdf_paths)})
+    await _log(recorder, source="ppt", level="INFO", stage="cache_check", message="多文件 PPT 缓存未命中，准备调用 Claude CLI", details={"cache_key": cache_key, "source_count": len(pdf_paths)})
 
     try:
         project_dir = await run_multi_ppt_generation(
@@ -373,8 +373,8 @@ async def _multi_ppt_task(session_id: str, pdf_paths: list[str], config: PptConf
         notes_dir=outputs["notes_dir"],
     )
     save_cached_project_outputs(cache_dir, outputs, cache_key)
-    await _broadcast_progress(session_id, "ppt", "综述 PPT 生成完成", 100, stage="complete", status="completed")
-    await _log(recorder, source="ppt", level="INFO", stage="complete", message="综述 PPT 生成完成", details=outputs)
+    await _broadcast_progress(session_id, "ppt", "多文件 PPT 生成完成", 100, stage="complete", status="completed")
+    await _log(recorder, source="ppt", level="INFO", stage="complete", message="多文件 PPT 生成完成", details=outputs)
     await _broadcast_session_snapshot(session_id)
     return str(pptx_files[0])
 
@@ -414,8 +414,8 @@ async def _multi_rag_task(session_id: str, pdf_paths: list[str]) -> str:
 
     logger.info("[MULTI_RAG_TASK][%s] CACHE MISS → building multi index", session_id)
     await _log(recorder, source="rag", level="INFO", stage="cache_check", message="多文档 RAG 缓存未命中，开始构建联合索引", details={"index_dir": index_dir, "source_count": len(session.source_documents)})
-    await _broadcast_progress(session_id, "rag", "解析多篇 PDF", 20, stage="pdf_parse")
-    await _log(recorder, source="rag", level="INFO", stage="pdf_parse", message="开始解析多篇 PDF")
+    await _broadcast_progress(session_id, "rag", "解析多个 PDF", 20, stage="pdf_parse")
+    await _log(recorder, source="rag", level="INFO", stage="pdf_parse", message="开始解析多个 PDF")
     loop = asyncio.get_event_loop()
     await _broadcast_progress(session_id, "rag", "联合向量化中（需要一点时间）", 70, stage="embedding")
     await _log(recorder, source="rag", level="INFO", stage="embedding", message="开始构建联合向量索引")
@@ -481,7 +481,7 @@ async def run_multi_tasks(session_id: str, pdf_paths: list[str], config: PptConf
     session_store.update_status(session_id, SessionStatus.processing)
     await ws_manager.broadcast(session_id, {"event": "status", "status": "processing"})
     await _broadcast_session_snapshot(session_id)
-    await _log(recorder, source="system", level="INFO", stage="processing", message="开始执行多篇综述 PPT 与 RAG 任务")
+    await _log(recorder, source="system", level="INFO", stage="processing", message="开始执行多文件 PPT 与 RAG 任务")
 
     try:
         logger.info("[TASK][%s] Launching MULTI PPT + RAG tasks in parallel", session_id)
@@ -498,7 +498,7 @@ async def run_multi_tasks(session_id: str, pdf_paths: list[str], config: PptConf
         _sync_space_state(session_id, "ready")
         conns = len(ws_manager._connections.get(session_id, []))
         logger.info("[TASK][%s] Broadcasting DONE event  ws_clients=%d", session_id, conns)
-        await _log(recorder, source="system", level="INFO", stage="complete", message="多篇综述会话处理完成")
+        await _log(recorder, source="system", level="INFO", stage="complete", message="多文件会话处理完成")
         await ws_manager.broadcast(session_id, {"event": "done", "status": "ready"})
         await _broadcast_session_snapshot(session_id)
         logger.info("[TASK][%s] Multi session marked READY", session_id)
@@ -525,7 +525,7 @@ async def run_multi_tasks(session_id: str, pdf_paths: list[str], config: PptConf
                 other_state = current_session.stages.rag if other_task == "rag" else current_session.stages.ppt
                 if other_state.status == "running" and other_state.pct >= 100:
                     session_store.update_stage(session_id, other_task, other_state.stage or "complete", other_state.stage_label or "完成", 100, status="completed")
-        await _log(recorder, source="system", level="ERROR", stage=detail.stage or "processing", message="多篇综述会话处理失败", details={"error": str(exc)})
+        await _log(recorder, source="system", level="ERROR", stage=detail.stage or "processing", message="多文件会话处理失败", details={"error": str(exc)})
         conns = len(ws_manager._connections.get(session_id, []))
         logger.info("[TASK][%s] Broadcasting error to %d ws clients", session_id, conns)
         await ws_manager.broadcast(session_id, {

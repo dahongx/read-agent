@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#DE3545" />
+      <stop offset="100%" stop-color="#E8834A" />
+    </linearGradient>
+  </defs>
+
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#FDFAF5" />
+
+  
+  <rect x="0" y="0" width="1280" height="80" fill="#FFFFFF" />
+  <rect x="0" y="78" width="1280" height="3" fill="url(#headerGrad)" />
+  <path d="M1180 0 L1280 0 L1280 80 Z" fill="#DE3545" fill-opacity="0.12" />
+
+  
+  <polygon points="60,20 72,50 60,50" fill="#DE3545" />
+  <polygon points="78,20 90,50 78,50" fill="#E8834A" fill-opacity="0.6" />
+
+  
+  <text x="100" y="52" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="30" font-weight="bold" fill="#3D3530">新知6：每个能级对应一个波函数</text>
+
+  
+  <path fill="#FFFFFF" stroke="#E8DDD5" stroke-width="1.5" d="M70,92 H580 A10,10 0 0 1 590,102 V652 A10,10 0 0 1 580,662 H70 A10,10 0 0 1 60,652 V102 A10,10 0 0 1 70,92 Z" />
+  <path fill="#2E86AB" fill-opacity="0.12" d="M70,92 H580 A10,10 0 0 1 590,102 V126 A10,10 0 0 1 580,136 H70 A10,10 0 0 1 60,126 V102 A10,10 0 0 1 70,92 Z" />
+  <rect x="60" y="116" width="530" height="20" fill="#2E86AB" fill-opacity="0.12" />
+  <text x="325" y="120" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="18" font-weight="bold" fill="#2E86AB" text-anchor="middle">ψ_n(x) 与 |ψ_n(x)|² 图像</text>
+
+  
+  <text x="80" y="162" font-family="Consolas, monospace" font-size="16" fill="#4CAF7D" font-weight="bold">n=1 (基态)</text>
+  
+  <line x1="100" y1="215" x2="360" y2="215" stroke="#CCCCCC" stroke-width="1" />
+  <line x1="100" y1="165" x2="100" y2="220" stroke="#CCCCCC" stroke-width="1" />
+  
+  <path d="M100,215 C140,215 160,165 230,165 C300,165 320,215 360,215" stroke="#4CAF7D" stroke-width="2.5" fill="none" />
+  
+  <path d="M100,215 C140,215 160,175 230,175 C300,175 320,215 360,215" stroke="#4CAF7D" stroke-width="1.5" fill="#4CAF7D" fill-opacity="0.15" stroke-dasharray="5,3" />
+  <text x="370" y="195" font-family="Consolas, monospace" font-size="14" fill="#4CAF7D">ψ₁</text>
+  <text x="100" y="232" font-family="Consolas, monospace" font-size="13" fill="#7A6E68">0</text>
+  <text x="352" y="232" font-family="Consolas, monospace" font-size="13" fill="#7A6E68">a</text>
+  <text x="80" y="175" font-family="Consolas, monospace" font-size="13" fill="#4CAF7D">A</text>
+
+  
+  <text x="80" y="262" font-family="Consolas, monospace" font-size="16" fill="#2E86AB" font-weight="bold">n=2 (第一激发态)</text>
+  <line x1="100" y1="330" x2="360" y2="330" stroke="#CCCCCC" stroke-width="1" />
+  <line x1="100" y1="275" x2="100" y2="335" stroke="#CCCCCC" stroke-width="1" />
+  
+  <path d="M100,330 C120,330 130,278 165,278 C200,278 210,330 230,330 C250,330 260,382 295,382 C330,382 340,330 360,330" stroke="#2E86AB" stroke-width="2.5" fill="none" />
+  
+  <path d="M100,330 C120,330 130,290 165,290 C200,290 210,330 230,330 C250,330 260,290 295,290 C330,290 340,330 360,330" stroke="#2E86AB" stroke-width="1.5" fill="#2E86AB" fill-opacity="0.12" stroke-dasharray="5,3" />
+  <text x="370" y="310" font-family="Consolas, monospace" font-size="14" fill="#2E86AB">ψ₂</text>
+  <text x="100" y="347" font-family="Consolas, monospace" font-size="13" fill="#7A6E68">0</text>
+  <text x="352" y="347" font-family="Consolas, monospace" font-size="13" fill="#7A6E68">a</text>
+  
+  <circle cx="230" cy="330" r="4" fill="#DE3545" />
+  <text x="222" y="360" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" fill="#DE3545">节点</text>
+
+  
+  <text x="80" y="382" font-family="Consolas, monospace" font-size="16" fill="#E8834A" font-weight="bold">n=3 (第二激发态)</text>
+  <line x1="100" y1="450" x2="360" y2="450" stroke="#CCCCCC" stroke-width="1" />
+  <line x1="100" y1="395" x2="100" y2="455" stroke="#CCCCCC" stroke-width="1" />
+  
+  <path d="M100,450 C115,450 120,408 143,408 C166,408 171,450 190,450 C209,450 214,492 237,492 C260,492 265,450 283,450 C301,450 306,408 330,408 C354,408 358,450 360,450" stroke="#E8834A" stroke-width="2.5" fill="none" />
+  
+  <path d="M100,450 C115,450 120,418 143,418 C166,418 171,450 190,450 C209,450 214,418 237,418 C260,418 265,450 283,450 C301,450 306,418 330,418 C354,418 358,450 360,450" stroke="#E8834A" stroke-width="1.5" fill="#E8834A" fill-opacity="0.12" stroke-dasharray="5,3" />
+  <text x="370" y="430" font-family="Consolas, monospace" font-size="14" fill="#E8834A">ψ₃</text>
+  <text x="100" y="467" font-family="Consolas, monospace" font-size="13" fill="#7A6E68">0</text>
+  <text x="352" y="467" font-family="Consolas, monospace" font-size="13" fill="#7A6E68">a</text>
+
+  
+  <line x1="80" y1="510" x2="120" y2="510" stroke="#3D3530" stroke-width="2" />
+  <text x="130" y="515" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#3D3530">ψ_n(x)（波函数）</text>
+  <line x1="80" y1="535" x2="120" y2="535" stroke="#3D3530" stroke-width="1.5" stroke-dasharray="5,3" />
+  <rect x="80" y="527" width="40" height="14" fill="#3D3530" fill-opacity="0.1" />
+  <text x="130" y="540" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#3D3530">|ψ_n(x)|²（概率密度）</text>
+
+  
+  <path fill="#EEF6FF" stroke="#2E86AB" stroke-width="1" stroke-opacity="0.4" d="M86,558 H564 A6,6 0 0 1 570,564 V636 A6,6 0 0 1 564,642 H86 A6,6 0 0 1 80,636 V564 A6,6 0 0 1 86,558 Z" />
+  <text x="325" y="582" font-family="Consolas, monospace" font-size="18" fill="#2E86AB" text-anchor="middle" font-weight="bold">ψ_n(x) = √(2/a) · sin(nπx/a)</text>
+  <text x="325" y="610" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#7A6E68" text-anchor="middle">n = 1, 2, 3, ...  （0 &lt; x &lt; a）</text>
+  <text x="325" y="632" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="15" fill="#7A6E68" text-anchor="middle">n-1 个节点（波函数为零的内部点）</text>
+
+  
+  <path fill="#FDFAF5" stroke="#E8DDD5" stroke-width="1.5" d="M620,92 H1210 A10,10 0 0 1 1220,102 V652 A10,10 0 0 1 1210,662 H620 A10,10 0 0 1 610,652 V102 A10,10 0 0 1 620,92 Z" />
+
+  
+  <path fill="#FFFFFF" stroke="#4CAF7D" stroke-width="1.5" stroke-opacity="0.5" d="M638,108 H1192 A8,8 0 0 1 1200,116 V210 A8,8 0 0 1 1192,218 H638 A8,8 0 0 1 630,210 V116 A8,8 0 0 1 638,108 Z" />
+  <path fill="#4CAF7D" d="M633,108 H633 A3,3 0 0 1 636,111 V215 A3,3 0 0 1 633,218 H633 A3,3 0 0 1 630,215 V111 A3,3 0 0 1 633,108 Z" />
+  
+  <g transform="translate(648.0, 118.0) scale(1.1666666666666667)" fill="none" stroke="#4CAF7D">
+    <path d="M7 19a2 2 0 0 0 2 2c2 0 2 -4 3 -9s1 -9 3 -9a2 2 0 0 1 2 2" />
+  </g>
+  <text x="690" y="136" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="18" font-weight="bold" fill="#4CAF7D">归一化</text>
+  <text x="648" y="165" font-family="Consolas, monospace" font-size="17" fill="#3D3530">∫|ψ_n|² dx = 1  →  A = √(2/a)</text>
+  <text x="648" y="200" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#7A6E68">概率总和为1，确定归一化系数</text>
+
+  
+  <path fill="#FFFFFF" stroke="#2E86AB" stroke-width="1.5" stroke-opacity="0.5" d="M638,232 H1192 A8,8 0 0 1 1200,240 V334 A8,8 0 0 1 1192,342 H638 A8,8 0 0 1 630,334 V240 A8,8 0 0 1 638,232 Z" />
+  <path fill="#2E86AB" d="M633,232 H633 A3,3 0 0 1 636,235 V339 A3,3 0 0 1 633,342 H633 A3,3 0 0 1 630,339 V235 A3,3 0 0 1 633,232 Z" />
+  
+  <g transform="translate(648.0, 242.0) scale(1.1666666666666667)" fill="none" stroke="#2E86AB">
+    <path d="M3 19a2 2 0 0 0 2 2c2 0 2 -4 3 -9s1 -9 3 -9a2 2 0 0 1 2 2" />
+    <path d="M5 12h6" />
+    <path d="M15 12l6 6" />
+    <path d="M15 18l6 -6" />
+  </g>
+  <text x="690" y="260" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="18" font-weight="bold" fill="#2E86AB">正交归一性</text>
+  <text x="648" y="290" font-family="Consolas, monospace" font-size="17" fill="#3D3530">∫ψ_m* ψ_n dx = δ_mn</text>
+  <text x="648" y="325" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#7A6E68">不同能级的波函数互相正交</text>
+
+  
+  <path fill="#FFFFFF" stroke="#E8834A" stroke-width="1.5" stroke-opacity="0.5" d="M638,356 H1192 A8,8 0 0 1 1200,364 V458 A8,8 0 0 1 1192,466 H638 A8,8 0 0 1 630,458 V364 A8,8 0 0 1 638,356 Z" />
+  <path fill="#E8834A" d="M633,356 H633 A3,3 0 0 1 636,359 V463 A3,3 0 0 1 633,466 H633 A3,3 0 0 1 630,463 V359 A3,3 0 0 1 633,356 Z" />
+  
+  <g transform="translate(648.0, 366.0) scale(1.1666666666666667)" fill="none" stroke="#E8834A">
+    <path d="M4 19l16 0" />
+    <path d="M4 15l4 -6l4 2l4 -5l4 4" />
+  </g>
+  <text x="690" y="384" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="18" font-weight="bold" fill="#E8834A">完备性（展开定理）</text>
+  <text x="648" y="414" font-family="Consolas, monospace" font-size="17" fill="#3D3530">f(x) = Σ c_n ψ_n(x)</text>
+  <text x="648" y="448" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#7A6E68">任意函数可用本征函数展开</text>
+
+  
+  <path fill="#FFFFFF" stroke="#DE3545" stroke-width="1.5" stroke-opacity="0.5" d="M638,480 H1192 A8,8 0 0 1 1200,488 V582 A8,8 0 0 1 1192,590 H638 A8,8 0 0 1 630,582 V488 A8,8 0 0 1 638,480 Z" />
+  <path fill="#DE3545" d="M633,480 H633 A3,3 0 0 1 636,483 V587 A3,3 0 0 1 633,590 H633 A3,3 0 0 1 630,587 V483 A3,3 0 0 1 633,480 Z" />
+  
+  <g transform="translate(648.0, 490.0) scale(1.1666666666666667)" fill="none" stroke="#DE3545">
+    <path d="M7 19a2 2 0 0 0 2 2c2 0 2 -4 3 -9s1 -9 3 -9a2 2 0 0 1 2 2" />
+  </g>
+  <text x="690" y="508" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="18" font-weight="bold" fill="#DE3545">展开系数与概率</text>
+  <text x="648" y="538" font-family="Consolas, monospace" font-size="17" fill="#3D3530">c_n = ∫ψ_n*(x) f(x) dx</text>
+  <text x="648" y="572" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#7A6E68">|c_n|² = 测量得到能量 E_n 的概率</text>
+
+  
+  <rect x="0" y="690" width="1280" height="30" fill="#3D3530" fill-opacity="0.06" />
+  <text x="60" y="709" font-family="Arial, sans-serif" font-size="13" fill="#A89E98">量子力学基础 · 定态与一维无限深方势阱</text>
+  <text x="1220" y="709" font-family="Arial, sans-serif" font-size="13" fill="#A89E98" text-anchor="end">09</text>
+</svg>

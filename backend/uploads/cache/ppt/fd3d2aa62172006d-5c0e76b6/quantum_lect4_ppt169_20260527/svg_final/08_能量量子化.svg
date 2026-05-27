@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#DE3545" />
+      <stop offset="100%" stop-color="#E8834A" />
+    </linearGradient>
+    <linearGradient id="deriveBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#FDFAF5" />
+    </linearGradient>
+    <linearGradient id="energyBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF8F0" />
+      <stop offset="100%" stop-color="#FDFAF5" />
+    </linearGradient>
+  </defs>
+
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#FDFAF5" />
+
+  
+  <rect x="0" y="0" width="1280" height="80" fill="#FFFFFF" />
+  <rect x="0" y="78" width="1280" height="3" fill="url(#headerGrad)" />
+  <path d="M1180 0 L1280 0 L1280 80 Z" fill="#DE3545" fill-opacity="0.12" />
+
+  
+  <polygon points="60,20 72,50 60,50" fill="#DE3545" />
+  <polygon points="78,20 90,50 78,50" fill="#E8834A" fill-opacity="0.6" />
+
+  
+  <text x="100" y="52" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="30" font-weight="bold" fill="#3D3530">新知5：能量为什么只能取特定值？</text>
+
+  
+  <path fill="url(#deriveBg)" stroke="#E8DDD5" stroke-width="1.5" d="M70,92 H670 A10,10 0 0 1 680,102 V652 A10,10 0 0 1 670,662 H70 A10,10 0 0 1 60,652 V102 A10,10 0 0 1 70,92 Z" />
+
+  <path fill="#2E86AB" fill-opacity="0.12" d="M70,92 H670 A10,10 0 0 1 680,102 V126 A10,10 0 0 1 670,136 H70 A10,10 0 0 1 60,126 V102 A10,10 0 0 1 70,92 Z" />
+  <rect x="60" y="116" width="620" height="20" fill="#2E86AB" fill-opacity="0.12" />
+  <text x="370" y="120" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" font-weight="bold" fill="#2E86AB" text-anchor="middle">推导过程</text>
+
+  
+  <circle cx="96" cy="172" r="16" fill="#2E86AB" />
+  <text x="96" y="178" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+  <text x="124" y="168" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="18" font-weight="bold" fill="#3D3530">代入边界条件 ψ(a) = 0</text>
+  <path fill="#EEF6FF" d="M84,180 H656 A4,4 0 0 1 660,184 V216 A4,4 0 0 1 656,220 H84 A4,4 0 0 1 80,216 V184 A4,4 0 0 1 84,180 Z" />
+  <text x="370" y="206" font-family="Consolas, monospace" font-size="19" fill="#2E86AB" text-anchor="middle">A sin(ka) = 0  →  sin(ka) = 0</text>
+
+  
+  <polygon points="370,232 362,222 378,222" fill="#E8834A" />
+
+  
+  <circle cx="96" cy="258" r="16" fill="#E8834A" />
+  <text x="96" y="264" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+  <text x="124" y="254" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="18" font-weight="bold" fill="#3D3530">k 只能取离散值</text>
+  <path fill="#EEF6FF" d="M84,266 H656 A4,4 0 0 1 660,270 V302 A4,4 0 0 1 656,306 H84 A4,4 0 0 1 80,302 V270 A4,4 0 0 1 84,266 Z" />
+  <text x="370" y="292" font-family="Consolas, monospace" font-size="19" fill="#2E86AB" text-anchor="middle">k = nπ/a，  n = 1, 2, 3, ...</text>
+  <text x="370" y="320" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#7A6E68" text-anchor="middle">（n = 0 时 ψ = 0，无物理意义；n 不取负数）</text>
+
+  
+  <polygon points="370,338 362,328 378,328" fill="#E8834A" />
+
+  
+  <circle cx="96" cy="364" r="16" fill="#DE3545" />
+  <text x="96" y="370" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+  <text x="124" y="360" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="18" font-weight="bold" fill="#3D3530">能级公式（量子化！）</text>
+  <path fill="#DE3545" fill-opacity="0.08" stroke="#DE3545" stroke-width="2" d="M86,372 H654 A6,6 0 0 1 660,378 V436 A6,6 0 0 1 654,442 H86 A6,6 0 0 1 80,436 V378 A6,6 0 0 1 86,372 Z" />
+  <text x="370" y="402" font-family="Consolas, monospace" font-size="22" fill="#DE3545" text-anchor="middle" font-weight="bold">E_n = n²π²ℏ² / (2ma²)</text>
+  <text x="370" y="430" font-family="Consolas, monospace" font-size="20" fill="#DE3545" text-anchor="middle" font-weight="bold">E_n = n² · E₁</text>
+
+  
+  <circle cx="96" cy="472" r="16" fill="#4CAF7D" />
+  <text x="96" y="478" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
+  <text x="124" y="468" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="18" font-weight="bold" fill="#3D3530">零点能（基态能量）</text>
+  <path fill="#EDFAF3" d="M84,478 H656 A4,4 0 0 1 660,482 V524 A4,4 0 0 1 656,528 H84 A4,4 0 0 1 80,524 V482 A4,4 0 0 1 84,478 Z" />
+  <text x="370" y="500" font-family="Consolas, monospace" font-size="19" fill="#4CAF7D" text-anchor="middle">E₁ = π²ℏ² / (2ma²)  &gt;  0</text>
+  <text x="370" y="520" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#4CAF7D" text-anchor="middle">粒子不能静止！这是量子力学的独特预言。</text>
+
+  
+  <path fill="#FFF4EC" stroke="#E8834A" stroke-width="1" d="M86,545 H654 A6,6 0 0 1 660,551 V635 A6,6 0 0 1 654,641 H86 A6,6 0 0 1 80,635 V551 A6,6 0 0 1 86,545 Z" />
+  
+  <g transform="translate(96.0, 558.0) scale(1.1666666666666667)" fill="none" stroke="#E8834A">
+    <path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7" />
+    <path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3" />
+    <path d="M9.7 17l4.6 0" />
+  </g>
+  <text x="136" y="574" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="17" font-weight="bold" fill="#E8834A">物理意义：</text>
+  <text x="96" y="600" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="17" fill="#3D3530">能量量子化是边界条件的直接结果，</text>
+  <text x="96" y="625" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="17" fill="#3D3530">不是人为假设，而是数学必然。</text>
+
+  
+  <path fill="url(#energyBg)" stroke="#E8DDD5" stroke-width="1.5" d="M710,92 H1210 A10,10 0 0 1 1220,102 V652 A10,10 0 0 1 1210,662 H710 A10,10 0 0 1 700,652 V102 A10,10 0 0 1 710,92 Z" />
+
+  <path fill="#E8834A" fill-opacity="0.12" d="M710,92 H1210 A10,10 0 0 1 1220,102 V126 A10,10 0 0 1 1210,136 H710 A10,10 0 0 1 700,126 V102 A10,10 0 0 1 710,92 Z" />
+  <rect x="700" y="116" width="520" height="20" fill="#E8834A" fill-opacity="0.12" />
+  <text x="960" y="120" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" font-weight="bold" fill="#E8834A" text-anchor="middle">能级图</text>
+
+  
+  <line x1="820" y1="580" x2="820" y2="145" stroke="#3D3530" stroke-width="2" />
+  <polygon points="820,145 815,158 825,158" fill="#3D3530" />
+  <text x="800" y="140" font-family="Consolas, monospace" font-size="16" fill="#3D3530">E</text>
+
+  
+  <text x="730" y="578" font-family="Consolas, monospace" font-size="14" fill="#3D3530">0</text>
+  <line x1="815" y1="575" x2="825" y2="575" stroke="#3D3530" stroke-width="1.5" />
+
+  
+  <line x1="820" y1="520" x2="1100" y2="520" stroke="#4CAF7D" stroke-width="3" />
+  <text x="730" y="525" font-family="Consolas, monospace" font-size="15" fill="#4CAF7D">E₁</text>
+  <text x="1110" y="525" font-family="Consolas, monospace" font-size="15" fill="#4CAF7D">n=1</text>
+  <text x="960" y="515" font-family="Consolas, monospace" font-size="14" fill="#4CAF7D" text-anchor="middle">E₁ (基态，零点能)</text>
+
+  
+  <line x1="820" y1="430" x2="1100" y2="430" stroke="#2E86AB" stroke-width="3" />
+  <text x="730" y="435" font-family="Consolas, monospace" font-size="15" fill="#2E86AB">E₂</text>
+  <text x="1110" y="435" font-family="Consolas, monospace" font-size="15" fill="#2E86AB">n=2</text>
+  <text x="960" y="422" font-family="Consolas, monospace" font-size="14" fill="#2E86AB" text-anchor="middle">4E₁</text>
+
+  
+  <line x1="820" y1="310" x2="1100" y2="310" stroke="#E8834A" stroke-width="3" />
+  <text x="730" y="315" font-family="Consolas, monospace" font-size="15" fill="#E8834A">E₃</text>
+  <text x="1110" y="315" font-family="Consolas, monospace" font-size="15" fill="#E8834A">n=3</text>
+  <text x="960" y="302" font-family="Consolas, monospace" font-size="14" fill="#E8834A" text-anchor="middle">9E₁</text>
+
+  
+  <line x1="820" y1="210" x2="1100" y2="210" stroke="#DE3545" stroke-width="3" />
+  <text x="730" y="215" font-family="Consolas, monospace" font-size="15" fill="#DE3545">E₄</text>
+  <text x="1110" y="215" font-family="Consolas, monospace" font-size="15" fill="#DE3545">n=4</text>
+  <text x="960" y="202" font-family="Consolas, monospace" font-size="14" fill="#DE3545" text-anchor="middle">16E₁</text>
+
+  
+  <circle cx="960" cy="168" r="4" fill="#7A6E68" />
+  <circle cx="960" cy="155" r="4" fill="#7A6E68" />
+  <circle cx="960" cy="142" r="4" fill="#7A6E68" />
+
+  
+  <line x1="800" y1="520" x2="800" y2="430" stroke="#7A6E68" stroke-width="1" stroke-dasharray="3,3" />
+  <polygon points="800,430 796,442 804,442" fill="#7A6E68" />
+  <text x="760" y="480" font-family="Consolas, monospace" font-size="13" fill="#7A6E68">3E₁</text>
+
+  <line x1="800" y1="430" x2="800" y2="310" stroke="#7A6E68" stroke-width="1" stroke-dasharray="3,3" />
+  <polygon points="800,310 796,322 804,322" fill="#7A6E68" />
+  <text x="760" y="375" font-family="Consolas, monospace" font-size="13" fill="#7A6E68">5E₁</text>
+
+  
+  <path fill="#DE3545" fill-opacity="0.1" stroke="#DE3545" stroke-width="1.5" stroke-opacity="0.4" d="M726,600 H1194 A6,6 0 0 1 1200,606 V638 A6,6 0 0 1 1194,644 H726 A6,6 0 0 1 720,638 V606 A6,6 0 0 1 726,600 Z" />
+  <text x="960" y="628" font-family="Consolas, monospace" font-size="18" fill="#DE3545" text-anchor="middle" font-weight="bold">E_n = n² · E₁，间距越来越大</text>
+
+  
+  <rect x="0" y="690" width="1280" height="30" fill="#3D3530" fill-opacity="0.06" />
+  <text x="60" y="709" font-family="Arial, sans-serif" font-size="13" fill="#A89E98">量子力学基础 · 定态与一维无限深方势阱</text>
+  <text x="1220" y="709" font-family="Arial, sans-serif" font-size="13" fill="#A89E98" text-anchor="end">08</text>
+</svg>

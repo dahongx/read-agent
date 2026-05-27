@@ -75,11 +75,12 @@ _SYSTEM_PROMPT = """你是一个文献阅读助手。基于"片段X"提供的论
 </CITATIONS>
 
 - quote 用于前端在原 PDF 里做 phrase search 高亮，**必须是原文一字不差的一段连续文字**
-- 长度建议 8-25 字 / 6-15 个英文单词。**短优先**：宁可只高亮句首一个明显短语，也不要写一整句因为标点不同导致只高亮一半
-- 不要包含 em dash（—）、中文破折号、省略号、引号、括号等特殊字符；如果原文里这些字符正好在你想引的句子中间，请把 quote 截到这些字符**之前**
-- 不要跨行；不要包含数学公式
+- 长度由你自己判断：完整一句话也行，一个关键短语也行，**按答案中实际用到的内容自然取**——能让用户在 PDF 里看到完整出处即可
+- 不要意译、不要删字、不要把分散在不同段落的句子拼在一起、不要跨页
+- 含 em dash（—）/ 中文破折号 / 省略号等字符时，phrase search 可能失配，**优先选不含这些字符的连续片段**，但如果原文中带这些字符不可避免就保留原样
+- 不要包含数学公式（特殊字符在 PDF 文本层经常对不上）
 - chunk_id 指向你引用的"片段X"中的 X
-- 如果某条 (第N页) 引用找不到合适的短句，可以省略对应 JSON 条目，但答案里的页码必须真实来自片段
+- 如果某条 (第N页) 引用找不到合适的原文片段，可以省略对应 JSON 条目，但答案里的页码必须真实来自片段
 - JSON 之外不要再写其他内容，<CITATIONS> 必须出现在回答最末尾
 """
 
@@ -126,19 +127,17 @@ def _strip_citation_block(answer: str) -> tuple[str, list[dict[str, Any]]]:
     return cleaned_answer, citations
 
 
-_INVISIBLE_REGEX = re.compile(r"[­​‌‍﻿]")  # 软连字符、零宽空格
+_INVISIBLE_REGEX = re.compile(r"[­​‌‍﻿]")  # 软连字符、零宽空格、BOM
 _LIGATURE_MAP = {"ﬀ": "ff", "ﬁ": "fi", "ﬂ": "fl", "ﬃ": "ffi", "ﬄ": "ffl"}
-_PROBLEMATIC_REGEX = re.compile(r"[–—―…‘’“”]|--")
-# 上面包含：– — ― … ' ' " "  以及 ASCII --
 
 
 def _normalize_quote(text: str) -> str:
-    """规范化 quote：折空格 + 删不可见字符 + ligature 还原；遇到容易和 PDF 不一致的字符就截断。
+    """规范化 quote：只做"无副作用"清理。
 
-    PDF 抽出的 textLayer 经常和 LLM 写的 quote 在 em dash / 引号 / 连字符上不一致。
-    phrase search 是子串精确匹配，差一个字符就只高亮前半段。
-    所以策略是：1) 先去掉 PDF 不会有的不可见字符与 ligature；
-    2) 检测到容易跑偏的字符（em dash 等），把 quote 截到它之前，宁可短不要错。
+    PDF.js phrase search 是子串精确匹配。我们清理 PDF 里不会出现的不可见字符与
+    LLM 可能写的 ligature，但不再因为看到 em dash / 引号就强制截断 ——
+    因为强制截断会让 quote 变得很短，体验差；保留原样长度，让 LLM 自己判断。
+    匹配失败就退化为只跳页（前端 PDF.js 自然行为），不影响主流程。
     """
     text = (text or "").strip()
     if not text:
@@ -147,11 +146,8 @@ def _normalize_quote(text: str) -> str:
     for k, v in _LIGATURE_MAP.items():
         text = text.replace(k, v)
     text = re.sub(r"\s+", " ", text).strip()
-
-    cut_match = _PROBLEMATIC_REGEX.search(text)
-    if cut_match and cut_match.start() >= 8:
-        text = text[: cut_match.start()].rstrip(" ,;:")
-    return text[:200]
+    # 上限放宽到 500 字符（PDF.js search 字符串太长 URL 会过长，500 字基本够覆盖一段话）
+    return text[:500]
 
 
 def _attach_quote_to_sources(

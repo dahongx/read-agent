@@ -1,0 +1,26 @@
+{
+  "space_id": "fd3d2aa62172006d-5c0e76b6",
+  "pdf_filename": "lect4.pdf",
+  "pdf_path": "backend/uploads/sessions/f1f94b78-0dc1-40ce-af12-cea72bb061b6/input/lect4.pdf",
+  "pdf_hash": "fd3d2aa62172006d",
+  "config": {
+    "template": "smart_red",
+    "page_count": 12,
+    "language": "中文",
+    "style": "教学讲义",
+    "audience": "高校师生"
+  },
+  "paper_title": "lect4",
+  "session_type": "single",
+  "source_documents": [],
+  "contributors": [
+    "123"
+  ],
+  "state": "ready",
+  "error_message": null,
+  "created_at": 1779870970.2472293,
+  "updated_at": 1779876117.4372082,
+  "last_accessed_by": {
+    "123": 1779876117.4372082
+  }
+}

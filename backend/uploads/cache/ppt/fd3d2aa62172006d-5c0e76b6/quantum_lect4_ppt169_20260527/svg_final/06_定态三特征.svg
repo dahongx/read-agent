@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#DE3545" />
+      <stop offset="100%" stop-color="#E8834A" />
+    </linearGradient>
+    <linearGradient id="blueBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EEF6FF" />
+      <stop offset="100%" stop-color="#FDFCFF" />
+    </linearGradient>
+    <linearGradient id="greenBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EDFAF3" />
+      <stop offset="100%" stop-color="#FDFFFE" />
+    </linearGradient>
+    <linearGradient id="orangeBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF4EC" />
+      <stop offset="100%" stop-color="#FFFCFA" />
+    </linearGradient>
+  </defs>
+
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#FDFAF5" />
+
+  
+  <rect x="0" y="0" width="1280" height="80" fill="#FFFFFF" />
+  <rect x="0" y="78" width="1280" height="3" fill="url(#headerGrad)" />
+  <path d="M1180 0 L1280 0 L1280 80 Z" fill="#DE3545" fill-opacity="0.12" />
+
+  
+  <polygon points="60,20 72,50 60,50" fill="#DE3545" />
+  <polygon points="78,20 90,50 78,50" fill="#E8834A" fill-opacity="0.6" />
+
+  
+  <text x="100" y="52" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="30" font-weight="bold" fill="#3D3530">新知3：为什么叫"定态"？</text>
+
+  
+  <text x="60" y="108" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#7A6E68">定态有三个核心特征，理解它们是掌握量子力学的关键：</text>
+
+  
+  <path fill="url(#blueBg)" stroke="#2E86AB" stroke-width="1.5" stroke-opacity="0.5" d="M70,125 H420 A10,10 0 0 1 430,135 V605 A10,10 0 0 1 420,615 H70 A10,10 0 0 1 60,605 V135 A10,10 0 0 1 70,125 Z" />
+  <path fill="#2E86AB" d="M70,125 H420 A10,10 0 0 1 430,135 V171 A10,10 0 0 1 420,181 H70 A10,10 0 0 1 60,171 V135 A10,10 0 0 1 70,125 Z" />
+  <rect x="60" y="161" width="370" height="20" fill="#2E86AB" />
+  <text x="245" y="160" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="21" font-weight="bold" fill="#FFFFFF" text-anchor="middle">特征一</text>
+  <text x="245" y="200" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="22" font-weight="bold" fill="#2E86AB" text-anchor="middle">概率密度不随时间变化</text>
+  <line x1="90" y1="218" x2="400" y2="218" stroke="#2E86AB" stroke-width="1" stroke-opacity="0.3" />
+
+  
+  <path fill="#2E86AB" fill-opacity="0.1" d="M86,228 H404 A6,6 0 0 1 410,234 V292 A6,6 0 0 1 404,298 H86 A6,6 0 0 1 80,292 V234 A6,6 0 0 1 86,228 Z" />
+  <text x="245" y="258" font-family="Consolas, 'Courier New', monospace" font-size="19" fill="#2E86AB" text-anchor="middle">|Ψ(r,t)|² = |ψ(r)|²</text>
+  <text x="245" y="285" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#7A6E68" text-anchor="middle">与时间 t 无关</text>
+
+  <text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" x="80" y="330">时间因子 e^(-iEt/ℏ) 的模</text><text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" x="80" y="360">为 1，取模平方后消失。</text><text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" x="80" y="396">粒子在空间各处出现的</text><text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" x="80" y="426">概率分布是固定的，</text><text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" x="80" y="456">不随时间演化。</text><path fill="#2E86AB" fill-opacity="0.12" d="M86,530 H404 A6,6 0 0 1 410,536 V584 A6,6 0 0 1 404,590 H86 A6,6 0 0 1 80,584 V536 A6,6 0 0 1 86,530 Z" />
+  <text x="245" y="556" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="17" fill="#2E86AB" text-anchor="middle" font-weight="bold">这就是"定"的含义：</text>
+  <text x="245" y="580" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="17" fill="#2E86AB" text-anchor="middle">概率分布稳定不变</text>
+
+  
+  <path fill="url(#greenBg)" stroke="#4CAF7D" stroke-width="1.5" stroke-opacity="0.5" d="M465,125 H815 A10,10 0 0 1 825,135 V605 A10,10 0 0 1 815,615 H465 A10,10 0 0 1 455,605 V135 A10,10 0 0 1 465,125 Z" />
+  <path fill="#4CAF7D" d="M465,125 H815 A10,10 0 0 1 825,135 V171 A10,10 0 0 1 815,181 H465 A10,10 0 0 1 455,171 V135 A10,10 0 0 1 465,125 Z" />
+  <rect x="455" y="161" width="370" height="20" fill="#4CAF7D" />
+  <text x="640" y="160" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="21" font-weight="bold" fill="#FFFFFF" text-anchor="middle">特征二</text>
+  <text x="640" y="200" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="22" font-weight="bold" fill="#4CAF7D" text-anchor="middle">能量具有确定值</text>
+  <line x1="485" y1="218" x2="795" y2="218" stroke="#4CAF7D" stroke-width="1" stroke-opacity="0.3" />
+
+  <path fill="#4CAF7D" fill-opacity="0.1" d="M481,228 H799 A6,6 0 0 1 805,234 V292 A6,6 0 0 1 799,298 H481 A6,6 0 0 1 475,292 V234 A6,6 0 0 1 481,228 Z" />
+  <text x="640" y="255" font-family="Consolas, 'Courier New', monospace" font-size="19" fill="#4CAF7D" text-anchor="middle">⟨H⟩ = E，σ_H = 0</text>
+  <text x="640" y="285" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#7A6E68" text-anchor="middle">能量涨落为零</text>
+
+  <text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" x="475" y="330">每次测量能量，结果</text><text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" x="475" y="360">都是同一个值 E。</text><text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" x="475" y="396">这与叠加态不同——</text><text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" x="475" y="426">叠加态测量能量会</text><text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" x="475" y="456">得到不同结果。</text><path fill="#4CAF7D" fill-opacity="0.12" d="M481,530 H799 A6,6 0 0 1 805,536 V584 A6,6 0 0 1 799,590 H481 A6,6 0 0 1 475,584 V536 A6,6 0 0 1 481,530 Z" />
+  <text x="640" y="556" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="17" fill="#4CAF7D" text-anchor="middle" font-weight="bold">定态 = 能量本征态</text>
+  <text x="640" y="580" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="17" fill="#4CAF7D" text-anchor="middle">能量完全确定</text>
+
+  
+  <path fill="url(#orangeBg)" stroke="#E8834A" stroke-width="1.5" stroke-opacity="0.5" d="M860,125 H1210 A10,10 0 0 1 1220,135 V605 A10,10 0 0 1 1210,615 H860 A10,10 0 0 1 850,605 V135 A10,10 0 0 1 860,125 Z" />
+  <path fill="#E8834A" d="M860,125 H1210 A10,10 0 0 1 1220,135 V171 A10,10 0 0 1 1210,181 H860 A10,10 0 0 1 850,171 V135 A10,10 0 0 1 860,125 Z" />
+  <rect x="850" y="161" width="370" height="20" fill="#E8834A" />
+  <text x="1035" y="160" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="21" font-weight="bold" fill="#FFFFFF" text-anchor="middle">特征三</text>
+  <text x="1035" y="200" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="22" font-weight="bold" fill="#E8834A" text-anchor="middle">任意力学量期望值不变</text>
+  <line x1="880" y1="218" x2="1190" y2="218" stroke="#E8834A" stroke-width="1" stroke-opacity="0.3" />
+
+  <path fill="#E8834A" fill-opacity="0.1" d="M876,228 H1194 A6,6 0 0 1 1200,234 V292 A6,6 0 0 1 1194,298 H876 A6,6 0 0 1 870,292 V234 A6,6 0 0 1 876,228 Z" />
+  <text x="1035" y="255" font-family="Consolas, 'Courier New', monospace" font-size="17" fill="#E8834A" text-anchor="middle">⟨A⟩ = ∫ψ*Âψ dr</text>
+  <text x="1035" y="285" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#7A6E68" text-anchor="middle">与时间无关</text>
+
+  <text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" x="870" y="330">位置、动量等任意</text><text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" x="870" y="360">力学量的期望值</text><text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" x="870" y="396">都不随时间变化。</text><text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" x="870" y="426">这是"定态"名称</text><text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" x="870" y="456">最完整的含义。</text><path fill="#E8834A" fill-opacity="0.12" d="M876,530 H1194 A6,6 0 0 1 1200,536 V584 A6,6 0 0 1 1194,590 H876 A6,6 0 0 1 870,584 V536 A6,6 0 0 1 876,530 Z" />
+  <text x="1035" y="556" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="17" fill="#E8834A" text-anchor="middle" font-weight="bold">宏观可观测量</text>
+  <text x="1035" y="580" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="17" fill="#E8834A" text-anchor="middle">全部稳定不变</text>
+
+  
+  <rect x="0" y="690" width="1280" height="30" fill="#3D3530" fill-opacity="0.06" />
+  <text x="60" y="709" font-family="Arial, sans-serif" font-size="13" fill="#A89E98">量子力学基础 · 定态与一维无限深方势阱</text>
+  <text x="1220" y="709" font-family="Arial, sans-serif" font-size="13" fill="#A89E98" text-anchor="end">06</text>
+</svg>

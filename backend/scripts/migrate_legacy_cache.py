@@ -157,6 +157,15 @@ def step_rewrite_space_metadata(space_id: str) -> None:
                     doc["pdf_path"] = rel
                     changed = True
 
+    # 早期 space.json 也修复 markdown_path（多文件场景下可能是绝对路径）
+    if isinstance(data.get("source_documents"), list):
+        for doc in data["source_documents"]:
+            if isinstance(doc, dict) and doc.get("markdown_path"):
+                rel = _normalize_to_repo_relative(doc["markdown_path"])
+                if rel != doc["markdown_path"]:
+                    doc["markdown_path"] = rel
+                    changed = True
+
     # 早期 space.json 没有 state 字段，对应产物完整就标 ready
     if not data.get("state"):
         manifest = UPLOADS / "cache" / "ppt" / space_id / "project_manifest.json"
@@ -171,14 +180,34 @@ def step_rewrite_space_metadata(space_id: str) -> None:
         print(f"[ok]   space already portable: {space_path.name}")
 
 
+def step_rewrite_all_spaces() -> None:
+    spaces_dir = UPLOADS / "spaces"
+    if not spaces_dir.exists():
+        return
+    for path in sorted(spaces_dir.glob("*.json")):
+        sid = path.stem
+        step_rewrite_space_metadata(sid)
+
+
+def step_rewrite_all_manifests() -> None:
+    cache_root = UPLOADS / "cache" / "ppt"
+    if not cache_root.exists():
+        return
+    for cache_dir in sorted(cache_root.iterdir()):
+        if not cache_dir.is_dir():
+            continue
+        sid = cache_dir.name
+        step_rewrite_manifest(sid)
+
+
 def main() -> int:
     print(f"[init] REPO_ROOT = {REPO_ROOT}")
     print(f"[init] UPLOADS   = {UPLOADS}")
 
     step_copy_legacy_project()
-    for sid in DEMO_SPACES:
-        step_rewrite_manifest(sid)
-        step_rewrite_space_metadata(sid)
+    # 扫所有 space.json + cache/ppt/<sid>/manifest，不限于 DEMO_SPACES
+    step_rewrite_all_manifests()
+    step_rewrite_all_spaces()
 
     print("\n[done] migration complete. Verify by starting backend and opening each space in the browser.")
     return 0

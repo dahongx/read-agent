@@ -86,26 +86,34 @@ async def get_space(space_id: str, user_id: str = "anonymous") -> dict:
     }
 
 
+def _abs_path(value: str | None) -> Path | None:
+    """space.json 里的 pdf_path 现在是相对 REPO_ROOT 的 POSIX 路径，
+    这里还原成当前机器的绝对路径。已经是绝对路径就原样返回（兼容老数据）。"""
+    if not value:
+        return None
+    p = Path(value)
+    if p.is_absolute():
+        return p
+    return (settings.project_root / p).resolve()
+
+
 def _resolve_pdf_path(space: dict, doc_id: str | None = None) -> Path:
     if doc_id:
         for src in space.get("source_documents") or []:
             if src.get("doc_id") == doc_id:
-                p = Path(src.get("pdf_path") or "")
-                if p.exists():
+                p = _abs_path(src.get("pdf_path"))
+                if p and p.exists():
                     return p
         raise HTTPException(status_code=404, detail="Source document not found")
 
-    pdf_path = space.get("pdf_path")
-    if pdf_path:
-        p = Path(pdf_path)
-        if p.exists():
-            return p
+    p = _abs_path(space.get("pdf_path"))
+    if p and p.exists():
+        return p
 
-    sources = space.get("source_documents") or []
-    if sources:
-        p = Path(sources[0].get("pdf_path") or "")
-        if p.exists():
-            return p
+    for src in space.get("source_documents") or []:
+        candidate = _abs_path(src.get("pdf_path"))
+        if candidate and candidate.exists():
+            return candidate
 
     raise HTTPException(status_code=404, detail="PDF file not found")
 

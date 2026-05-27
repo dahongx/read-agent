@@ -417,7 +417,7 @@ export default function ChatPanel({ spaceId }: Props) {
       {/* 顶部：标题 + 会话切换条 */}
       <div className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-2">
         <div className="flex items-center gap-2 min-w-0 flex-1">
-          <h3 className="text-sm font-semibold text-gray-700 shrink-0">论文问答</h3>
+          <h3 className="text-sm font-semibold text-gray-700 shrink-0">问答</h3>
           <div className="relative min-w-0">
             <button
               onClick={() => setConvMenuOpen(o => !o)}
@@ -494,7 +494,7 @@ export default function ChatPanel({ spaceId }: Props) {
       <div className="flex flex-1 flex-col gap-3 overflow-y-auto px-4 py-4">
         {messages.length === 0 && (
           <p className="mt-8 text-center text-xs text-gray-400">
-            输入问题，向 AI 提问关于这篇论文的内容
+            输入问题，向 AI 提问关于上传内容的细节
           </p>
         )}
 

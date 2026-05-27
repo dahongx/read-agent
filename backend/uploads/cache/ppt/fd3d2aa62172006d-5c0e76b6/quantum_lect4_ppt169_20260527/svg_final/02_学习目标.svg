@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#DE3545" />
+      <stop offset="100%" stop-color="#E8834A" />
+    </linearGradient>
+    <linearGradient id="cardBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EEF6FF" />
+      <stop offset="100%" stop-color="#E0F0FA" />
+    </linearGradient>
+    <linearGradient id="cardGreen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EDFAF3" />
+      <stop offset="100%" stop-color="#DFF5EA" />
+    </linearGradient>
+    <linearGradient id="cardOrange" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF4EC" />
+      <stop offset="100%" stop-color="#FEEADB" />
+    </linearGradient>
+    <linearGradient id="cardRed" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF0F1" />
+      <stop offset="100%" stop-color="#FFE4E6" />
+    </linearGradient>
+  </defs>
+
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#FDFAF5" />
+
+  
+  <rect x="0" y="0" width="1280" height="80" fill="#FFFFFF" />
+  <rect x="0" y="78" width="1280" height="3" fill="url(#headerGrad)" />
+
+  
+  <path d="M1180 0 L1280 0 L1280 80 Z" fill="#DE3545" fill-opacity="0.12" />
+
+  
+  <polygon points="60,20 72,50 60,50" fill="#DE3545" />
+  <polygon points="78,20 90,50 78,50" fill="#E8834A" fill-opacity="0.6" />
+
+  
+  <text x="100" y="52" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="30" font-weight="bold" fill="#3D3530">本讲学习目标</text>
+
+  
+  
+  <g transform="translate(1200.0, 18.0) scale(1.8333333333333333)" fill="none" stroke="#DE3545">
+    <path d="M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+    <path d="M7 12a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" />
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+  </g>
+
+  
+  <text x="60" y="110" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#7A6E68">学完本讲，你应该能够做到以下四点：</text>
+
+  
+  <path fill="url(#cardBlue)" stroke="#2E86AB" stroke-width="1.5" stroke-opacity="0.4" d="M70,130 H610 A10,10 0 0 1 620,140 V360 A10,10 0 0 1 610,370 H70 A10,10 0 0 1 60,360 V140 A10,10 0 0 1 70,130 Z" />
+  <path fill="#2E86AB" d="M64,130 H64 A4,4 0 0 1 68,134 V366 A4,4 0 0 1 64,370 H64 A4,4 0 0 1 60,366 V134 A4,4 0 0 1 64,130 Z" />
+  
+  <g transform="translate(88.0, 155.0) scale(1.5)" fill="none" stroke="#2E86AB">
+    <path d="M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+    <path d="M7 12a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" />
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+  </g>
+  <text x="138" y="178" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" font-weight="bold" fill="#2E86AB">能说出</text>
+  <text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" x="88" y="220">定态的定义，以及定态的</text><text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" x="88" y="252">三个核心特征</text><path fill="url(#cardGreen)" stroke="#4CAF7D" stroke-width="1.5" stroke-opacity="0.4" d="M670,130 H1210 A10,10 0 0 1 1220,140 V360 A10,10 0 0 1 1210,370 H670 A10,10 0 0 1 660,360 V140 A10,10 0 0 1 670,130 Z" />
+  <path fill="#4CAF7D" d="M664,130 H664 A4,4 0 0 1 668,134 V366 A4,4 0 0 1 664,370 H664 A4,4 0 0 1 660,366 V134 A4,4 0 0 1 664,130 Z" />
+  
+  <g transform="translate(688.0, 155.0) scale(1.5)" fill="none" stroke="#4CAF7D">
+    <path d="M15.5 13a3.5 3.5 0 0 0 -3.5 3.5v1a3.5 3.5 0 0 0 7 0v-1.8" />
+    <path d="M8.5 13a3.5 3.5 0 0 1 3.5 3.5v1a3.5 3.5 0 0 1 -7 0v-1.8" />
+    <path d="M17.5 16a3.5 3.5 0 0 0 0 -7h-.5" />
+    <path d="M19 9.3v-2.8a3.5 3.5 0 0 0 -7 0" />
+    <path d="M6.5 16a3.5 3.5 0 0 1 0 -7h.5" />
+    <path d="M5 9.3v-2.8a3.5 3.5 0 0 1 7 0v10" />
+  </g>
+  <text x="738" y="178" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" font-weight="bold" fill="#4CAF7D">能解释</text>
+  <text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" x="688" y="220">为什么定态的概率密度</text><text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" x="688" y="252">不随时间变化</text><path fill="url(#cardOrange)" stroke="#E8834A" stroke-width="1.5" stroke-opacity="0.4" d="M70,390 H610 A10,10 0 0 1 620,400 V620 A10,10 0 0 1 610,630 H70 A10,10 0 0 1 60,620 V400 A10,10 0 0 1 70,390 Z" />
+  <path fill="#E8834A" d="M64,390 H64 A4,4 0 0 1 68,394 V626 A4,4 0 0 1 64,630 H64 A4,4 0 0 1 60,626 V394 A4,4 0 0 1 64,390 Z" />
+  
+  <g transform="translate(88.0, 415.0) scale(1.5)" fill="none" stroke="#E8834A">
+    <path d="M3 19a2 2 0 0 0 2 2c2 0 2 -4 3 -9s1 -9 3 -9a2 2 0 0 1 2 2" />
+    <path d="M5 12h6" />
+    <path d="M15 12l6 6" />
+    <path d="M15 18l6 -6" />
+  </g>
+  <text x="138" y="438" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E8834A">会运用</text>
+  <text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" x="88" y="480">分离变量法推导</text><text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" x="88" y="512">定态薛定谔方程</text><path fill="url(#cardRed)" stroke="#DE3545" stroke-width="1.5" stroke-opacity="0.4" d="M670,390 H1210 A10,10 0 0 1 1220,400 V620 A10,10 0 0 1 1210,630 H670 A10,10 0 0 1 660,620 V400 A10,10 0 0 1 670,390 Z" />
+  <path fill="#DE3545" d="M664,390 H664 A4,4 0 0 1 668,394 V626 A4,4 0 0 1 664,630 H664 A4,4 0 0 1 660,626 V394 A4,4 0 0 1 664,390 Z" />
+  
+  <g transform="translate(688.0, 415.0) scale(1.5)" fill="none" stroke="#DE3545">
+    <path d="M21 12h-2c-.894 0 -1.662 -.857 -1.761 -2c-.296 -3.45 -.749 -6 -2.749 -6s-2.5 3.582 -2.5 8s-.5 8 -2.5 8s-2.452 -2.547 -2.749 -6c-.1 -1.147 -.867 -2 -1.763 -2h-2" />
+  </g>
+  <text x="738" y="438" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" font-weight="bold" fill="#DE3545">会判断</text>
+  <text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" x="688" y="480">无限深方势阱中粒子的</text><text fill="#3D3530" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" x="688" y="512">允许能级与波函数形式</text><rect x="0" y="690" width="1280" height="30" fill="#3D3530" fill-opacity="0.06" />
+  <text x="60" y="709" font-family="Arial, sans-serif" font-size="13" fill="#A89E98">量子力学基础 · 定态与一维无限深方势阱</text>
+  <text x="1220" y="709" font-family="Arial, sans-serif" font-size="13" fill="#A89E98" text-anchor="end">02</text>
+</svg>

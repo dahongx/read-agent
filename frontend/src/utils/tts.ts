@@ -4,16 +4,33 @@
  * Problems solved:
  * 1. Stage-direction markers like [停顿], [过渡], [强调] are stripped —
  *    they are cues for the speaker, not words to be read aloud.
- * 2. Math notation is converted to natural spoken Chinese:
+ *    生成端被要求统一用半角 [...]，所以这里只处理 [...]；中文【】保留兜底以防漏改。
+ * 2. Meta-info lines like "要点：①...", "时长：1分钟", "板书：..." are kept
+ *    in the text panel for the teacher to read, but **skipped by TTS**.
+ * 3. Math notation is converted to natural spoken Chinese:
  *    - M_{t+1}  →  "M t加1"
  *    - m_i      →  "m i"
  *    - g_write  →  "g write"
  *    - x^2      →  "x平方"
  *    - x^{n+1}  →  "x的n加1次方"
  */
+const META_LINE_KEYS = [
+  '要点', '时长', '板书', '摘要', '目标', '重点', '难点',
+  '提示', '注意', '备注', '小结', '互动节点', '互动设计',
+]
+// 整行匹配 "标签：内容"（半角或全角冒号），TTS 时跳过；这些是给老师看的元信息，不朗读
+const META_LINE_REGEX = new RegExp(
+  `^\\s*(?:${META_LINE_KEYS.join('|')})\\s*[：:].*$`,
+  'gm',
+)
+
 export function preprocessForTts(text: string): string {
-  // 1. Strip all bracket-enclosed markers: [停顿], [过渡], [1], etc.
+  // 0. 跳过 speaker notes 里给老师看的元信息行（"要点：..."、"时长：..." 等）
+  text = text.replace(META_LINE_REGEX, '')
+
+  // 1. 删除舞台指示标记：[停顿] / [过渡] / [1] 半角；【...】中文兜底（万一 LLM 没遵守 prompt）
   text = text.replace(/\[[^\]]*\]/g, '')
+  text = text.replace(/【[^】]*】/g, '')
 
   // 2. LaTeX braced subscript: M_{t+1} → "M t加1"
   text = text.replace(/([A-Za-z\d])_\{([^}]+)\}/g, (_m, base, sub) =>
@@ -43,10 +60,10 @@ export function preprocessForTts(text: string): string {
     base + ' ' + sub
   )
 
-  // 7. Collapse extra whitespace left by removals
-  text = text.replace(/\s{2,}/g, ' ').trim()
-
-  return text
+  // 7. 折叠多余空格 / 整理空行
+  text = text.replace(/[ \t]{2,}/g, ' ')
+  text = text.replace(/\n{2,}/g, '\n')
+  return text.trim()
 }
 
 /** Convert arithmetic operators inside subscripts/superscripts to Chinese words. */

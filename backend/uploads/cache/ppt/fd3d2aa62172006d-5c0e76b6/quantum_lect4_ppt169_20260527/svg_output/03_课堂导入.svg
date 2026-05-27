@@ -1,0 +1,114 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#DE3545"/>
+      <stop offset="100%" stop-color="#E8834A"/>
+    </linearGradient>
+    <linearGradient id="classicBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F5F5F5"/>
+      <stop offset="100%" stop-color="#EBEBEB"/>
+    </linearGradient>
+    <linearGradient id="quantumBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EEF6FF"/>
+      <stop offset="100%" stop-color="#DCF0FF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="#FDFAF5"/>
+
+  <!-- Header bar -->
+  <rect x="0" y="0" width="1280" height="80" fill="#FFFFFF"/>
+  <rect x="0" y="78" width="1280" height="3" fill="url(#headerGrad)"/>
+  <path d="M1180 0 L1280 0 L1280 80 Z" fill="#DE3545" fill-opacity="0.12"/>
+
+  <!-- Title decoration -->
+  <polygon points="60,20 72,50 60,50" fill="#DE3545"/>
+  <polygon points="78,20 90,50 78,50" fill="#E8834A" fill-opacity="0.6"/>
+
+  <!-- Page title -->
+  <text x="100" y="52" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="30" font-weight="bold" fill="#3D3530">课堂导入</text>
+
+  <!-- Question banner -->
+  <rect x="60" y="92" width="1160" height="56" rx="8" fill="#FFF4EC" stroke="#E8834A" stroke-width="1.5" stroke-opacity="0.5"/>
+  <use data-icon="tabler-outline/bulb" x="76" y="102" width="36" height="36" fill="#E8834A"/>
+  <text x="124" y="126" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="22" font-weight="bold" fill="#3D3530">一个粒子被"关"在盒子里，会发生什么？</text>
+
+  <!-- VS divider -->
+  <line x1="640" y1="160" x2="640" y2="670" stroke="#E8DDD5" stroke-width="2"/>
+  <circle cx="640" cy="415" r="28" fill="#DE3545"/>
+  <text x="640" y="423" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">VS</text>
+
+  <!-- Left column: Classic particle -->
+  <rect x="60" y="160" width="555" height="500" rx="10" fill="url(#classicBg)" stroke="#CCCCCC" stroke-width="1.5"/>
+  <rect x="60" y="160" width="555" height="52" rx="10" fill="#888888"/>
+  <rect x="60" y="192" width="555" height="20" fill="#888888"/>
+  <text x="337" y="193" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">经典粒子</text>
+
+  <!-- Classic items -->
+  <circle cx="100" cy="255" r="8" fill="#888888"/>
+  <text x="120" y="262" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#3D3530">任意速度均可</text>
+
+  <line x1="80" y1="285" x2="595" y2="285" stroke="#CCCCCC" stroke-width="1" stroke-opacity="0.5"/>
+
+  <circle cx="100" cy="325" r="8" fill="#888888"/>
+  <text x="120" y="332" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#3D3530">能量连续变化（任意值）</text>
+
+  <line x1="80" y1="355" x2="595" y2="355" stroke="#CCCCCC" stroke-width="1" stroke-opacity="0.5"/>
+
+  <circle cx="100" cy="395" r="8" fill="#888888"/>
+  <text x="120" y="402" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#3D3530">在盒内匀速往返运动</text>
+
+  <line x1="80" y1="425" x2="595" y2="425" stroke="#CCCCCC" stroke-width="1" stroke-opacity="0.5"/>
+
+  <circle cx="100" cy="465" r="8" fill="#888888"/>
+  <text x="120" y="472" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#3D3530">可以静止（E = 0）</text>
+
+  <line x1="80" y1="495" x2="595" y2="495" stroke="#CCCCCC" stroke-width="1" stroke-opacity="0.5"/>
+
+  <circle cx="100" cy="535" r="8" fill="#888888"/>
+  <text x="120" y="542" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#3D3530">位置可精确确定</text>
+
+  <!-- Classic conclusion -->
+  <rect x="80" y="580" width="515" height="60" rx="6" fill="#DDDDDD"/>
+  <text x="337" y="616" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" fill="#555555" text-anchor="middle">经典力学：连续、确定、直觉</text>
+
+  <!-- Right column: Quantum particle -->
+  <rect x="665" y="160" width="555" height="500" rx="10" fill="url(#quantumBg)" stroke="#2E86AB" stroke-width="1.5"/>
+  <rect x="665" y="160" width="555" height="52" rx="10" fill="#2E86AB"/>
+  <rect x="665" y="192" width="555" height="20" fill="#2E86AB"/>
+  <text x="942" y="193" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">量子粒子</text>
+
+  <!-- Quantum items -->
+  <circle cx="705" cy="255" r="8" fill="#2E86AB"/>
+  <text x="725" y="262" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#3D3530">只允许特定速度（量子化）</text>
+
+  <line x1="685" y1="285" x2="1200" y2="285" stroke="#2E86AB" stroke-width="1" stroke-opacity="0.3"/>
+
+  <circle cx="705" cy="325" r="8" fill="#2E86AB"/>
+  <text x="725" y="332" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#3D3530">能量只取离散值 E₁, E₂, E₃…</text>
+
+  <line x1="685" y1="355" x2="1200" y2="355" stroke="#2E86AB" stroke-width="1" stroke-opacity="0.3"/>
+
+  <circle cx="705" cy="395" r="8" fill="#2E86AB"/>
+  <text x="725" y="402" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#3D3530">形成驻波（概率波）</text>
+
+  <line x1="685" y1="425" x2="1200" y2="425" stroke="#2E86AB" stroke-width="1" stroke-opacity="0.3"/>
+
+  <circle cx="705" cy="465" r="8" fill="#2E86AB"/>
+  <text x="725" y="472" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#DE3545" font-weight="bold">不能静止！零点能 E₁ &gt; 0</text>
+
+  <line x1="685" y1="495" x2="1200" y2="495" stroke="#2E86AB" stroke-width="1" stroke-opacity="0.3"/>
+
+  <circle cx="705" cy="535" r="8" fill="#2E86AB"/>
+  <text x="725" y="542" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#3D3530">位置具有概率分布</text>
+
+  <!-- Quantum conclusion -->
+  <rect x="685" y="580" width="515" height="60" rx="6" fill="#2E86AB" fill-opacity="0.15"/>
+  <text x="942" y="616" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="19" fill="#2E86AB" font-weight="bold" text-anchor="middle">量子力学：离散、概率、反直觉</text>
+
+  <!-- Footer -->
+  <rect x="0" y="690" width="1280" height="30" fill="#3D3530" fill-opacity="0.06"/>
+  <text x="60" y="709" font-family="Arial, sans-serif" font-size="13" fill="#A89E98">量子力学基础 · 定态与一维无限深方势阱</text>
+  <text x="1220" y="709" font-family="Arial, sans-serif" font-size="13" fill="#A89E98" text-anchor="end">03</text>
+</svg>
