@@ -75,7 +75,6 @@ projects/
 # Generated skill artifacts
 .claude/skills/ppt-master/projects/
 .claude/skills/ppt-master/scripts/__pycache__/
-.claude/skills/paper-glance-skill/.git/
 
 # Logs
 *.log
@@ -91,6 +90,7 @@ projects/
 # Do not upload sensitive or large local files
 /ARCHITECTURE_P0_UNIFIED.md
 /openspec.pdf
+/DESIGN_HISTORY.md
 
 # Local Claude workspace state
 .claude/settings.local.json
